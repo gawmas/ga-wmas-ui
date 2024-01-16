@@ -1,1 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+
+.spinner_b2T7 {
+  animation: spinner_xe7Q 0.8s linear infinite;
+}
+.spinner_YRVV {
+  animation-delay: -0.65s;
+}
+.spinner_c9oY {
+  animation-delay: -0.5s;
+}
+@keyframes spinner_xe7Q {
+  93.75%,
+  100% {
+    r: 3px;
+  }
+  46.875% {
+    r: 0.2px;
+  }
+}
+
+@tailwind utilities;
+

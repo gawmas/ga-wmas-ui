@@ -1,0 +1,82 @@
+<hunt-filters>
+  <!-- i'm in the slot! -->
+</hunt-filters>
+
+@if (!topInView()) {
+  <div class="fixed bottom-0 left-4 flex items-center justify-center m-4 p-3 bg-gray-300 rounded-md mx-auto">
+    @if (isLoading$ | async) {
+      <div class="flex text-sm items-center">
+        <div>
+          <svg class="w-6 h-6 fill-blue-900 spinner"
+            viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+            <circle class="spinner_b2T7" cx="4" cy="12" r="3"/>
+            <circle class="spinner_b2T7 spinner_YRVV" cx="12" cy="12" r="3"/>
+            <circle class="spinner_b2T7 spinner_c9oY" cx="20" cy="12" r="3"/>
+          </svg>
+        </div>
+        <div class="text-blue-900">Loading more results ...</div>
+      </div>
+    } @else {
+      <div class="text-blue-900 text-sm flex items-center">
+        <div class="mr-2 text-l">
+          <ng-icon name="heroBarsArrowUp"></ng-icon>
+        </div>
+        <div><a (click)="scrollTop()" class="cursor-pointer hover:underline">Back to Top</a></div>
+      </div>
+    }
+  </div>
+}
+
+<table class="w-full text-sm text-left bg-gray-900 text-gray-400 table-fixed">
+  <!-- <caption class="text-gray-300 text-sm caption-top text-left">
+    {{ resultCount }} Results</caption> -->
+  <thead class="text-xs text-gray-700 uppercase bg-gray-800 border-gray-400 border-b-2 border-t-1">
+    <tr>
+      <th scope="col" class="px-6 py-3 w-20 text-gray-400">WMA</th>
+      <th scope="col" class="px-6 py-3 w-20 text-gray-400">Season</th>
+      <th scope="col" class="px-6 py-3 w-20 text-gray-400">Dates</th>
+      <th scope="col" class="px-6 py-3 w-20 text-gray-400">Results</th>
+      <th scope="col" class="px-6 py-3 w-20 text-gray-400">Weather</th>
+    </tr>
+  </thead>
+  <tbody>
+    @if ((hunts$ | async); as hunts) {
+      @for (hunt of hunts; track hunt.id) {
+        <tr class="border-b bg-gray-800 border-gray-600">
+          <th scope="row" class="px-6 py-4 align-top font-bold text-gray-100 bg-gray-800">
+            {{ hunt.wmaName }}
+          </th>
+          <td class="px-6 py-4 align-top bg-gray-800">
+            <div>{{ hunt.season }}</div>
+            <div class="font-bold">{{ hunt.weapon }}</div>
+            <div>{{ hunt.details }}</div>
+            @if (hunt.quota) { <div>{{ hunt.quota }}</div> }
+          </td>
+          <td class="px-6 py-4 align-top bg-gray-800">
+            {{ hunt.startDate | date: 'MM/dd' }} - {{ hunt.endDate | date: 'MM/dd' }}
+          </td>
+          <td class="px-6 py-4 align-top bg-gray-800">
+            <div>Hunters: {{ hunt.hunterCount }}</div>
+            <div>Bucks: {{ hunt.bucks }}</div>
+            <div>Does: {{ hunt.does }}</div>
+            <div class="font-bold">
+              Success Rate: <span class="{{ hunt | successRateColor }}">
+                {{ hunt | successRate }}%</span>
+            </div>
+          </td>
+          <td class="px-6 py-4 align-top bg-gray-800">
+            huntId: {{ hunt.id }}
+          </td>
+        </tr>
+      } @empty {
+        <tr class="bg-white border-b border-gray-700">
+          <td colspan="5" class="px-6 py-4 text-center bg-gray-800">
+            <div class="mt-2 text-sm dark:text-red-500">
+              No results found
+            </div>
+          </td>
+        </tr>
+      }
+    }
+  </tbody>
+</table>
