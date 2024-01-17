@@ -1,9 +1,5 @@
 import { Filter, Hunt } from "@model";
 
-export interface AppInterface  {
-  huntState: HuntState;
-}
-
 export interface HuntState {
   hunts: Hunt[];
   filter: Filter | null;
@@ -11,7 +7,7 @@ export interface HuntState {
   loading: boolean;
 }
 
-export const initialState: HuntState = {
+export const initialHuntState: HuntState = {
   hunts: [],
   filter: null,
   endOfResults: false,

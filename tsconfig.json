@@ -6,6 +6,7 @@
       "@shared-imports": ["_shared/index"],
       "@components": ["components"],
       "@model": ["_shared/model"],
+      "@store-model": ["_shared/model/store"],
       "@services": ["_shared/services"],
       "@pipes": ["_shared/pipes"]
     },

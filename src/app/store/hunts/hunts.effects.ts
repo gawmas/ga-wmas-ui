@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { HuntService } from '@services';
 import { Store } from '@ngrx/store';
-import { withLatestFrom, map, switchMap, catchError, of, tap, debounce, debounceTime } from 'rxjs';
-import { selectAllHuntsLength, selectFilter } from './selectors';
-import { AppInterface } from './model';
+import { withLatestFrom, map, switchMap, catchError, of, tap, debounce, debounceTime, mergeMap, concatMap, exhaustMap } from 'rxjs';
+import { selectAllHuntsLength, selectFilter } from './hunts.selectors';
+import { AppStateInterface } from '@store-model';
 import { Filter } from '@model';
-import * as huntActions from './actions';
+import * as huntActions from './hunts.actions';
+import * as filterActions from '../filters/filters.actions';
 
 @Injectable()
 export class HuntEffects {
@@ -14,14 +15,14 @@ export class HuntEffects {
   constructor(
     private readonly _actions$: Actions,
     private readonly _huntService: HuntService,
-    private _store: Store<AppInterface>) {}
+    private _store: Store<AppStateInterface>) {}
 
   getInitialHunts$ = createEffect(() =>
     this._actions$.pipe(
-      ofType(huntActions.getInitialHunts, huntActions.filtersChanged),
+      ofType(huntActions.getInitialHunts, filterActions.filtersChanged),
       withLatestFrom(this._store.select(selectFilter)),
       map((value) => value[0].filter as Filter),
-      switchMap((filter) =>
+      exhaustMap((filter) =>
         this._huntService.getHunts(filter).pipe(
           map((result) => huntActions.getHuntsComplete({ hunts: result })),
           catchError((error) =>

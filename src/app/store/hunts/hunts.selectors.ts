@@ -1,29 +1,31 @@
 import { createSelector } from '@ngrx/store';
-import { HuntState, AppInterface } from './model';
+import { HuntState, FilterAuxDataState, AppStateInterface } from '@store-model';
 
-export const selectHuntState = (state: AppInterface) => state.huntState;
+export const selectHuntsState = (state: AppStateInterface) => state.huntState;
 
 export const selectHunts = createSelector(
-  selectHuntState,
+  selectHuntsState,
   (state: HuntState) => state.hunts
 );
 
 export const selectFilter = createSelector(
-  selectHuntState,
+  selectHuntsState,
   (state: HuntState) => state.filter
 );
 
 export const selectHuntsLoaded = createSelector(
-  selectHuntState,
+  selectHuntsState,
   (state: HuntState) => state.hunts
 );
 
 export const selectAllHuntsLength = createSelector(
-  selectHuntState,
+  selectHuntsState,
   (state: HuntState) => state.hunts.length
 );
 
 export const selectHuntsLoading = createSelector(
-  selectHuntState,
+  selectHuntsState,
   (state: HuntState) => state.loading
 );
+
+

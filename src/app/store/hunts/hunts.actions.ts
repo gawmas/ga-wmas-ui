@@ -11,10 +11,6 @@ export const getMoreHunts = createAction(
   `${prefix} Get More Hunts`,
   props<{ filter?: Filter }>());
 
-export const filtersChanged = createAction(
-  `${prefix} Filters Changed`,
-  props<{ filter?: Filter }>());
-
 export const getHuntsComplete = createAction(
   `${prefix} Get Hunts Complete`,
   props<{ hunts: Hunt[] }>());

@@ -7,14 +7,16 @@ import { EffectsModule } from '@ngrx/effects';
 import { ActionReducerMap, StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { routes } from 'app.routes';
-import { HuntEffects } from 'store/effects';
-import { AppInterface } from 'store/model';
+import { HuntEffects } from 'store/hunts/hunts.effects';
 import { SHARED_MODULES } from '@shared-imports';
-import { huntsReducers } from 'store/reducers';
 import { NgIconsModule } from '@ng-icons/core';
 import { heroTableCells, heroUsers, heroBarsArrowUp,
   heroArrowTrendingUp, heroStar, heroAdjustmentsHorizontal,
-  heroXMark } from '@ng-icons/heroicons/outline';
+  heroXMark, heroBolt } from '@ng-icons/heroicons/outline';
+import { AppStateInterface } from '_shared/model/store';
+import { huntsReducers } from './app/store/hunts/hunts.reducers';
+import { filterAuxDataReducers } from './app/store/filters/filters.reducers';
+import { FiltersEffects } from 'store/filters/filters.effects';
 
 const heroIcons = {
   heroTableCells,
@@ -23,11 +25,13 @@ const heroIcons = {
   heroArrowTrendingUp,
   heroStar,
   heroAdjustmentsHorizontal,
-  heroXMark
+  heroXMark,
+  heroBolt
 };
 
-const appReducers: ActionReducerMap<AppInterface> = {
+const appReducers: ActionReducerMap<AppStateInterface> = {
   huntState: huntsReducers,
+  filterAuxDataState: filterAuxDataReducers
 };
 
 export const appConfig: ApplicationConfig = {
@@ -37,7 +41,7 @@ export const appConfig: ApplicationConfig = {
       HttpClientModule,
       RouterModule.forRoot(routes),
       StoreModule.forRoot(appReducers),
-      EffectsModule.forRoot(HuntEffects),
+      EffectsModule.forRoot([HuntEffects, FiltersEffects]),
       StoreDevtoolsModule.instrument({ maxAge: 25 }),
       NgIconsModule.withIcons(heroIcons),
     )

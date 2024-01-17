@@ -1,14 +1,15 @@
-import { selectFilter, selectHunts, selectHuntsLoading } from 'store/selectors';
+import { selectFilter, selectHunts, selectHuntsLoading } from 'store/hunts/hunts.selectors';
 import { SHARED_MODULES } from '@shared-imports';
 import { Component, HostListener, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FiltersComponent } from 'components/filters/filters.component';
 import { Subject, distinctUntilChanged, takeUntil } from 'rxjs';
 import { Filter } from '@model';
-import { AppInterface } from 'store/model';
+import { AppStateInterface } from '@store-model';
 import { SuccessRateColorPipe, SuccessRatePipe } from "@pipes";
-import * as huntActions from 'store/actions';
 import { NgIconComponent } from '@ng-icons/core';
+import * as huntsActions from 'store/hunts/hunts.actions';
+import * as filtersActions from 'store/filters/filters.actions';
 
 @Component({
   standalone: true,
@@ -19,7 +20,7 @@ import { NgIconComponent } from '@ng-icons/core';
 })
 export class HuntsComponent implements OnInit, OnDestroy {
 
-  private _store = inject(Store<AppInterface>);
+  private _store = inject(Store<AppStateInterface>);
   private _destroyed$ = new Subject<void>();
 
   private _filter: Filter = {
@@ -35,14 +36,14 @@ export class HuntsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this._store.dispatch(huntActions.getInitialHunts({ filter: this._filter }));
+    this._store.dispatch(huntsActions.getInitialHunts({ filter: this._filter }));
 
     this.filter$.pipe(
       takeUntil(this._destroyed$),
       distinctUntilChanged())
       .subscribe((filter) => {
         this._filter = filter!;
-        this._store.dispatch(huntActions.getInitialHunts({ filter: this._filter }));
+        this._store.dispatch(huntsActions.getInitialHunts({ filter: this._filter }));
     });
 
   }
@@ -65,7 +66,7 @@ export class HuntsComponent implements OnInit, OnDestroy {
     const windowBottom = windowHeight + window.pageYOffset;
 
     if (windowBottom >= (docHeight * .95)) {
-      this._store.dispatch(huntActions.getMoreHunts({ filter: this._filter }));
+      this._store.dispatch(huntsActions.getMoreHunts({ filter: this._filter }));
     }
   }
 
