@@ -2,8 +2,6 @@ import { initialFilterAuxDataState } from '@store-model';
 import { createReducer, on } from "@ngrx/store";
 import { Filter } from '@model';
 import * as filterActions from "./filters.actions";
-import { filter } from 'rxjs';
-import { FormArray, FormControl } from '@angular/forms';
 
 export const filterAuxDataReducers = createReducer(
 
@@ -21,15 +19,6 @@ export const filterAuxDataReducers = createReducer(
       ...state,
       filterAuxData: filterAuxData,
       loading: false
-    };
-  }),
-
-  on(filterActions.filtersChanged, (state, { filter }) => {
-    return {
-      ...state,
-      filter: filter as Filter,
-      hunts: [],
-      loading: false,
     };
   }),
 

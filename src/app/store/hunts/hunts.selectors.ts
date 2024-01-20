@@ -1,5 +1,5 @@
 import { createSelector } from '@ngrx/store';
-import { HuntState, FilterAuxDataState, AppStateInterface } from '@store-model';
+import { HuntState, AppStateInterface } from '@store-model';
 
 export const selectHuntsState = (state: AppStateInterface) => state.huntState;
 

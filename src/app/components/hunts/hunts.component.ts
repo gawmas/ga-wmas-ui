@@ -9,7 +9,6 @@ import { AppStateInterface } from '@store-model';
 import { SuccessRateColorPipe, SuccessRatePipe } from "@pipes";
 import { NgIconComponent } from '@ng-icons/core';
 import * as huntsActions from 'store/hunts/hunts.actions';
-import * as filtersActions from 'store/filters/filters.actions';
 
 @Component({
   standalone: true,
@@ -23,11 +22,6 @@ export class HuntsComponent implements OnInit, OnDestroy {
   private _store = inject(Store<AppStateInterface>);
   private _destroyed$ = new Subject<void>();
 
-  private _filter: Filter = {
-    skip: 0,
-    wma: null
-  };
-
   topInView = signal(true);
 
   hunts$ = this._store.select(selectHunts);
@@ -36,15 +30,15 @@ export class HuntsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this._store.dispatch(huntsActions.getInitialHunts({ filter: this._filter }));
+    this._store.dispatch(huntsActions.getInitialHunts({ filter: undefined }));
 
-    this.filter$.pipe(
-      takeUntil(this._destroyed$),
-      distinctUntilChanged())
-      .subscribe((filter) => {
-        this._filter = filter!;
-        this._store.dispatch(huntsActions.getInitialHunts({ filter: this._filter }));
-    });
+    // this.filter$.pipe(
+    //   takeUntil(this._destroyed$),
+    //   distinctUntilChanged())
+    //   .subscribe((filter) => {
+    //     this._filter = filter!;
+    //     this._store.dispatch(huntsActions.getInitialHunts({ filter: this._filter }));
+    // });
 
   }
 
@@ -66,7 +60,8 @@ export class HuntsComponent implements OnInit, OnDestroy {
     const windowBottom = windowHeight + window.pageYOffset;
 
     if (windowBottom >= (docHeight * .95)) {
-      this._store.dispatch(huntsActions.getMoreHunts({ filter: this._filter }));
+      // this._dispatchMoreHunts();
+      this._store.dispatch(huntsActions.getMoreHunts({ filter: undefined }));
     }
   }
 

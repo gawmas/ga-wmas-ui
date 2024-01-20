@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { SeasonService, WeaponService, WmaService } from '@services';
+import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
+import { HuntService, SeasonService, WeaponService, WmaService } from '@services';
 import { Store } from '@ngrx/store';
-import { map, switchMap, catchError, of, tap, combineLatest, mergeMap, concatMap, exhaustAll, exhaustMap } from 'rxjs';
+import { map, switchMap, catchError, of, tap, combineLatest, mergeMap, concatMap, exhaustAll, exhaustMap, withLatestFrom, filter } from 'rxjs';
 import { AppStateInterface } from '@store-model';
 import * as filterActions from '../filters/filters.actions';
+import * as huntsActions from '../hunts/hunts.actions';
+import { selectAllHuntsLength, selectFilter } from 'store/hunts/hunts.selectors';
+import { Filter } from '@model';
 
 @Injectable()
 export class FiltersEffects {

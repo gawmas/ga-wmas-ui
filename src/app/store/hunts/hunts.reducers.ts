@@ -1,6 +1,6 @@
 import { createReducer, on } from "@ngrx/store";
 import { initialHuntState } from "./../../_shared/model/store/hunts.model";
-import { Filter } from '@model';
+import { Filter } from "@model";
 import * as appActions from "./hunts.actions";
 
 export const huntsReducers = createReducer(
@@ -18,6 +18,23 @@ export const huntsReducers = createReducer(
     return {
       ...state,
       hunts: [...state.hunts, ...hunts],
+      endOfResults: hunts.length < 10,
+      loading: false,
+    };
+  }),
+
+  on(appActions.filtersChanged, (state, { filter }) => {
+    return {
+      ...state,
+      filter: filter as Filter,
+      loading: true,
+    };
+  }),
+
+  on(appActions.getFilteredHuntsComplete, (state, { hunts }) => {
+    return {
+      ...state,
+      hunts: hunts,
       endOfResults: hunts.length < 10,
       loading: false,
     };

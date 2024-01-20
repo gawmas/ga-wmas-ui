@@ -12,7 +12,9 @@ import { SHARED_MODULES } from '@shared-imports';
 import { NgIconsModule } from '@ng-icons/core';
 import { heroTableCells, heroUsers, heroBarsArrowUp,
   heroArrowTrendingUp, heroStar, heroAdjustmentsHorizontal,
-  heroXMark, heroBolt } from '@ng-icons/heroicons/outline';
+  heroXMark, heroBolt, heroMapPin, heroCalendar, heroWrenchScrewdriver,
+  heroChartPie, heroSun, heroMoon, heroArrowDown, heroArrowUp,
+  heroInformationCircle, heroNoSymbol, heroFaceFrown } from '@ng-icons/heroicons/outline';
 import { AppStateInterface } from '_shared/model/store';
 import { huntsReducers } from './app/store/hunts/hunts.reducers';
 import { filterAuxDataReducers } from './app/store/filters/filters.reducers';
@@ -26,7 +28,18 @@ const heroIcons = {
   heroStar,
   heroAdjustmentsHorizontal,
   heroXMark,
-  heroBolt
+  heroBolt,
+  heroMapPin,
+  heroCalendar,
+  heroWrenchScrewdriver,
+  heroChartPie,
+  heroSun,
+  heroMoon,
+  heroArrowDown,
+  heroArrowUp,
+  heroInformationCircle,
+  heroNoSymbol,
+  heroFaceFrown
 };
 
 const appReducers: ActionReducerMap<AppStateInterface> = {

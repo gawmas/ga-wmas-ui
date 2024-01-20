@@ -7,7 +7,6 @@ import { selectAllHuntsLength, selectFilter } from './hunts.selectors';
 import { AppStateInterface } from '@store-model';
 import { Filter } from '@model';
 import * as huntActions from './hunts.actions';
-import * as filterActions from '../filters/filters.actions';
 
 @Injectable()
 export class HuntEffects {
@@ -15,23 +14,38 @@ export class HuntEffects {
   constructor(
     private readonly _actions$: Actions,
     private readonly _huntService: HuntService,
-    private _store: Store<AppStateInterface>) {}
+    private _store: Store<AppStateInterface>) { }
+
+  private noFiltersApplied(filter: Filter): boolean {
+    return (
+      filter && filter.wmas !== undefined && filter.wmas !== null && filter.wmas.length > 0 &&
+      filter.seasons !== undefined && filter.seasons !== null && filter.seasons.length > 0 &&
+      filter.weapons !== undefined && filter.weapons !== null && filter.weapons.length > 0 &&
+      filter.successRate !== undefined && filter.successRate !== null
+    );
+  }
 
   getInitialHunts$ = createEffect(() =>
     this._actions$.pipe(
-      ofType(huntActions.getInitialHunts, filterActions.filtersChanged),
+      ofType(huntActions.getInitialHunts, huntActions.filtersChanged),
       withLatestFrom(this._store.select(selectFilter)),
       map((value) => value[0].filter as Filter),
       exhaustMap((filter) =>
         this._huntService.getHunts(filter).pipe(
-          map((result) => huntActions.getHuntsComplete({ hunts: result })),
+          map((result) => {
+            if (this.noFiltersApplied(filter)) {
+              return huntActions.getHuntsComplete({ hunts: result })
+            } else {
+              return huntActions.getFilteredHuntsComplete({ hunts: result })
+            }
+          }),
           catchError((error) =>
-            of(huntActions.huntsError({ error: JSON.stringify(error) }))
+            of(huntActions.huntsError({ error: error }))
           )
         )
       )
     )
-  )
+  );
 
   getMoreHunts$ = createEffect(() =>
     this._actions$.pipe(
@@ -42,7 +56,14 @@ export class HuntEffects {
         this._store.select(selectFilter)
       ]),
       switchMap(([action, skip, filter]) =>
-        this._huntService.getHunts({ skip, wma: filter?.wma } as Filter)
+        this._huntService.getHunts(
+          {
+            skip,
+            wmas: filter?.wmas,
+            seasons: filter?.seasons,
+            weapons: filter?.weapons,
+            successRate: filter?.successRate
+          } as Filter)
           .pipe(
             map((result) => huntActions.getHuntsComplete({ hunts: result }))
           )
@@ -54,7 +75,7 @@ export class HuntEffects {
     () =>
       this._actions$.pipe(
         ofType(huntActions.huntsError),
-        tap((error) => console.log(error))
+        tap((error) => console.error(error.error))
       ),
     { dispatch: false }
   );

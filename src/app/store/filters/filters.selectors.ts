@@ -1,5 +1,3 @@
-import { filter } from 'rxjs';
-import { Filter } from '@model';
 import { createSelector } from '@ngrx/store';
 import { FilterAuxDataState, AppStateInterface } from '@store-model';
 

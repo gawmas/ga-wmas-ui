@@ -4,3 +4,4 @@ export * from './filter.interface';
 export * from './season.interface';
 export * from './weapon.interface';
 export * from './filterAuxData.interface';
+export * from './drawerCloseEvent.interface';

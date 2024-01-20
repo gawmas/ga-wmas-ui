@@ -1,24 +1,34 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, Pipe, PipeTransform, computed, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild, computed, inject, signal } from "@angular/core";
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
-import { Filter, FilterAuxData, Season, Weapon, Wma } from "@model";
+import { FilterAuxData, Season, Weapon, Wma } from "@model";
 import { SHARED_MODULES } from "@shared-imports";
-import { Subject, distinctUntilChanged, map, take, takeUntil, tap } from "rxjs";
+import { Subject, Subscription, distinctUntilChanged, filter, map, take, takeUntil, tap } from "rxjs";
 import { AppStateInterface } from "@store-model";
 import { Store } from "@ngrx/store";
 import { NgIconComponent } from "@ng-icons/core";
 import { selectFiltersAuxData, selectFiltersAuxDataLoading } from 'store/filters/filters.selectors';
+import { selectFilter } from 'store/hunts/hunts.selectors';
 import { FormArrayPipe } from "@pipes";
+import { DrawerComponent } from "_shared/components/drawer.component";
 import * as filterActions from 'store/filters/filters.actions';
+import * as huntsActions from 'store/hunts/hunts.actions';
+import { FilterObjNamePipe } from "_shared/pipes/filter-obj-name.pipe";
+import { Tooltip, TooltipOptions, TooltipTriggerType } from "flowbite";
 
 @Component({
   selector: 'hunt-filters',
   standalone: true,
   imports: [SHARED_MODULES, ReactiveFormsModule,
-    NgIconComponent, FormArrayPipe],
+    NgIconComponent, FormArrayPipe, DrawerComponent, FilterObjNamePipe],
   templateUrl: './filters.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FiltersComponent implements OnInit, OnDestroy {
+
+  @ViewChild('filterDrawer') filterDrawer!: DrawerComponent;
+  filterDrawerSubscription: Subscription | undefined;
+
+  filterDrawerTarget = 'filter-drawer';
 
   private _destroyed$ = new Subject<void>();
 
@@ -28,6 +38,7 @@ export class FiltersComponent implements OnInit, OnDestroy {
 
   auxData$ = this._store.select(selectFiltersAuxData);
   isLoading$ = this._store.select(selectFiltersAuxDataLoading);
+  filter$ = this._store.select(selectFilter);
 
   auxData: FilterAuxData = { wmas: [], seasons: [], weapons: [], filteredWmas: [] };
 
@@ -58,7 +69,6 @@ export class FiltersComponent implements OnInit, OnDestroy {
         takeUntil(this._destroyed$)
       ).subscribe((value: any) => {
         if (value) {
-          // this._store.dispatch(appActions.filtersChanged({ filter: value }));
           this.selectedWmasCount.set(value.filter((wma: boolean) => wma).length);
         }
       });
@@ -89,27 +99,50 @@ export class FiltersComponent implements OnInit, OnDestroy {
 
   }
 
-  openFiltersModal() {
+  openFiltersDrawer() {
 
-    this.auxData$
-      .pipe(
-        take(1),
-        takeUntil(this._destroyed$),
-        tap((auxData) => this.auxData = auxData),
-        map((auxData) => {
-          const updatedWmas = auxData.wmas.map((wma: Wma) => ({ ...wma, visible: true }));
-          return { ...auxData, wmas: updatedWmas, filteredWmas: updatedWmas };
-        }),
-        tap((auxData) => this.auxData = auxData))
-      .subscribe((auxData: FilterAuxData) => {
-        for (let key of Object.keys(auxData)) {
-          if (key !== 'filteredWmas') {
-            this.buildCheckBoxes(auxData[key as keyof FilterAuxData]);
+    if (this.auxData.wmas.length === 0) {
+      this.auxData$
+        .pipe(
+          take(1),
+          takeUntil(this._destroyed$),
+          tap((auxData) => this.auxData = auxData),
+          map((auxData) => {
+            const updatedWmas = auxData.wmas.map((wma: Wma) => ({ ...wma, visible: true }));
+            return { ...auxData, wmas: [...updatedWmas], filteredWmas: [...updatedWmas] };
+          }),
+          tap((auxData) => this.auxData = auxData))
+        .subscribe((auxData: FilterAuxData) => {
+          for (let key of Object.keys(auxData)) {
+            if (key !== 'filteredWmas') {
+              this.buildCheckBoxes(auxData[key as keyof FilterAuxData]);
+            }
           }
-        }
-        this._cdr.detectChanges();
-      });
+        });
+    }
 
+    this.filterDrawer.open();
+    this.listenToDrawerEvents();
+
+  }
+
+  private listenToDrawerEvents() {
+    this.filterDrawerSubscription = this.filterDrawer.closeEvent
+      .subscribe((event: any) => {
+        // console.log(event);
+        this.filterDrawerSubscription?.unsubscribe();
+        if (event.data) {
+          this._store.dispatch(huntsActions.filtersChanged({
+            filter: {
+              skip: 0,
+              wmas: event.data.wmas,
+              seasons: event.data.seasons,
+              weapons: event.data.weapons,
+              successRate: event.data.successRate
+            }
+          }));
+        }
+      });
   }
 
   private buildCheckBoxes = (data: Wma[] | Season[] | Weapon[]) => {
@@ -125,8 +158,26 @@ export class FiltersComponent implements OnInit, OnDestroy {
   }
 
   apply() {
-    console.log(this.selectedWmaIds().map((id: number) => this.auxData.wmas.find((wma: Wma) => wma.id === id)));
+    this.filterDrawer.save({
+      ...this.filterForm.value,
+      wmas: this.extractCheckIds('wmas', 'wmas'),
+      seasons: this.extractCheckIds('seasons', 'seasons'),
+      weapons: this.extractCheckIds('weapons', 'weapons'),
+      successRate: this.filterForm.controls['successRate'].value
+    });
   }
+
+  private extractCheckIds(ctrlName: string, collectionName: string): number[] {
+    return this.filterForm.controls[ctrlName].value
+      .map((checked: boolean, i: number) => checked ? this.auxData[collectionName as keyof FilterAuxData][i].id : null)
+      .filter((v: null | number) => v !== null);
+  }
+
+  showRemoveFilterTooltip(targetElId: string, triggerType: TooltipTriggerType, event: any) {
+    const targetEl = document.getElementById(targetElId)
+    const tooltip = new Tooltip(targetEl, event.target as HTMLElement, {triggerType});
+    tooltip.show();
+}
 
   ngOnDestroy(): void {
     this._destroyed$.next();

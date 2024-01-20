@@ -24,7 +24,7 @@
     }
   </div>
 }
-
+<!-- <p>{{ filter$ | async | json }}</p> -->
 <table class="w-full text-sm text-left bg-gray-900 text-gray-400 table-fixed">
   <!-- <caption class="text-gray-300 text-sm caption-top text-left">
     {{ resultCount }} Results</caption> -->
@@ -67,10 +67,10 @@
           </td>
         </tr>
       } @empty {
-        <tr class="bg-white border-b border-gray-700">
-          <td colspan="5" class="px-6 py-4 text-center bg-gray-800">
-            <div class="mt-2 text-sm dark:text-red-500">
-              No results found
+        <tr class="bg-gray-800 border-b border-gray-700">
+          <td colspan="5" class="px-6 py-4 text-center text-red-500">
+            <div class="mt-2 text-sm flex items-center italic">
+              <ng-icon name="heroFaceFrown" class="mr-1"></ng-icon> No results found.
             </div>
           </td>
         </tr>

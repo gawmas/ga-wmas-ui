@@ -1,4 +1,7 @@
 export interface Filter {
   skip: number;
-  wma: number | null;
+  wmas?: number[] | null;
+  seasons?: number[] | null;
+  weapons?: number[] | null;
+  successRate?: number | null;
 }

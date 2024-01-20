@@ -13,7 +13,11 @@ export class HuntService {
     getHunts(params?: Filter): Observable<Hunt[]> {
       const url = this.endpoint +
         '?skip=' + (params?.skip ? params?.skip.toString() : '') +
-        '&wmaid=' + (params?.wma ? params?.wma.toString() : '');
+        '&wmas=' + (params?.wmas ? params?.wmas.toString() : '') +
+        '&seasons=' + (params?.seasons ? params?.seasons.toString() : '') +
+        '&weapons=' + (params?.weapons ? params?.weapons.toString() : '') +
+        '&success=' + (params?.successRate ? params?.successRate : 0);
+      // console.log(url);
       return this.http.get<Hunt[]>(url);
     }
 
