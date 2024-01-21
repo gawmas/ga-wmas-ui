@@ -14,7 +14,8 @@ import { heroTableCells, heroUsers, heroBarsArrowUp,
   heroArrowTrendingUp, heroStar, heroAdjustmentsHorizontal,
   heroXMark, heroBolt, heroMapPin, heroCalendar, heroWrenchScrewdriver,
   heroChartPie, heroSun, heroMoon, heroArrowDown, heroArrowUp,
-  heroInformationCircle, heroNoSymbol, heroFaceFrown } from '@ng-icons/heroicons/outline';
+  heroInformationCircle, heroNoSymbol, heroFaceFrown, heroBars3,
+  heroChatBubbleBottomCenterText, heroDocumentText } from '@ng-icons/heroicons/outline';
 import { AppStateInterface } from '_shared/model/store';
 import { huntsReducers } from './app/store/hunts/hunts.reducers';
 import { filterAuxDataReducers } from './app/store/filters/filters.reducers';
@@ -39,7 +40,10 @@ const heroIcons = {
   heroArrowUp,
   heroInformationCircle,
   heroNoSymbol,
-  heroFaceFrown
+  heroFaceFrown,
+  heroBars3,
+  heroChatBubbleBottomCenterText,
+  heroDocumentText
 };
 
 const appReducers: ActionReducerMap<AppStateInterface> = {

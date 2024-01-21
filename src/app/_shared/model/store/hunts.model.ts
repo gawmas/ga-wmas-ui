@@ -9,7 +9,13 @@ export interface HuntState {
 
 export const initialHuntState: HuntState = {
   hunts: [],
-  filter: null,
+  filter: {
+    skip: 0,
+    successRate: 0,
+    wmas: [],
+    seasons: [],
+    weapons: [],
+  },
   endOfResults: false,
   loading: false
 };

@@ -13,13 +13,15 @@ import { DrawerComponent } from "_shared/components/drawer.component";
 import * as filterActions from 'store/filters/filters.actions';
 import * as huntsActions from 'store/hunts/hunts.actions';
 import { FilterObjNamePipe } from "_shared/pipes/filter-obj-name.pipe";
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Tooltip, TooltipOptions, TooltipTriggerType } from "flowbite";
 
 @Component({
   selector: 'hunt-filters',
   standalone: true,
   imports: [SHARED_MODULES, ReactiveFormsModule,
-    NgIconComponent, FormArrayPipe, DrawerComponent, FilterObjNamePipe],
+    NgIconComponent, FormArrayPipe, DrawerComponent,
+    FilterObjNamePipe],
   templateUrl: './filters.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -53,32 +55,42 @@ export class FiltersComponent implements OnInit, OnDestroy {
   selectedWmasCount = signal(0);
   noFilteredWmasFound = signal(false);
   selectedWmaIds = signal<number[]>([]);
+  selectedSeasonIds = signal<number[]>([]);
+  selectedWeaponIds = signal<number[]>([]);
+
   successRateSet = signal(false);
   filterCount = computed(() => {
     return this.selectedWmasCount() +
+      this.selectedSeasonIds().length +
+      this.selectedWeaponIds().length +
       (this.successRateSet() ? 1 : 0)
   });
+
+  // filterCount2 = toSignal(this.filterForm.valueChanges, {initialValue: ''})
 
   ngOnInit(): void {
 
     this._store.dispatch(filterActions.getFilterAuxData());
 
-    this.filterForm.controls['wmas'].valueChanges
+    this.filterForm.valueChanges
       .pipe(
+        takeUntil(this._destroyed$),
         distinctUntilChanged(),
-        takeUntil(this._destroyed$)
-      ).subscribe((value: any) => {
+        map(originalValue => {
+          return Object.keys(originalValue).reduce((result: any, key) => {
+            if (key !== 'wmaFilter') {
+              result[key] = originalValue[key];
+            }
+            return result;
+          }, {});
+        }))
+      .subscribe(value =>  {
         if (value) {
-          this.selectedWmasCount.set(value.filter((wma: boolean) => wma).length);
+          this.selectedWmasCount.set(value.wmas.filter((wma: boolean) => wma).length);
+          this.selectedSeasonIds.set(this.controlCheckedCount('seasons'));
+          this.selectedWeaponIds.set(this.controlCheckedCount('weapons'));
+          this.successRateSet.set(value.successRate > 0);
         }
-      });
-
-    this.filterForm.controls['successRate'].valueChanges
-      .pipe(
-        distinctUntilChanged(),
-        takeUntil(this._destroyed$))
-      .subscribe((value: number) => {
-        this.successRateSet.set(value > 0);
       });
 
     this.filterForm.controls['wmaFilter'].valueChanges
@@ -86,17 +98,21 @@ export class FiltersComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         takeUntil(this._destroyed$))
       .subscribe((value: string) => {
-        this.selectedWmaIds.set(this.filterForm.controls['wmas'].value
-          .map((checked: any, i: number) => checked ? this.auxData.wmas[i].id : null)
-          .filter((v: null | number) => v !== null));
+        this.selectedWmaIds.set(this.controlCheckedCount('wmas'));
         this.auxData.filteredWmas.forEach((wma: Wma) => {
           if (!Array.from(this.selectedWmaIds()).includes(wma.id)) {
-            wma.visible = (wma.name.toLowerCase().includes(value.toLowerCase()));
+            wma.visible = (wma.name.toLowerCase().includes(value?.toLowerCase()));
           }
         });
         this.noFilteredWmasFound.set(this.auxData.filteredWmas.every((wma: Wma) => !wma.visible));
       });
 
+  }
+
+  controlCheckedCount(name: string): number[] {
+    return this.filterForm.controls[name].value
+      .map((checked: any, i: number) => checked ? (this.auxData as any)[name][i].id : null)
+      .filter((v: null | number) => v !== null);
   }
 
   openFiltersDrawer() {
@@ -175,9 +191,22 @@ export class FiltersComponent implements OnInit, OnDestroy {
 
   showRemoveFilterTooltip(targetElId: string, triggerType: TooltipTriggerType, event: any) {
     const targetEl = document.getElementById(targetElId)
-    const tooltip = new Tooltip(targetEl, event.target as HTMLElement, {triggerType});
+    const tooltip = new Tooltip(targetEl, event.target as HTMLElement, { triggerType });
     tooltip.show();
-}
+  }
+
+  cancel() {
+    this.clearFilters();
+    this.filterDrawer.close();
+  }
+
+  clearFilters() {
+    this.filterForm.reset();
+    this.filterForm.controls['successRate'].setValue(0);
+    this.filterForm.controls['wmaFilter'].setValue('');
+    this.auxData.filteredWmas.forEach((wma: Wma) => wma.visible = true);
+    this.noFilteredWmasFound.set(false);
+  }
 
   ngOnDestroy(): void {
     this._destroyed$.next();

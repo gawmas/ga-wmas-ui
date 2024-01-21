@@ -3,8 +3,6 @@ import { SHARED_MODULES } from '@shared-imports';
 import { Component, HostListener, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FiltersComponent } from 'components/filters/filters.component';
-import { Subject, distinctUntilChanged, takeUntil } from 'rxjs';
-import { Filter } from '@model';
 import { AppStateInterface } from '@store-model';
 import { SuccessRateColorPipe, SuccessRatePipe } from "@pipes";
 import { NgIconComponent } from '@ng-icons/core';
@@ -17,10 +15,9 @@ import * as huntsActions from 'store/hunts/hunts.actions';
     SuccessRateColorPipe, SuccessRatePipe,
     NgIconComponent]
 })
-export class HuntsComponent implements OnInit, OnDestroy {
+export class HuntsComponent implements OnInit {
 
   private _store = inject(Store<AppStateInterface>);
-  private _destroyed$ = new Subject<void>();
 
   topInView = signal(true);
 
@@ -29,22 +26,14 @@ export class HuntsComponent implements OnInit, OnDestroy {
   filter$ = this._store.select(selectFilter);
 
   ngOnInit(): void {
-
-    this._store.dispatch(huntsActions.getInitialHunts({ filter: undefined }));
-
-    // this.filter$.pipe(
-    //   takeUntil(this._destroyed$),
-    //   distinctUntilChanged())
-    //   .subscribe((filter) => {
-    //     this._filter = filter!;
-    //     this._store.dispatch(huntsActions.getInitialHunts({ filter: this._filter }));
-    // });
-
-  }
-
-  ngOnDestroy(): void {
-    this._destroyed$.next();
-    this._destroyed$.complete();
+    this._store.dispatch(huntsActions.getInitialHunts({
+      filter: {
+        skip: 0,
+        successRate: 0,
+        wmas: [],
+        seasons: [],
+        weapons: []
+      } }));
   }
 
   @HostListener('window:scroll', ['$event'])

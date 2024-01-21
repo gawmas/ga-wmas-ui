@@ -14,7 +14,7 @@ export const huntsReducers = createReducer(
     };
   }),
 
-  on(appActions.getHuntsComplete, (state, { hunts }) => {
+  on(appActions.getMoreHuntsComplete, (state, { hunts }) => {
     return {
       ...state,
       hunts: [...state.hunts, ...hunts],
@@ -31,7 +31,7 @@ export const huntsReducers = createReducer(
     };
   }),
 
-  on(appActions.getFilteredHuntsComplete, (state, { hunts }) => {
+  on(appActions.getHuntsComplete, (state, { hunts }) => {
     return {
       ...state,
       hunts: hunts,

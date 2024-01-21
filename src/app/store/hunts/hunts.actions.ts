@@ -19,7 +19,7 @@ export const getHuntsComplete = createAction(
   `${prefix} Get Hunts Complete`,
   props<{ hunts: Hunt[] }>());
 
-export const getFilteredHuntsComplete = createAction(
+export const getMoreHuntsComplete = createAction(
   `${prefix} Get Filtered Hunts Complete`,
   props<{ hunts: Hunt[] }>());
 

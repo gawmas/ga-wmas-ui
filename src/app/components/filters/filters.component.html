@@ -1,4 +1,4 @@
-<div class="flex mb-3 -mt-3">
+<div class="flex mb-3 mt-0">
 
   <button (click)="openFiltersDrawer()" type="button"
     class="mr-2 relative inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-600 rounded-2xl hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-blue-300">
@@ -15,9 +15,9 @@
 
   @if ((filter$ | async); as filters) {
     @for (wmaId of filters.wmas; track wmaId) {
-      <div class="bg-gray-300 hover:bg-gray-200 text-gray-900 mr-1 text-sm px-4 py-1 rounded-2xl inline-flex items-center">
-        <div class="mr-1 flex-1 text-xs">{{ wmaId | filterObjName: auxData.wmas }}</div>
-        <div (mouseover)="showRemoveFilterTooltip(wmaId.toString(), 'hover', $event)" class="align-baseline pt-1">
+      <span class="bg-gray-300 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-2xl me-2 border border-gray-500 ">
+        {{ wmaId | filterObjName: auxData.wmas }}
+        <div (mouseover)="showRemoveFilterTooltip(wmaId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
           <a class="cursor-pointer hover:text-cyan-800">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
@@ -27,7 +27,52 @@
             <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
         </div>
-      </div>
+      </span>
+    }
+    @for (seasonId of filters.seasons; track seasonId) {
+      <span class="bg-gray-300 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-2xl me-2 border border-gray-500 ">
+        {{ seasonId | filterObjName: auxData.seasons }}
+        <div (mouseover)="showRemoveFilterTooltip(seasonId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
+          <a class="cursor-pointer hover:text-cyan-800">
+            <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
+          </a>
+          <div id="{{ seasonId }}" role="tooltip"
+            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
+            Remove this filter.
+            <div class="tooltip-arrow" data-popper-arrow></div>
+          </div>
+        </div>
+      </span>
+    }
+    @for (weaponId of filters.weapons; track weaponId) {
+      <span class="bg-gray-300 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-2xl me-2 border border-gray-500 ">
+        {{ weaponId | filterObjName: auxData.weapons }}
+        <div (mouseover)="showRemoveFilterTooltip(weaponId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
+          <a class="cursor-pointer hover:text-cyan-800">
+            <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
+          </a>
+          <div id="{{ weaponId }}" role="tooltip"
+            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
+            Remove this filter.
+            <div class="tooltip-arrow" data-popper-arrow></div>
+          </div>
+        </div>
+      </span>
+    }
+    @if (filters.successRate! > 0) {
+      <span class="bg-green-500 text-gray-200 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-2xl me-2 border border-gray-500 ">
+        Success Rate &gt; {{ filters.successRate }}&percnt;
+        <div (mouseover)="showRemoveFilterTooltip('successRate', 'hover', $event)" class="pt-1 inline-flex items-center">
+          <a class="cursor-pointer hover:text-white">
+            <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
+          </a>
+          <div id="successRate" role="tooltip"
+            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
+            Remove this filter.
+            <div class="tooltip-arrow" data-popper-arrow></div>
+          </div>
+        </div>
+      </span>
     }
   }
 
@@ -52,7 +97,11 @@
             </div>
           }
         </button>
-        <button (click)="filterDrawer.close()" type="button"
+          <button (click)="clearFilters()" [disabled]="filterCount() === 0" type="button"
+            class="bg-red-600 hover:bg-red-500 disabled:bg-red-300 disabled:text-gray-400 text-gray-100 mr-2 text-sm font-bold px-4 py-2 rounded-2xl inline-flex items-center">
+              Clear
+          </button>
+        <button (click)="cancel()" type="button"
           class="bg-gray-300 hover:bg-gray-200 text-gray-700 mr-2 text-sm font-bold px-4 py-2 rounded-2xl inline-flex items-center">
           Cancel
         </button>
@@ -242,7 +291,7 @@
           <li>
             <input type="radio" id="new" name="hosting" value="hosting-small" class="hidden peer">
             <label data-tooltip-target="new-tip" data-tooltip-placement="bottom" for="new"
-              class="p-2 inline-flex items-center justify-between rounded-l-xl bg-gray-300 border border-gray-200 cursor-pointer peer-checked:border-red-500 hover:bg-gray-200">
+              class="p-2 inline-flex items-center justify-between rounded-l-xl bg-gray-300 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-200">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7">
                 <circle cx="12" cy="12" r="10" fill="black" />
               </svg>
@@ -256,7 +305,7 @@
           <li>
             <input type="radio" id="first" name="hosting" value="hosting-small" class="hidden peer">
             <label data-tooltip-target="first-tip" data-tooltip-placement="bottom" for="first"
-              class="inline-flex items-center justify-between p-2 bg-gray-300 border border-gray-200 cursor-pointer peer-checked:border-red-500 hover:bg-gray-200">
+              class="inline-flex items-center justify-between p-2 bg-gray-300 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-200">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7">
                 <circle cx="12" cy="12" r="10" stroke="black" stroke-width="2" fill="white" />
                 <path d="M12 2 A10 10 0 0 1 12 22 L12 2 Z" fill="black" />
@@ -271,7 +320,7 @@
           <li>
             <input type="radio" id="last" name="hosting" value="hosting-small" class="hidden peer">
             <label data-tooltip-target="last-tip" data-tooltip-placement="bottom" for="last"
-              class="inline-flex items-center justify-between p-2 bg-gray-300 border border-gray-200 cursor-pointer peer-checked:border-red-500 hover:bg-gray-200">
+              class="inline-flex items-center justify-between p-2 bg-gray-300 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-200">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7">
                 <circle cx="12" cy="12" r="10" stroke="black" stroke-width="2" fill="white" />
                 <path d="M12 2 A10 10 0 0 0 12 22 L12 2 Z" fill="black" />
@@ -286,7 +335,7 @@
           <li>
             <input type="radio" id="full" name="hosting" value="hosting-small" class="hidden peer">
             <label data-tooltip-target="full-tip" data-tooltip-placement="bottom" for="full"
-              class="inline-flex items-center justify-between p-2 bg-gray-300 border border-gray-200 cursor-pointer peer-checked:border-red-500 hover:bg-gray-200">
+              class="inline-flex items-center justify-between p-2 bg-gray-300 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-200">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7">
                 <circle cx="12" cy="12" r="10" stroke="black" stroke-width="2" fill="white" />
               </svg>
@@ -300,7 +349,7 @@
           <li>
             <input type="radio" id="ignore" name="hosting" value="hosting-small" class="hidden peer">
             <label for="ignore"
-              class="inline-flex items-center rounded-r-xl text-gray-800 italic text-sm justify-between p-3 bg-gray-300 border border-gray-200 cursor-pointer peer-checked:border-red-500 hover:bg-gray-200">
+              class="inline-flex items-center rounded-r-xl text-gray-800 italic text-sm justify-between p-3 bg-gray-300 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 peer-checked:text-gray-200 hover:bg-gray-200">
               <ng-icon name="heroNoSymbol" class="font-extrabold mr-1"></ng-icon> Ignore
             </label>
           </li>
