@@ -11,7 +11,7 @@ export class SuccessRateColorPipe {
     } else if (perc >= 25 && perc < 50) {
       return 'text-yellow-400';
     } else {
-      return 'text-stone-300';
+      return 'text-stone-50';
     }
   }
 }

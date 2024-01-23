@@ -11,8 +11,8 @@ import { FooterComponent } from 'layout/footer/footer.component';
   imports: [HeaderComponent, RouterOutlet, NgIconComponent, FooterComponent],
   template: `
     <gawmas-header></gawmas-header>
-    <div class="container m-0 p-0 w-screen bg-gray-900">
-      <main class="p-2 bg-gray-900">
+    <div class="m-0 p-0 w-screen">
+      <main class="p-2">
         <router-outlet></router-outlet>
         <gawmas-footer></gawmas-footer>
       </main>

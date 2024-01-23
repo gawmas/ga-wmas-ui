@@ -25,6 +25,8 @@ export class HuntsComponent implements OnInit {
   isLoading$ = this._store.select(selectHuntsLoading);
   filter$ = this._store.select(selectFilter);
 
+  screenWidth = signal(window.innerWidth);
+
   ngOnInit(): void {
     this._store.dispatch(huntsActions.getInitialHunts({
       filter: {
@@ -34,6 +36,11 @@ export class HuntsComponent implements OnInit {
         seasons: [],
         weapons: []
       } }));
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    this.screenWidth.set(event.target.innerWidth);
   }
 
   @HostListener('window:scroll', ['$event'])
