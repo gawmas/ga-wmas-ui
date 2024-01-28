@@ -1,9 +1,9 @@
-<div class="flex mb-3 mt-0">
+<div class="flex pl-2 -ml-2 py-2 -mt-2 mb-2 mx-auto w-[100%] bg-gradient-to-r from-gawmas-green to-transparent from-20% to-80% scroll-container">
 
   <button (click)="openFiltersDrawer()" type="button"
     class="mr-2 relative inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-600 rounded-2xl hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-blue-300">
     <ng-icon name="heroAdjustmentsHorizontal" class="mr-1 text-lg"></ng-icon>
-    <span class="sr-only">Notifications</span>
+    <span class="sr-only">Applied Filter Count</span>
     Filters
     @if (filterCount() > 0) {
       <div
@@ -14,77 +14,83 @@
   </button>
 
   @if ((filter$ | async); as filters) {
-    @for (wmaId of filters.wmas; track wmaId) {
-      <span class="bg-gray-300 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-2xl me-2 border border-gray-500 ">
-        {{ wmaId | filterObjName: auxData.wmas }}
-        <div (mouseover)="showRemoveFilterTooltip(wmaId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
-          <a class="cursor-pointer hover:text-cyan-800">
-            <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
-          </a>
-          <div id="{{ wmaId }}" role="tooltip"
-            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
-            Remove this filter.
-            <div class="tooltip-arrow" data-popper-arrow></div>
-          </div>
-        </div>
-      </span>
-    }
-    @for (seasonId of filters.seasons; track seasonId) {
-      <span class="bg-gray-300 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-2xl me-2 border border-gray-500 ">
-        {{ seasonId | filterObjName: auxData.seasons }}
-        <div (mouseover)="showRemoveFilterTooltip(seasonId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
-          <a class="cursor-pointer hover:text-cyan-800">
-            <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
-          </a>
-          <div id="{{ seasonId }}" role="tooltip"
-            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
-            Remove this filter.
-            <div class="tooltip-arrow" data-popper-arrow></div>
-          </div>
-        </div>
-      </span>
-    }
-    @for (weaponId of filters.weapons; track weaponId) {
-      <span class="bg-gray-300 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-2xl me-2 border border-gray-500 ">
-        {{ weaponId | filterObjName: auxData.weapons }}
-        <div (mouseover)="showRemoveFilterTooltip(weaponId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
-          <a class="cursor-pointer hover:text-cyan-800">
-            <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
-          </a>
-          <div id="{{ weaponId }}" role="tooltip"
-            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
-            Remove this filter.
-            <div class="tooltip-arrow" data-popper-arrow></div>
-          </div>
-        </div>
-      </span>
-    }
+
     @if (filters.successRate! > 0) {
-      <span class="bg-green-500 text-gray-200 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-2xl me-2 border border-gray-500 ">
+      <span class="hidden md:inline-flex whitespace-nowrap bg-green-500 text-gray-200 text-xs font-medium items-center px-2.5 py-0.5 rounded-2xl me-2 border border-gray-500 ">
         Success Rate &gt; {{ filters.successRate }}&percnt;
         <div (mouseover)="showRemoveFilterTooltip('successRate', 'hover', $event)" class="pt-1 inline-flex items-center">
-          <a class="cursor-pointer hover:text-white">
+          <a class="cursor-pointer hover:text-white" (click)="removeSuccessRate()">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
           <div id="successRate" role="tooltip"
-            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
-            Remove this filter.
+            class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
+            Remove <span class="italic">'Success rate &gt; {{ filters.successRate }}'</span> from filters.
             <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
         </div>
       </span>
     }
+
+    @for (wmaId of filters.wmas; track wmaId) {
+      <span class="hidden md:inline-flex whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-2xl me-2 border border-gray-500 ">
+        {{ wmaId | filterObjName: auxData.wmas }}
+        <div (mouseover)="showRemoveFilterTooltip(wmaId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
+          <a class="cursor-pointer hover:text-cyan-800" (click)="removeCheckboxFilter(wmaId, 'wmas')">
+            <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
+          </a>
+          <div id="{{ wmaId }}" role="tooltip"
+            class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
+            Remove  <span class="italic">'{{ wmaId | filterObjName: auxData.wmas }}'</span> from filters.
+            <div class="tooltip-arrow" data-popper-arrow></div>
+          </div>
+        </div>
+      </span>
+    }
+
+    @for (seasonId of filters.seasons; track seasonId) {
+      <span class="hidden md:inline-flex whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-2xl me-2 border border-gray-500 ">
+        {{ seasonId | filterObjName: auxData.seasons }}
+        <div (mouseover)="showRemoveFilterTooltip(seasonId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
+          <a class="cursor-pointer hover:text-cyan-800" (click)="removeCheckboxFilter(seasonId, 'seasons')">
+            <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
+          </a>
+          <div id="{{ seasonId }}" role="tooltip"
+            class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
+            Remove <span class="italic">'{{ seasonId | filterObjName: auxData.seasons }}'</span> filters.
+            <div class="tooltip-arrow" data-popper-arrow></div>
+          </div>
+        </div>
+      </span>
+    }
+
+    @for (weaponId of filters.weapons; track weaponId) {
+      <span class="hidden md:inline-flex whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-2xl me-2 border border-gray-500 ">
+        {{ weaponId | filterObjName: auxData.weapons }}
+        <div (mouseover)="showRemoveFilterTooltip(weaponId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
+          <a class="cursor-pointer hover:text-cyan-800" (click)="removeCheckboxFilter(weaponId, 'weapons')">
+            <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
+          </a>
+          <div id="{{ weaponId }}" role="tooltip"
+            class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
+            Remove <span class="italic">'{{ weaponId | filterObjName: auxData.weapons }}'</span> from filters.
+            <div class="tooltip-arrow" data-popper-arrow></div>
+          </div>
+        </div>
+      </span>
+    }
+
   }
 
 </div>
 
 <gawmas-drawer #filterDrawer [targetElement]="filterDrawerTarget">
+
   <form [formGroup]="filterForm">
-    <div class="flex border-b border-gray-500 pb-2">
-      <h3 class="text-xl flex-1 font-semibold text-gray-200 align-baseline pl-3">
-        Filter Hunt Results
+    <div class="flex border-b items-center border-gray-500 pb-2">
+      <h3 class="hidden lg:flex-1 md:block lg:block text-xl font-semibold text-gray-200 align-baseline pl-3">
+        Filter Hunt Results {{ selectedWmaIds() }}
       </h3>
-      <div class="flex pr-2">
+      <div class="flex md:pr-2 md:ml-3">
         <button (click)="apply()" type="button"
           class="mr-2 relative inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-600 rounded-2xl hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-blue-300">
           <ng-icon name="heroBolt" class="mr-1 text-lg"></ng-icon>
@@ -107,42 +113,27 @@
         </button>
       </div>
     </div>
-
     <div class="m-2 pt-0 grid grid-cols-1 gap-0 lg:grid-cols-2 lg:gap-2">
 
       <div class="p-4 text-left text-gray-300">
 
-        <!-- <div class="font-bold">Property Types</div> -->
-        <div class="grid grid-cols-2 gap-2 mb-2">
+        <div class="grid grid-cols-2 gap-1 mb-2">
           <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" value="" class="sr-only peer">
-            <div
-              class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-blue-500">
-            </div>
+            <input formControlName="isStatePark" type="checkbox" value="" class="sr-only peer">
+            <div class="toggle peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white"></div>
             <span class="ms-2 text-sm font-medium text-gray-300">State Park</span>
           </label>
           <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" value="" class="sr-only peer">
-            <div
-              class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-blue-500">
-            </div>
+            <input formControlName="isVpa" type="checkbox" value="" class="sr-only peer">
+            <div class="toggle peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white"></div>
             <span class="ms-2 text-sm font-medium text-gray-300">VPA</span>
           </label>
         </div>
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-1">
           <label class="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" value="" class="sr-only peer">
-            <div
-              class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-blue-500">
-            </div>
-            <span class="ms-2 text-sm font-medium text-gray-300">Quota Hunt</span>
-          </label>
-          <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" value="" class="sr-only peer">
-            <div
-              class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-blue-500">
-            </div>
-            <span class="ms-2 text-sm font-medium text-gray-300">Bonus Hunt</span>
+            <div class="toggle peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white"></div>
+            <span class="ms-2 text-sm font-medium text-gray-300">Quota/Bonus Hunt</span>
           </label>
         </div>
 
@@ -150,30 +141,32 @@
           <div><ng-icon name="heroMapPin" class="font-extrabold"></ng-icon></div>
           <div class="font-bold pb-1 pl-1">WMAs</div>
         </div>
-        <div class="relative mb-1">
-          <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-            <svg class="w-4 h-4 text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-              viewBox="0 0 20 20">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-            </svg>
+        @if (filterForm.controls['isStatePark'].value === false && filterForm.controls['isVpa'].value === false) {
+          <div class="relative mb-1">
+            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+              <svg class="w-4 h-4 text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+              </svg>
+            </div>
+            <input formControlName="wmaFilter" type="search"
+              class="block w-full h-2 p-4 ps-10 text-xs italic text-gray-300 placeholder:text-gray-300 border border-gray-500 rounded-md bg-gray-600 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Search WMAs by name...">
+            <div class="text-gray-300 h-2 absolute end-2 bottom-5 text-xs">
+              @if (filterForm.controls['wmaFilter'].value.length > 0) {
+              <a class="cursor-pointer hover:text-white" (click)="clearSearch()">
+                <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
+              </a>
+              }
+            </div>
           </div>
-          <input formControlName="wmaFilter" type="search"
-            class="block w-full h-2 p-4 ps-10 text-xs italic text-gray-300 placeholder:text-gray-300 border border-gray-500 rounded-md bg-gray-600 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Search WMAs by name...">
-          <div class="text-gray-300 h-2 absolute end-2 bottom-5 text-xs">
-            @if (filterForm.controls['wmaFilter'].value.length > 0) {
-            <a class="cursor-pointer hover:text-white" (click)="clearSearch()">
-              <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
-            </a>
-            }
-          </div>
-        </div>
-        <div class="h-24 overflow-y-auto rounded-md border border-gray-500 pt-2 lg:h-44">
+        }
+        <div class="h-48 lg:h-40 overflow-y-auto rounded-md border border-gray-500 pt-2 overflow-x-hidden">
           @if (noFilteredWmasFound()) {
-          <div class="w-full text-red-500 text-xs italic pl-2">
-            No WMAs found matching your search criteria.
-          </div>
+            <div class="w-full text-red-500 text-xs italic pl-2">
+              No WMAs found matching your search criteria.
+            </div>
           }
           <div formArrayName="wmas" *ngFor="let wma of (filterForm | formArray: 'wmas')?.controls; let i = index"
             class="flex items-center">
@@ -231,7 +224,7 @@
         </div>
       </div>
 
-      <div class="p-4 pt-1 text-left text-gray-300">
+      <div class="p-4 pt-1 mb-12 text-left text-gray-300">
 
         <div class="mt-2 flex justify-start items-center">
           <div><ng-icon name="heroChartPie" class="font-extrabold"></ng-icon></div>
@@ -284,8 +277,10 @@
         </div>
 
         <div class="mt-2 flex justify-start items-center">
-          <div><ng-icon name="heroMoon" class="font-extrabold"></ng-icon></div>
-          <div class="font-bold pb-1 pl-1">Lunar Phase</div>
+          <div>
+            <ng-icon name="heroMoon" class="font-extrabold"></ng-icon>
+          </div>
+          <div class="font-bold pb-1 pl-1">*Lunar Phase</div>
         </div>
         <ul class="w-full gap-0 inline-flex">
           <li>
@@ -354,7 +349,7 @@
             </label>
           </li>
         </ul>
-
+        <div class="text-xs italic mt-1">*Applicable only to hunts spanning 3 days or less.</div>
       </div>
 
     </div>

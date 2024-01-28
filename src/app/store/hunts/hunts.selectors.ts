@@ -28,4 +28,7 @@ export const selectHuntsLoading = createSelector(
   (state: HuntState) => state.loading
 );
 
-
+export const selectEndOfResults = createSelector(
+  selectHuntsState,
+  (state: HuntState) => state.endOfResults
+);

@@ -12,7 +12,7 @@ import { FooterComponent } from 'layout/footer/footer.component';
   template: `
     <gawmas-header></gawmas-header>
     <div class="m-0 p-0 w-screen">
-      <main class="p-2">
+      <main class="px-2">
         <router-outlet></router-outlet>
         <gawmas-footer></gawmas-footer>
       </main>

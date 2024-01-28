@@ -1,4 +1,4 @@
-import { selectFilter, selectHunts, selectHuntsLoading } from 'store/hunts/hunts.selectors';
+import { selectEndOfResults, selectFilter, selectHunts, selectHuntsLoading } from 'store/hunts/hunts.selectors';
 import { SHARED_MODULES } from '@shared-imports';
 import { Component, HostListener, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
@@ -7,6 +7,7 @@ import { AppStateInterface } from '@store-model';
 import { SuccessRateColorPipe, SuccessRatePipe } from "@pipes";
 import { NgIconComponent } from '@ng-icons/core';
 import * as huntsActions from 'store/hunts/hunts.actions';
+import { take } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -24,6 +25,7 @@ export class HuntsComponent implements OnInit {
   hunts$ = this._store.select(selectHunts);
   isLoading$ = this._store.select(selectHuntsLoading);
   filter$ = this._store.select(selectFilter);
+  isEndOfResults$ = this._store.select(selectEndOfResults);
 
   screenWidth = signal(window.innerWidth);
 
@@ -56,8 +58,14 @@ export class HuntsComponent implements OnInit {
     const windowBottom = windowHeight + window.pageYOffset;
 
     if (windowBottom >= (docHeight * .95)) {
-      // this._dispatchMoreHunts();
-      this._store.dispatch(huntsActions.getMoreHunts({ filter: undefined }));
+      this.isEndOfResults$
+        .pipe(take(1))
+        .subscribe(isEndOfResults => {
+          if (!isEndOfResults) {
+            this._store.dispatch(huntsActions.getMoreHunts({ filter: undefined }));
+          }
+        });
+      // this._store.dispatch(huntsActions.getMoreHunts({ filter: undefined }));
     }
   }
 

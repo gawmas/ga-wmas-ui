@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild, computed, inject, signal } from "@angular/core";
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
-import { FilterAuxData, Season, Weapon, Wma } from "@model";
+import { Filter, FilterAuxData, Season, Weapon, Wma } from "@model";
 import { SHARED_MODULES } from "@shared-imports";
-import { Subject, Subscription, distinctUntilChanged, filter, map, take, takeUntil, tap } from "rxjs";
+import { Subject, Subscription, combineLatest, distinctUntilChanged, filter, map, startWith, take, takeUntil, tap } from "rxjs";
 import { AppStateInterface } from "@store-model";
 import { Store } from "@ngrx/store";
 import { NgIconComponent } from "@ng-icons/core";
@@ -45,6 +45,8 @@ export class FiltersComponent implements OnInit, OnDestroy {
   auxData: FilterAuxData = { wmas: [], seasons: [], weapons: [], filteredWmas: [] };
 
   filterForm: FormGroup = this._formBuilder.group({
+    isStatePark: false,
+    isVpa: false,
     wmas: this._formBuilder.array([]),
     wmaFilter: '',
     successRate: 0,
@@ -66,41 +68,46 @@ export class FiltersComponent implements OnInit, OnDestroy {
       (this.successRateSet() ? 1 : 0)
   });
 
-  // filterCount2 = toSignal(this.filterForm.valueChanges, {initialValue: ''})
-
   ngOnInit(): void {
 
     this._store.dispatch(filterActions.getFilterAuxData());
 
-    this.filterForm.valueChanges
+    // Listen to changes for the checkbox arrays ...
+    combineLatest([
+      this.filterForm.controls['wmas'].valueChanges.pipe(startWith([])),
+      this.filterForm.controls['seasons'].valueChanges.pipe(startWith([])),
+      this.filterForm.controls['weapons'].valueChanges.pipe(startWith([])),
+      this.filterForm.controls['successRate'].valueChanges.pipe(startWith([]))])
       .pipe(
         takeUntil(this._destroyed$),
-        distinctUntilChanged(),
-        map(originalValue => {
-          return Object.keys(originalValue).reduce((result: any, key) => {
-            if (key !== 'wmaFilter') {
-              result[key] = originalValue[key];
-            }
-            return result;
-          }, {});
-        }))
-      .subscribe(value =>  {
-        if (value) {
-          this.selectedWmasCount.set(value.wmas.filter((wma: boolean) => wma).length);
-          this.selectedSeasonIds.set(this.controlCheckedCount('seasons'));
-          this.selectedWeaponIds.set(this.controlCheckedCount('weapons'));
-          this.successRateSet.set(value.successRate > 0);
-        }
+        distinctUntilChanged())
+      .subscribe(([wmas, seasons, weapons, successRate]) => {
+        this.selectedWmasCount.set(wmas.filter((wma: boolean) => wma).length);
+        this.selectedSeasonIds.set(this._controlCheckedCount('seasons'));
+        this.selectedWeaponIds.set(this._controlCheckedCount('weapons'));
+        this.successRateSet.set(successRate > 0);
       });
 
+    // Listen for changes to the "state park"/"vpa" toggles ...
+    combineLatest([
+      this.filterForm.controls['isStatePark'].valueChanges.pipe(startWith(false)),
+      this.filterForm.controls['isVpa'].valueChanges.pipe(startWith(false))])
+      .pipe(
+        takeUntil(this._destroyed$),
+        distinctUntilChanged())
+      .subscribe(([isStatePark, isVpa]) => {
+        this._filterWmaType(isStatePark, isVpa);
+      });
+
+    // Filter WMAs by name ...
     this.filterForm.controls['wmaFilter'].valueChanges
       .pipe(
         distinctUntilChanged(),
         takeUntil(this._destroyed$))
       .subscribe((value: string) => {
-        this.selectedWmaIds.set(this.controlCheckedCount('wmas'));
+        this.selectedWmaIds.set(this._controlCheckedCount('wmas'));
         this.auxData.filteredWmas.forEach((wma: Wma) => {
-          if (!Array.from(this.selectedWmaIds()).includes(wma.id)) {
+          if (!Array.from(this.selectedWmaIds()).includes(wma.id)) { // Exclude WMAs that are already selected
             wma.visible = (wma.name.toLowerCase().includes(value?.toLowerCase()));
           }
         });
@@ -109,7 +116,24 @@ export class FiltersComponent implements OnInit, OnDestroy {
 
   }
 
-  controlCheckedCount(name: string): number[] {
+  private _filterWmaType(isStatePark: boolean, isVpa: boolean) {
+    this.auxData.filteredWmas.forEach((wma: Wma) => {
+      if (!Array.from(this.selectedWmaIds()).includes(wma.id)) { // Exclude WMAs that are already selected
+        // wma.visible = true;
+        if (isStatePark && isVpa) {
+          wma.visible = wma.isSP === isStatePark || wma.isVPA === isVpa;
+        } else if (isStatePark && !isVpa) {
+          wma.visible = wma.isSP === isStatePark;
+        } else if (!isStatePark && isVpa) {
+          wma.visible = wma.isVPA === isVpa;
+        } else {
+          wma.visible = true;
+        }
+      }
+    });
+  }
+
+  private _controlCheckedCount(name: string): number[] {
     return this.filterForm.controls[name].value
       .map((checked: any, i: number) => checked ? (this.auxData as any)[name][i].id : null)
       .filter((v: null | number) => v !== null);
@@ -131,18 +155,18 @@ export class FiltersComponent implements OnInit, OnDestroy {
         .subscribe((auxData: FilterAuxData) => {
           for (let key of Object.keys(auxData)) {
             if (key !== 'filteredWmas') {
-              this.buildCheckBoxes(auxData[key as keyof FilterAuxData]);
+              this._buildCheckBoxes(auxData[key as keyof FilterAuxData]);
             }
           }
         });
     }
 
     this.filterDrawer.open();
-    this.listenToDrawerEvents();
+    this._listenToDrawerEvents();
 
   }
 
-  private listenToDrawerEvents() {
+  private _listenToDrawerEvents() {
     this.filterDrawerSubscription = this.filterDrawer.closeEvent
       .subscribe((event: any) => {
         // console.log(event);
@@ -161,7 +185,7 @@ export class FiltersComponent implements OnInit, OnDestroy {
       });
   }
 
-  private buildCheckBoxes = (data: Wma[] | Season[] | Weapon[]) => {
+  private _buildCheckBoxes = (data: Wma[] | Season[] | Weapon[]) => {
     data.forEach((item: Wma | Season | Weapon) => {
       const arrayName = item.hasOwnProperty('season') ? 'seasons' : item.hasOwnProperty('locationId') ? 'wmas' : 'weapons';
       (this.filterForm.controls[arrayName] as unknown as FormArray)
@@ -176,14 +200,14 @@ export class FiltersComponent implements OnInit, OnDestroy {
   apply() {
     this.filterDrawer.save({
       ...this.filterForm.value,
-      wmas: this.extractCheckIds('wmas', 'wmas'),
-      seasons: this.extractCheckIds('seasons', 'seasons'),
-      weapons: this.extractCheckIds('weapons', 'weapons'),
+      wmas: this._extractCheckIds('wmas', 'wmas'),
+      seasons: this._extractCheckIds('seasons', 'seasons'),
+      weapons: this._extractCheckIds('weapons', 'weapons'),
       successRate: this.filterForm.controls['successRate'].value
     });
   }
 
-  private extractCheckIds(ctrlName: string, collectionName: string): number[] {
+  private _extractCheckIds(ctrlName: string, collectionName: string): number[] {
     return this.filterForm.controls[ctrlName].value
       .map((checked: boolean, i: number) => checked ? this.auxData[collectionName as keyof FilterAuxData][i].id : null)
       .filter((v: null | number) => v !== null);
@@ -193,6 +217,41 @@ export class FiltersComponent implements OnInit, OnDestroy {
     const targetEl = document.getElementById(targetElId)
     const tooltip = new Tooltip(targetEl, event.target as HTMLElement, { triggerType });
     tooltip.show();
+  }
+
+  removeCheckboxFilter(id: number, collectionName: string) {
+    const formArray: FormArray = this.filterForm.controls[collectionName] as FormArray;
+    let index: number | undefined;
+    if (collectionName === 'wmas') {
+      index = (this.auxData[collectionName] as Wma[]).findIndex(item => item.id === id);
+    } else if (collectionName === 'seasons') {
+      index = (this.auxData[collectionName] as Season[]).findIndex(item => item.id === id);
+    } else if (collectionName === 'weapons') {
+      index = (this.auxData[collectionName] as Weapon[]).findIndex(item => item.id === id);
+    }
+    formArray.at(index!).patchValue(false);
+    this._store.dispatch(huntsActions.filtersChanged({
+      filter: {
+        skip: 0,
+        wmas: this._extractCheckIds('wmas', 'wmas'),
+        seasons: this._extractCheckIds('seasons', 'seasons'),
+        weapons: this._extractCheckIds('weapons', 'weapons'),
+        successRate: this.filterForm.controls['successRate'].value
+      }
+    }));
+  }
+
+  removeSuccessRate() {
+    this.filterForm.controls['successRate'].setValue(0);
+    this._store.dispatch(huntsActions.filtersChanged({
+      filter: {
+        skip: 0,
+        wmas: this._extractCheckIds('wmas', 'wmas'),
+        seasons: this._extractCheckIds('seasons', 'seasons'),
+        weapons: this._extractCheckIds('weapons', 'weapons'),
+        successRate: this.filterForm.controls['successRate'].value
+      }
+    }));
   }
 
   cancel() {

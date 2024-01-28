@@ -10,12 +10,12 @@ import { selectHuntsLoading } from 'store/hunts/hunts.selectors';
   standalone: true,
   imports: [SHARED_MODULES, NgIconComponent],
   template: `
-    <div class="fixed left-0 flex items-center bottom-0 w-[100%] mx-auto h-12 bg-gray-800 border-t border-gray-700">
+    <div class="fixed left-0 flex items-center bottom-0 w-[100%] mx-auto h-12 bg-gray-950 border-t border-gray-700">
       <div class="left-4 m-4 p-3 w-1/2">
         @if (!topInView()) {
           @if (isLoading$ | async) {
             <div class="text-xs md:text-sm flex items-center text-yellow-300">
-              <svg class="w-6 h-6 fill-yellow-300 spinner"
+              <svg class="w-4 h-4 md:w-6 md:h-6 fill-yellow-300 spinner"
                 viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
                 <circle class="spinner_b2T7" cx="4" cy="12" r="3"/>
                 <circle class="spinner_b2T7 spinner_YRVV" cx="12" cy="12" r="3"/>
