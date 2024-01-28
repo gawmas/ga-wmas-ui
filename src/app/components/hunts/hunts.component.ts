@@ -36,7 +36,8 @@ export class HuntsComponent implements OnInit {
         successRate: 0,
         wmas: [],
         seasons: [],
-        weapons: []
+        weapons: [],
+        sort: null
       } }));
   }
 

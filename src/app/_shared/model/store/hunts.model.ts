@@ -15,6 +15,7 @@ export const initialHuntState: HuntState = {
     wmas: [],
     seasons: [],
     weapons: [],
+    sort: null
   },
   endOfResults: false,
   loading: false

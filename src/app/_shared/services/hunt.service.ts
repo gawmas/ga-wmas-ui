@@ -16,7 +16,8 @@ export class HuntService {
         '&wmas=' + (params?.wmas ? params?.wmas.toString() : '') +
         '&seasons=' + (params?.seasons ? params?.seasons.toString() : '') +
         '&weapons=' + (params?.weapons ? params?.weapons.toString() : '') +
-        '&success=' + (params?.successRate ? params?.successRate : 0);
+        '&success=' + (params?.successRate ? params?.successRate : 0) +
+        '&sort=' + (params?.sort ? params?.sort : '');
       // console.log(url);
       return this.http.get<Hunt[]>(url);
     }

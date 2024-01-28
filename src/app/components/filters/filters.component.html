@@ -1,7 +1,7 @@
-<div class="flex pl-2 -ml-2 py-2 -mt-2 mb-2 mx-auto w-[100%] bg-gradient-to-r from-gawmas-green to-transparent from-20% to-80% scroll-container">
+<div class="flex pl-2 -ml-2 py-2 -mt-1 mb-2 mx-auto w-[100%] bg-gradient-to-r from-gawmas-green to-transparent from-20% to-80% scroll-container">
 
   <button (click)="openFiltersDrawer()" type="button"
-    class="mr-2 relative inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-600 rounded-2xl hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-blue-300">
+    class="mr-1.5 relative inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-600 rounded-2xl hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-blue-300">
     <ng-icon name="heroAdjustmentsHorizontal" class="mr-1 text-lg"></ng-icon>
     <span class="sr-only">Applied Filter Count</span>
     Filters
@@ -13,10 +13,21 @@
     }
   </button>
 
+  <form [formGroup]="sortForm" class="mr-1.5">
+    <select formControlName="sort" class="block py-3 px-5 text-xs border rounded-2xl bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+      <option class="underline">Sort Results</option>
+      <option value="">WMA Name, Date</option>
+      <option value="success">Success Rate</option>
+      <option value="hunters">Hunter Count</option>
+    </select>
+  </form>
+
+  <!-- {{ filterForm.value | json }} -->
+
   @if ((filter$ | async); as filters) {
 
     @if (filters.successRate! > 0) {
-      <span class="hidden md:inline-flex whitespace-nowrap bg-green-500 text-gray-200 text-xs font-medium items-center px-2.5 py-0.5 rounded-2xl me-2 border border-gray-500 ">
+      <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-green-500 text-gray-200 text-xs font-medium items-center px-2.5 py-0.5 rounded-2xl border border-gray-500">
         Success Rate &gt; {{ filters.successRate }}&percnt;
         <div (mouseover)="showRemoveFilterTooltip('successRate', 'hover', $event)" class="pt-1 inline-flex items-center">
           <a class="cursor-pointer hover:text-white" (click)="removeSuccessRate()">
@@ -32,7 +43,7 @@
     }
 
     @for (wmaId of filters.wmas; track wmaId) {
-      <span class="hidden md:inline-flex whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-2xl me-2 border border-gray-500 ">
+      <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-2xl border border-gray-500 ">
         {{ wmaId | filterObjName: auxData.wmas }}
         <div (mouseover)="showRemoveFilterTooltip(wmaId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
           <a class="cursor-pointer hover:text-cyan-800" (click)="removeCheckboxFilter(wmaId, 'wmas')">
@@ -48,7 +59,7 @@
     }
 
     @for (seasonId of filters.seasons; track seasonId) {
-      <span class="hidden md:inline-flex whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-2xl me-2 border border-gray-500 ">
+      <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-2xl border border-gray-500 ">
         {{ seasonId | filterObjName: auxData.seasons }}
         <div (mouseover)="showRemoveFilterTooltip(seasonId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
           <a class="cursor-pointer hover:text-cyan-800" (click)="removeCheckboxFilter(seasonId, 'seasons')">
@@ -64,7 +75,7 @@
     }
 
     @for (weaponId of filters.weapons; track weaponId) {
-      <span class="hidden md:inline-flex whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-2xl me-2 border border-gray-500 ">
+      <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-2xl border border-gray-500 ">
         {{ weaponId | filterObjName: auxData.weapons }}
         <div (mouseover)="showRemoveFilterTooltip(weaponId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
           <a class="cursor-pointer hover:text-cyan-800" (click)="removeCheckboxFilter(weaponId, 'weapons')">

@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild, computed, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, computed, inject, signal } from "@angular/core";
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
-import { Filter, FilterAuxData, Season, Weapon, Wma } from "@model";
+import { FilterAuxData, Season, Weapon, Wma } from "@model";
 import { SHARED_MODULES } from "@shared-imports";
-import { Subject, Subscription, combineLatest, distinctUntilChanged, filter, map, startWith, take, takeUntil, tap } from "rxjs";
+import { Subject, Subscription, combineLatest, distinctUntilChanged, map, startWith, take, takeUntil, tap } from "rxjs";
 import { AppStateInterface } from "@store-model";
 import { Store } from "@ngrx/store";
 import { NgIconComponent } from "@ng-icons/core";
@@ -10,11 +10,10 @@ import { selectFiltersAuxData, selectFiltersAuxDataLoading } from 'store/filters
 import { selectFilter } from 'store/hunts/hunts.selectors';
 import { FormArrayPipe } from "@pipes";
 import { DrawerComponent } from "_shared/components/drawer.component";
+import { FilterObjNamePipe } from "_shared/pipes/filter-obj-name.pipe";
+import { Tooltip, TooltipTriggerType } from "flowbite";
 import * as filterActions from 'store/filters/filters.actions';
 import * as huntsActions from 'store/hunts/hunts.actions';
-import { FilterObjNamePipe } from "_shared/pipes/filter-obj-name.pipe";
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Tooltip, TooltipOptions, TooltipTriggerType } from "flowbite";
 
 @Component({
   selector: 'hunt-filters',
@@ -44,6 +43,10 @@ export class FiltersComponent implements OnInit, OnDestroy {
 
   auxData: FilterAuxData = { wmas: [], seasons: [], weapons: [], filteredWmas: [] };
 
+  sortForm: FormGroup = this._formBuilder.group({
+    sort: ''
+  });
+
   filterForm: FormGroup = this._formBuilder.group({
     isStatePark: false,
     isVpa: false,
@@ -51,7 +54,7 @@ export class FiltersComponent implements OnInit, OnDestroy {
     wmaFilter: '',
     successRate: 0,
     seasons: this._formBuilder.array([]),
-    weapons: this._formBuilder.array([])
+    weapons: this._formBuilder.array([]),
   });
 
   selectedWmasCount = signal(0);
@@ -71,6 +74,23 @@ export class FiltersComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     this._store.dispatch(filterActions.getFilterAuxData());
+
+    this.sortForm.controls['sort'].valueChanges
+      .pipe(
+        takeUntil(this._destroyed$),
+        distinctUntilChanged())
+      .subscribe((sortValue: string) => {
+        this._store.dispatch(huntsActions.filtersChanged({
+          filter: {
+            skip: 0,
+            wmas: this._extractCheckIds('wmas', 'wmas'),
+            seasons: this._extractCheckIds('seasons', 'seasons'),
+            weapons: this._extractCheckIds('weapons', 'weapons'),
+            successRate: this.filterForm.controls['successRate'].value,
+            sort: sortValue
+          }
+        }));
+      });
 
     // Listen to changes for the checkbox arrays ...
     combineLatest([
@@ -119,7 +139,6 @@ export class FiltersComponent implements OnInit, OnDestroy {
   private _filterWmaType(isStatePark: boolean, isVpa: boolean) {
     this.auxData.filteredWmas.forEach((wma: Wma) => {
       if (!Array.from(this.selectedWmaIds()).includes(wma.id)) { // Exclude WMAs that are already selected
-        // wma.visible = true;
         if (isStatePark && isVpa) {
           wma.visible = wma.isSP === isStatePark || wma.isVPA === isVpa;
         } else if (isStatePark && !isVpa) {
@@ -178,7 +197,8 @@ export class FiltersComponent implements OnInit, OnDestroy {
               wmas: event.data.wmas,
               seasons: event.data.seasons,
               weapons: event.data.weapons,
-              successRate: event.data.successRate
+              successRate: event.data.successRate,
+              sort: event.data.sort
             }
           }));
         }
@@ -236,7 +256,8 @@ export class FiltersComponent implements OnInit, OnDestroy {
         wmas: this._extractCheckIds('wmas', 'wmas'),
         seasons: this._extractCheckIds('seasons', 'seasons'),
         weapons: this._extractCheckIds('weapons', 'weapons'),
-        successRate: this.filterForm.controls['successRate'].value
+        successRate: this.filterForm.controls['successRate'].value,
+        sort: this.sortForm.controls['sort'].value
       }
     }));
   }
@@ -249,7 +270,8 @@ export class FiltersComponent implements OnInit, OnDestroy {
         wmas: this._extractCheckIds('wmas', 'wmas'),
         seasons: this._extractCheckIds('seasons', 'seasons'),
         weapons: this._extractCheckIds('weapons', 'weapons'),
-        successRate: this.filterForm.controls['successRate'].value
+        successRate: this.filterForm.controls['successRate'].value,
+        sort: this.sortForm.controls['sort'].value
       }
     }));
   }
