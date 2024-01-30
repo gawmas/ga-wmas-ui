@@ -10,7 +10,7 @@ import { selectHuntsLoading } from 'store/hunts/hunts.selectors';
   standalone: true,
   imports: [SHARED_MODULES, NgIconComponent],
   template: `
-    <div class="fixed left-0 flex items-center bottom-0 w-[100%] mx-auto h-12 bg-gray-950 border-t border-gray-700">
+    <footer class="fixed left-0 flex items-center bottom-0 w-[100%] mx-auto h-12 bg-gray-950 border-t border-gray-700">
       <div class="left-4 m-4 p-3 w-1/2">
         @if (!topInView()) {
           @if (isLoading$ | async) {
@@ -41,7 +41,7 @@ import { selectHuntsLoading } from 'store/hunts/hunts.selectors';
           <a href="#" class="hover:underline">Disclaimer</a>
         </div>
       </div>
-    </div>
+    </footer>
   `
 })
 export class FooterComponent {

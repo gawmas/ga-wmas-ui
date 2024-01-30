@@ -1,6 +1,6 @@
 <hunt-filters />
 
-<table class="w-[99%] md:w-[85%] text-sm text-left text-gray-300 -pt-2">
+<table class="w-[95%] text-sm text-left text-gray-300 -pt-2">
   @if (screenWidth() > 1000) {
     <thead class="text-xs text-gray-400 uppercase bg-gray-800 border-gray-400 border-b-2 border-t-1">
       <tr>
@@ -16,20 +16,44 @@
           <tr class="border-b bg-gray-800 border-gray-600">
             <td class="px-6 py-4 align-top bg-gray-800">
               <div class="flex flex-wrap items-center mb-1">
-                <div class="text-white font-bold uppercase">
+                <a href="https://www.google.com/maps/search/?api=1&query={{ hunt.coords }}" target="_blank">
+                  <ng-icon name="heroMapPin" class="mr-1"></ng-icon>
+                </a>
+                <div class="text-white font-bold uppercase mr-1">
                   {{ hunt.wmaName }}
                 </div>
-                <div class="font-semibold uppercase text-gray-400 text-sm ml-1">&bullet; {{ hunt.weapon }}</div>
+                @switch (hunt.weapon) {
+                  @case ('Firearms') {
+                    <span class="uppercase text-xs font-medium me-2 px-2.5 py-0.5 rounded-full bg-gray-700 text-gray-300">
+                      {{ hunt.weapon }}
+                    </span>
+                  }
+                  @case ('Archery') {
+                    <span class="uppercase text-xs font-medium me-2 px-2.5 py-0.5 rounded-full bg-green-900 text-green-300">
+                      {{ hunt.weapon }}
+                    </span>
+                  }
+                  @case ('Primitive') {
+                    <span class="uppercase text-xs font-medium me-2 px-2.5 py-0.5 rounded-full bg-yellow-900 text-yellow-300">
+                      {{ hunt.weapon }}
+                    </span>
+                  }
+                  @default {
+                    <span class="uppercase text-xs font-medium me-2 px-2.5 py-0.5 rounded-full bg-gray-700 text-gray-300">
+                      {{ hunt.weapon }}
+                    </span>
+                  }
+                }
               </div>
-              <span class="text-gray-300 border border-gray-600 text-sm font-medium mb-1 px-2.5 py-0.5 rounded-full">
+              <span class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-full bg-blue-900 text-blue-300">
                 {{ hunt.season }}
               </span>
               @if (hunt.quota) {
-                <span class="bg-green-900 text-green-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full ml-1">
+                <span class="text-sm font-medium me-2 px-2.5 py-0.5 rounded-full bg-red-900 text-red-300">
                   <span class="text-xs uppercase">Quota:</span> <span>{{ hunt.quota }}</span>
                 </span>
               }
-              <div class="mt-1">{{ hunt.details }}</div>
+              <div class="mt-1 text-xs" [innerHTML]="hunt.details | detailsHighlight"></div>
             </td>
             <td class="px-6 py-4 align-top bg-gray-800">
               <div>
@@ -62,8 +86,7 @@
               </div>
             </td>
             <td class="px-6 py-4 align-top border-l border-gray-600">
-              hunt.id: {{ hunt.id }}
-            </td>
+              hunt.id: <a href="javascript:;" (click)="openHuntForm(hunt)">{{ hunt.id }}</a>
           </tr>
         } @empty {
           <tr class="bg-gray-800 border-b border-gray-700">
@@ -98,23 +121,42 @@
           <tr class="bg-gray-800">
             <td colspan="2" class="px-2 pt-2 align-top">
               <div class="flex flex-wrap items-center">
-                <div class="text-white font-bold uppercase">
+                <div class="text-white font-bold uppercase mr-1">
                   {{ hunt.wmaName }}
                 </div>
-                <div class="font-semibold ml-1 uppercase text-xs text-gray-400">&bullet; {{ hunt.weapon }}</div>
+                @switch (hunt.weapon) {
+                  @case ('Firearms') {
+                    <span class="uppercase text-xs font-medium me-2 px-2.5 py-0.5 rounded-full bg-gray-700 text-gray-300">
+                      {{ hunt.weapon }}
+                    </span>
+                  }
+                  @case ('Archery') {
+                    <span class="uppercase text-xs font-medium me-2 px-2.5 py-0.5 rounded-full bg-green-900 text-green-300">
+                      {{ hunt.weapon }}
+                    </span>
+                  }
+                  @case ('Primitive') {
+                    <span class="uppercase text-xs font-medium me-2 px-2.5 py-0.5 rounded-full bg-yellow-900 text-yellow-300">
+                      {{ hunt.weapon }}
+                    </span>
+                  }
+                  @default {
+                    <span class="uppercase text-xs font-medium me-2 px-2.5 py-0.5 rounded-full bg-gray-700 text-gray-300">
+                      {{ hunt.weapon }}
+                    </span>
+                  }
+                }
               </div>
+              <div class="mt-1 text-xs" [innerHTML]="hunt.details | detailsHighlight"></div>
               <div class="flex items-center text-xs">
-                <span class="text-gray-300 border border-gray-600 font-medium me-2 px-2.5 py-0.5 rounded-full">
-                  {{ hunt.season }}
+                <span class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-full bg-blue-900 text-blue-300">
+                  {{ hunt.startDate | date: 'MM/dd/yyyy' }} - {{ hunt.endDate | date: 'MM/dd/yyyy' }}
                 </span>
                 @if (hunt.quota) {
-                  <span class="bg-green-900 text-green-300 font-medium me-2 px-2.5 py-0.5 flex items-center ml-1 rounded-full">
+                  <span class="text-sm font-medium me-2 px-2.5 py-0.5 rounded-full bg-red-900 text-red-300">
                     <span class="text-xs uppercase">Quota:</span> <span>{{ hunt.quota }}</span>
                   </span>
                 }
-                <span class="">
-                  {{ hunt.startDate | date: 'MM/dd/yyyy' }} - {{ hunt.endDate | date: 'MM/dd/yyyy' }}
-                </span>
               </div>
             </td>
           </tr>
@@ -164,8 +206,10 @@
 @if ((isEndOfResults$ | async) && (hunts$ | async)!.length > 0) {
   <div class="w-[99%] md:w-[85%] flex justify-center mt-1 mb-12">
     <div class="flex items-center text-gawmas-yeller text-sm">
-      <ng-icon name="heroDocumentCheck" class="mr-1"></ng-icon>
+      <ng-icon name="heroCheckCircle" class="mr-1"></ng-icon>
       <span class="italic">End of results</span>
     </div>
   </div>
 }
+
+<gawmas-hunt-form #huntFormModal />

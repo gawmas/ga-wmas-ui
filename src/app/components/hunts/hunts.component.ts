@@ -1,22 +1,26 @@
 import { selectEndOfResults, selectFilter, selectHunts, selectHuntsLoading } from 'store/hunts/hunts.selectors';
 import { SHARED_MODULES } from '@shared-imports';
-import { Component, HostListener, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FiltersComponent } from 'components/filters/filters.component';
 import { AppStateInterface } from '@store-model';
-import { SuccessRateColorPipe, SuccessRatePipe } from "@pipes";
+import { DetailsHighlightPipe, SuccessRateColorPipe, SuccessRatePipe } from "@pipes";
 import { NgIconComponent } from '@ng-icons/core';
 import * as huntsActions from 'store/hunts/hunts.actions';
 import { take } from 'rxjs';
+import { Hunt } from '@model';
+import { HuntFormComponent } from 'components/hunt-form/hunt-form/hunt-form.component';
 
 @Component({
   standalone: true,
   templateUrl: './hunts.component.html',
   imports: [SHARED_MODULES, FiltersComponent,
     SuccessRateColorPipe, SuccessRatePipe,
-    NgIconComponent]
+    NgIconComponent, DetailsHighlightPipe, HuntFormComponent]
 })
 export class HuntsComponent implements OnInit {
+
+  @ViewChild('huntFormModal') huntForm: HuntFormComponent | undefined;
 
   private _store = inject(Store<AppStateInterface>);
 
@@ -66,12 +70,16 @@ export class HuntsComponent implements OnInit {
             this._store.dispatch(huntsActions.getMoreHunts({ filter: undefined }));
           }
         });
-      // this._store.dispatch(huntsActions.getMoreHunts({ filter: undefined }));
     }
   }
 
   scrollTop(): void {
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+  }
+
+  openHuntForm(hunt: Hunt) {
+    // this.huntForm!.hunt = hunt;
+    this.huntForm?.openHuntForm(hunt);
   }
 
 }

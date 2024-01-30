@@ -5,3 +5,4 @@ export * from './season.interface';
 export * from './weapon.interface';
 export * from './filterAuxData.interface';
 export * from './drawerCloseEvent.interface';
+export * from './modalCloseEvent.interface';

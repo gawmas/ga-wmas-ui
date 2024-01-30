@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, Output } from "@angular/core";
+import { Component, Input, Output } from "@angular/core";
 import { DrawerCloseEvent } from "@model";
 import { Drawer, DrawerInterface, DrawerOptions, InstanceOptions } from "flowbite";
-import { BehaviorSubject, Observable, Subject, of } from "rxjs";
+import { Subject } from "rxjs";
 
 @Component({
   selector: 'gawmas-drawer',
@@ -18,7 +18,7 @@ export class DrawerComponent {
 
   @Input() targetElement = '';
 
-  private closeEventSubject =new  Subject<DrawerCloseEvent>();
+  private closeEventSubject = new Subject<DrawerCloseEvent>();
   @Output() closeEvent: Subject<DrawerCloseEvent> = this.closeEventSubject;
 
   options: DrawerOptions = {
@@ -27,8 +27,7 @@ export class DrawerComponent {
     bodyScrolling: false,
     edge: false,
     edgeOffset: '',
-    backdropClasses:
-    'bg-gray-900/80 fixed inset-0 z-30',
+    backdropClasses: 'bg-gray-900/80 backdrop-blur-sm fixed inset-0 z-30',
   };
 
   instanceOptions: InstanceOptions = {

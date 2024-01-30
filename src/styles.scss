@@ -42,7 +42,16 @@
 
 body {
   overflow-x: hidden;
-  font-family: '"Raleway"', '"HelveticaNeue"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif';
+  letter-spacing: 0.025em;
+  font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", 'Helvetica', 'Arial', 'sans-serif';
+}
+
+.detail-bonus-deer {
+  @apply text-gawmas-yeller font-semibold;
+}
+
+.detail-sign-in {
+  @apply text-white font-semibold;
 }
 
 .scroll-container {

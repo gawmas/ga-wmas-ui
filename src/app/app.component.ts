@@ -1,25 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnInit, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NgIconComponent } from '@ng-icons/core';
 import { HeaderComponent } from 'layout/header/header.component';
 import { initFlowbite } from 'flowbite';
 import { FooterComponent } from 'layout/footer/footer.component';
+import { SplashComponent } from 'components/splash.component';
 
 @Component({
   selector: 'gawmas-root',
   standalone: true,
-  imports: [HeaderComponent, RouterOutlet, NgIconComponent, FooterComponent],
+  imports: [HeaderComponent, RouterOutlet, NgIconComponent,
+    FooterComponent, SplashComponent],
   template: `
-    <gawmas-header></gawmas-header>
-    <div class="m-0 p-0 w-screen">
-      <main class="px-2">
-        <router-outlet></router-outlet>
+    <div class="max-w-[1400px] mx-auto bg-gradient-to-r from-gawmas-green to-transparent from-20% to-80%">
+      <gawmas-header></gawmas-header>
+      <gawmas-splash #splashModal></gawmas-splash>
+        <main>
+          <router-outlet></router-outlet>
+        </main>
         <gawmas-footer></gawmas-footer>
-      </main>
     </div>
   `
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewChecked {
+
+  @ViewChild('splashModal') splashModal!: SplashComponent;
+
+  ngAfterViewChecked(): void {
+    // this.splashModal.openSplash();
+  }
 
   ngOnInit(): void {
     initFlowbite();
