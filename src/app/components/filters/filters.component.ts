@@ -41,7 +41,7 @@ export class FiltersComponent implements OnInit, OnDestroy {
   isLoading$ = this._store.select(selectFiltersAuxDataLoading);
   filter$ = this._store.select(selectFilter);
 
-  auxData: FilterAuxData = { wmas: [], seasons: [], weapons: [], filteredWmas: [] };
+  auxData: FilterAuxData = { wmas: [], seasons: [], weapons: [], histClimateLocations: [], filteredWmas: [] };
 
   sortForm: FormGroup = this._formBuilder.group({
     sort: ''
@@ -173,8 +173,8 @@ export class FiltersComponent implements OnInit, OnDestroy {
           tap((auxData) => this.auxData = auxData))
         .subscribe((auxData: FilterAuxData) => {
           for (let key of Object.keys(auxData)) {
-            if (key !== 'filteredWmas') {
-              this._buildCheckBoxes(auxData[key as keyof FilterAuxData]);
+            if (key !== 'filteredWmas' && key !== 'histClimateLocations') {
+              this._buildCheckBoxes(auxData[key as keyof Omit<FilterAuxData, 'histClimateLocations'>]);
             }
           }
         });

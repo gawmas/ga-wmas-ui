@@ -1,5 +1,6 @@
 export interface Filter {
   skip: number;
+  pageSize?: number | null;
   wmas?: number[] | null;
   seasons?: number[] | null;
   weapons?: number[] | null;

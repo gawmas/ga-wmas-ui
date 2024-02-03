@@ -5,4 +5,6 @@ export interface Wma {
   isVPA: boolean;
   locationId: number;
   visible?: boolean;
+  physLat?: number;
+  physLong?: number;
 }

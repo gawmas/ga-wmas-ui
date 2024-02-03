@@ -1,20 +1,19 @@
 <div class="flex px-2 py-2 mb-0 scroll-container z-10">
 
   <button (click)="openFiltersDrawer()" type="button"
-    class="mr-1.5 relative inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-600 rounded-full hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-blue-300">
+    class="btn btn-primary">
     <ng-icon name="heroAdjustmentsHorizontal" class="mr-1 text-lg"></ng-icon>
     <span class="sr-only">Applied Filter Count</span>
     Filters
     @if (filterCount() > 0) {
-      <div
-        class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">
+      <div class="count-badge">
         {{ filterCount() }}
       </div>
     }
   </button>
 
   <form [formGroup]="sortForm" class="mr-1.5">
-    <select formControlName="sort" class="block py-3 px-5 text-xs border rounded-full bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+    <select formControlName="sort" class="select">
       <option class="underline">Sort Results</option>
       <option value="">WMA Name, Date</option>
       <option value="success">Success Rate</option>
@@ -97,29 +96,25 @@
 <gawmas-drawer #filterDrawer [targetElement]="filterDrawerTarget">
 
   <form [formGroup]="filterForm">
-    <div class="flex border-b items-center border-gray-500 pb-2">
+    <div class="flex items-center ml-3 lg:border-b lg:border-gray-500 pb-2">
       <h3 class="hidden lg:flex-1 md:block lg:block text-xl font-semibold text-gray-200 align-baseline pl-3">
         Filter Hunt Results {{ selectedWmaIds() }}
       </h3>
       <div class="flex md:pr-2 md:ml-3">
-        <button (click)="apply()" type="button"
-          class="mr-2 relative inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-600 rounded-2xl hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-blue-300">
+        <button (click)="apply()" type="button" class="btn btn-primary">
           <ng-icon name="heroBolt" class="mr-1 text-lg"></ng-icon>
           <span class="sr-only">Notifications</span>
           Apply
           @if (filterCount() > 0) {
-            <div
-              class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">
+            <div class="count-badge">
               {{ filterCount() }}
             </div>
           }
         </button>
-          <button (click)="clearFilters()" [disabled]="filterCount() === 0" type="button"
-            class="bg-red-600 hover:bg-red-500 disabled:bg-red-300 disabled:text-gray-400 text-gray-100 mr-2 text-sm font-bold px-4 py-2 rounded-2xl inline-flex items-center">
-              Clear
+          <button (click)="clearFilters()" [disabled]="filterCount() === 0" type="button" class="btn btn-danger">
+            Clear
           </button>
-        <button (click)="cancel()" type="button"
-          class="bg-gray-300 hover:bg-gray-200 text-gray-700 mr-2 text-sm font-bold px-4 py-2 rounded-2xl inline-flex items-center">
+        <button (click)="cancel()" type="button" class="btn btn-default">
           Cancel
         </button>
       </div>

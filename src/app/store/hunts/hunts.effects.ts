@@ -57,6 +57,7 @@ export class HuntEffects {
         this._huntService.getHunts(
           {
             skip,
+            pageSize: filter?.pageSize,
             wmas: filter?.wmas,
             seasons: filter?.seasons,
             weapons: filter?.weapons,

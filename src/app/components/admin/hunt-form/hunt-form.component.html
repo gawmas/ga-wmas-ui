@@ -1,0 +1,101 @@
+<gawmas-modal #huntForm [targetElement]="huntFormTarget">
+  <form [formGroup]="huntFormGroup">
+    <div class="flex items-start justify-between rounded-t border-b p-5 dark:border-gray-600">
+      <h3 class="text-xl font-semibold text-white lg:text-2xl">
+        Update Hunt
+      </h3>
+      <button (click)="closeHuntForm()" type="button"
+        class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-600 hover:text-white">
+          <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+          </svg>
+        <span class="sr-only">Close modal</span>
+      </button>
+    </div>
+    <div class="p-6">
+      @if (auxData$ | async; as data) {
+        <div class="w-full mb-1">
+          <label for="wmaId" class="font-bold text-sm uppercase">WMA</label>
+          <select #firstInputRef tabindex="1" id="wmaId" formControlName="wmaId" class="select text-base rounded-md bg-gray-600">
+            @for (w of data.wmas; track w.id) {
+              <option [value]="w.id">{{ w.name }}</option>
+            }
+          </select>
+        </div>
+        <div class="flex items-center mb-1">
+          <div class="w-1/2 mr-1">
+            <label for="seasonId" class="font-bold text-sm uppercase">Season</label>
+            <select tabindex="2" id="seasonId" formControlName="seasonId" class="select text-base w-full rounded-md bg-gray-600">
+              @for (s of data.seasons; track s.id) {
+                <option [value]="s.id">{{ s.season }}</option>
+              }
+            </select>
+          </div>
+          <div class="w-1/2">
+            <label for="weaponId" class="font-bold text-sm uppercase">Weapon</label>
+            <select tabindex="3" id="weaponId" formControlName="weaponId" class="select text-base w-full rounded-md bg-gray-600">
+              @for (w of data.weapons; track w.id) {
+                <option [value]="w.id">{{ w.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+        <div class="w-full mb-1">
+          <label for="details" class="font-bold text-sm uppercase">Details</label>
+          <input tabindex="4" id="details" formControlName="details" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+        </div>
+        <div class="flex items-center mb-1">
+          <div class="w-1/3">
+            <label for="hunterCount" class="font-bold text-sm uppercase">Hunters</label>
+            <input tabindex="5" id="hunterCount" formControlName="hunterCount" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+          </div>
+          <div class="w-1/3 ml-2">
+            <label for="bucks" class="font-bold text-sm uppercase">Bucks</label>
+            <input tabindex="6" id="bucks" formControlName="bucks" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+          </div>
+          <div class="w-1/3 ml-2">
+            <label for="does" class="font-bold text-sm uppercase">Does</label>
+            <input tabindex="7" id="does" formControlName="does" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+          </div>
+        </div>
+        <div class="flex items-center mb-1">
+          <div class="w-1/2">
+            <label for="startDate" class="font-bold text-sm uppercase">Start Date</label>
+            <input tabindex="8" id="startDate" formControlName="startDate" mask="M0/d0/0000" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+          </div>
+          <div class="w-1/2 ml-2">
+            <label for="endDate" class="font-bold text-sm uppercase">End Date</label>
+            <input tabindex="9" id="endDate" formControlName="endDate" mask="d0/M0/0000" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+          </div>
+        </div>
+        <div class="flex items-center mb-1">
+          <div class="w-1/2">
+            <label for="lat" class="font-bold text-sm uppercase">Lat</label>
+            <input tabindex="10" id="lat" formControlName="lat" mask="M0/d0/0000" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+          </div>
+          <div class="w-1/2 ml-2">
+            <label for="long" class="font-bold text-sm uppercase">Long</label>
+            <input tabindex="11" id="long" formControlName="long" mask="d0/M0/0000" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+          </div>
+        </div>
+        <div class="w-full mb-1">
+          <label for="histClimateId" class="font-bold text-sm uppercase">Historical Climate Town</label>
+          <select #firstInputRef tabindex="12" id="histClimateId" formControlName="histClimateId" class="select text-base rounded-md bg-gray-600">
+            @for (l of data.histClimateLocations; track l.id) {
+              <option [value]="l.id">{{ l.town }}</option>
+            }
+          </select>
+        </div>
+      }
+      <pre class="text-xs">{{ huntFormGroup.value | json }}</pre>
+    </div>
+    <div class="flex items-center pl-2 py-2 rtl:space-x-reverse rounded-b border-t border-gray-600">
+      <button (click)="update()" type="submit" class="btn btn-primary">
+        Save
+      </button>
+      <button (click)="closeHuntForm()" type="button" class="btn btn-default">
+        Close
+      </button>
+    </div>
+  </form>
+</gawmas-modal>

@@ -6,3 +6,4 @@ export * from './weapon.interface';
 export * from './filterAuxData.interface';
 export * from './drawerCloseEvent.interface';
 export * from './modalCloseEvent.interface';
+export * from './histClimateLocation.interface';

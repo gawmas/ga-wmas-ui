@@ -16,4 +16,6 @@ export interface Hunt {
   climateTown: string;
   coords: string;
   histClimateId: number;
+  physLat?: number;
+  physLong?: number;
 }

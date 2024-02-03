@@ -6,10 +6,10 @@ import { FiltersComponent } from 'components/filters/filters.component';
 import { AppStateInterface } from '@store-model';
 import { DetailsHighlightPipe, SuccessRateColorPipe, SuccessRatePipe } from "@pipes";
 import { NgIconComponent } from '@ng-icons/core';
-import * as huntsActions from 'store/hunts/hunts.actions';
 import { take } from 'rxjs';
 import { Hunt } from '@model';
-import { HuntFormComponent } from 'components/hunt-form/hunt-form/hunt-form.component';
+import { HuntFormComponent } from 'components/admin/hunt-form/hunt-form.component';
+import * as huntsActions from 'store/hunts/hunts.actions';
 
 @Component({
   standalone: true,
@@ -32,11 +32,17 @@ export class HuntsComponent implements OnInit {
   isEndOfResults$ = this._store.select(selectEndOfResults);
 
   screenWidth = signal(window.innerWidth);
+  screenHeight = signal(window.innerHeight);
 
   ngOnInit(): void {
+    // Set initial page size based on screen height ...
+    const initialPageSize = this.screenHeight() > 2000 ? 20 :
+      (this.screenHeight() < 2000 && this.screenHeight() > 1000) ? 15 : 10;
+
     this._store.dispatch(huntsActions.getInitialHunts({
       filter: {
         skip: 0,
+        pageSize: initialPageSize,
         successRate: 0,
         wmas: [],
         seasons: [],
@@ -48,6 +54,7 @@ export class HuntsComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event: any): void {
     this.screenWidth.set(event.target.innerWidth);
+    this.screenHeight.set(event.target.innerHeight);
   }
 
   @HostListener('window:scroll', ['$event'])

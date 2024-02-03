@@ -10,7 +10,8 @@ export const initialFilterAuxDataState: FilterAuxDataState = {
     wmas: [],
     filteredWmas: [],
     seasons: [],
-    weapons: []
+    weapons: [],
+    histClimateLocations: []
   },
   loading: false
 };
