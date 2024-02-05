@@ -1,6 +1,5 @@
 import { initialFilterAuxDataState } from '@store-model';
 import { createReducer, on } from "@ngrx/store";
-import { Filter } from '@model';
 import * as filterActions from "./filters.actions";
 
 export const filterAuxDataReducers = createReducer(

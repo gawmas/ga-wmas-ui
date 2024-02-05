@@ -15,11 +15,14 @@ import { heroTableCells, heroUsers, heroBarsArrowUp,
   heroXMark, heroBolt, heroMapPin, heroCalendar, heroWrenchScrewdriver,
   heroChartPie, heroSun, heroMoon, heroArrowDown, heroArrowUp,
   heroInformationCircle, heroNoSymbol, heroFaceFrown, heroBars3,
-  heroChatBubbleBottomCenterText, heroDocumentText, heroCheckCircle } from '@ng-icons/heroicons/outline';
+  heroChatBubbleBottomCenterText, heroDocumentText, heroCheckCircle,
+  heroPencilSquare } from '@ng-icons/heroicons/outline';
 import { AppStateInterface } from '_shared/model/store';
 import { huntsReducers } from './app/store/hunts/hunts.reducers';
 import { filterAuxDataReducers } from './app/store/filters/filters.reducers';
 import { FiltersEffects } from 'store/filters/filters.effects';
+import { adminReducers } from 'store/admin/admin.reducers';
+import { AdminEffects } from 'store/admin/admin.effects';
 
 const heroIcons = {
   heroTableCells,
@@ -44,12 +47,14 @@ const heroIcons = {
   heroBars3,
   heroChatBubbleBottomCenterText,
   heroDocumentText,
-  heroCheckCircle
+  heroCheckCircle,
+  heroPencilSquare
 };
 
 const appReducers: ActionReducerMap<AppStateInterface> = {
   huntState: huntsReducers,
-  filterAuxDataState: filterAuxDataReducers
+  filterAuxDataState: filterAuxDataReducers,
+  adminState: adminReducers
 };
 
 export const appConfig: ApplicationConfig = {
@@ -59,7 +64,7 @@ export const appConfig: ApplicationConfig = {
       HttpClientModule,
       RouterModule.forRoot(routes),
       StoreModule.forRoot(appReducers),
-      EffectsModule.forRoot([HuntEffects, FiltersEffects]),
+      EffectsModule.forRoot([HuntEffects, FiltersEffects, AdminEffects]),
       StoreDevtoolsModule.instrument({ maxAge: 25 }),
       NgIconsModule.withIcons(heroIcons),
     )

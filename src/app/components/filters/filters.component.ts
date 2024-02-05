@@ -16,7 +16,7 @@ import * as filterActions from 'store/filters/filters.actions';
 import * as huntsActions from 'store/hunts/hunts.actions';
 
 @Component({
-  selector: 'hunt-filters',
+  selector: 'gawmas-hunt-filters',
   standalone: true,
   imports: [SHARED_MODULES, ReactiveFormsModule,
     NgIconComponent, FormArrayPipe, DrawerComponent,

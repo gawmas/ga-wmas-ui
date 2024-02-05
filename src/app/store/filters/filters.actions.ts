@@ -1,4 +1,4 @@
-import { Filter, FilterAuxData, Hunt } from "@model";
+import { FilterAuxData } from "@model";
 import { createAction, props } from "@ngrx/store";
 
 const prefix = '[Filters]';

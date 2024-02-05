@@ -1,6 +1,6 @@
 import { selectEndOfResults, selectFilter, selectHunts, selectHuntsLoading } from 'store/hunts/hunts.selectors';
 import { SHARED_MODULES } from '@shared-imports';
-import { Component, HostListener, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FiltersComponent } from 'components/filters/filters.component';
 import { AppStateInterface } from '@store-model';
@@ -12,6 +12,7 @@ import { HuntFormComponent } from 'components/admin/hunt-form/hunt-form.componen
 import * as huntsActions from 'store/hunts/hunts.actions';
 
 @Component({
+  selector: 'gawmas-browse-hunts',
   standalone: true,
   templateUrl: './hunts.component.html',
   imports: [SHARED_MODULES, FiltersComponent,
@@ -20,7 +21,7 @@ import * as huntsActions from 'store/hunts/hunts.actions';
 })
 export class HuntsComponent implements OnInit {
 
-  @ViewChild('huntFormModal') huntForm: HuntFormComponent | undefined;
+  @Input('isAdmin') isAdmin: boolean = false;
 
   private _store = inject(Store<AppStateInterface>);
 
@@ -82,11 +83,6 @@ export class HuntsComponent implements OnInit {
 
   scrollTop(): void {
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
-  }
-
-  openHuntForm(hunt: Hunt) {
-    // this.huntForm!.hunt = hunt;
-    this.huntForm?.openHuntForm(hunt);
   }
 
 }

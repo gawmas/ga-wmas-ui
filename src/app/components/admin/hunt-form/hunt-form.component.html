@@ -61,31 +61,30 @@
         <div class="flex items-center mb-1">
           <div class="w-1/2">
             <label for="startDate" class="font-bold text-sm uppercase">Start Date</label>
-            <input tabindex="8" id="startDate" formControlName="startDate" mask="M0/d0/0000" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+            <input tabindex="8" id="startDate" formControlName="startDate"
+              mask="M0/d0/0000" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
           </div>
           <div class="w-1/2 ml-2">
             <label for="endDate" class="font-bold text-sm uppercase">End Date</label>
-            <input tabindex="9" id="endDate" formControlName="endDate" mask="d0/M0/0000" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+            <input tabindex="9" id="endDate" formControlName="endDate"
+              mask="d0/M0/0000" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
           </div>
         </div>
-        <div class="flex items-center mb-1">
-          <div class="w-1/2">
-            <label for="lat" class="font-bold text-sm uppercase">Lat</label>
-            <input tabindex="10" id="lat" formControlName="lat" mask="M0/d0/0000" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
-          </div>
-          <div class="w-1/2 ml-2">
-            <label for="long" class="font-bold text-sm uppercase">Long</label>
-            <input tabindex="11" id="long" formControlName="long" mask="d0/M0/0000" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
-          </div>
+        <div class="flex items-center mx-3 my-3">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input tabindex="10" formControlName="isBonusQuota" type="checkbox" class="sr-only peer">
+            <div class="toggle peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white"></div>
+            <span class="ms-2 text-sm font-medium text-gray-300">Quota/Bonus Hunt</span>
+          </label>
         </div>
-        <div class="w-full mb-1">
-          <label for="histClimateId" class="font-bold text-sm uppercase">Historical Climate Town</label>
-          <select #firstInputRef tabindex="12" id="histClimateId" formControlName="histClimateId" class="select text-base rounded-md bg-gray-600">
-            @for (l of data.histClimateLocations; track l.id) {
-              <option [value]="l.id">{{ l.town }}</option>
-            }
-          </select>
-        </div>
+        @if (huntFormGroup.get('isBonusQuota')?.value === true) {
+          <div class="flex items-center mb-1">
+            <div class="w-1/2 ml-2">
+              <label for="quota" class="font-bold text-sm uppercase">Quota</label>
+              <input tabindex="11" id="quota" formControlName="quota" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+            </div>
+          </div>
+        }
       }
       <pre class="text-xs">{{ huntFormGroup.value | json }}</pre>
     </div>

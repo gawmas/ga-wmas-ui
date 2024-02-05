@@ -1,5 +1,6 @@
 import { Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Hunt } from '@model';
 import { Store } from '@ngrx/store';
 import { AdminService } from '@services';
@@ -7,6 +8,8 @@ import { SHARED_MODULES } from '@shared-imports';
 import { AppStateInterface } from '@store-model';
 import { ModalComponent } from '_shared/components/modal.component';
 import { provideNgxMask } from 'ngx-mask';
+import { Subscription } from 'rxjs';
+import { selectHunt } from 'store/admin/admin.selectors';
 import { selectFiltersAuxData } from 'store/filters/filters.selectors';
 
 @Component({
@@ -20,13 +23,15 @@ export class HuntFormComponent {
 
   private _fb = inject(FormBuilder);
   private _store = inject(Store<AppStateInterface>);
-  private _adminService = inject(AdminService);
+  private _router = inject(Router);
+  private _huntSub = new Subscription();
 
   @ViewChild('huntForm') huntFormModal: ModalComponent | undefined;
   @ViewChild('firstInputRef') firstInputRef: ElementRef | undefined;
 
   huntFormTarget = 'huntForm';
 
+  hunt$ = this._store.select(selectHunt);
   auxData$ = this._store.select(selectFiltersAuxData);
 
   huntFormGroup: FormGroup = this._fb.group({
@@ -41,29 +46,27 @@ export class HuntFormComponent {
     startDate: [''],
     endDate: [''],
     quota: [''],
-    location: [''],
-    climateTown: [''],
-    histClimateId: [''],
-    lat: [''],
-    long: [''],
+    isBonusQuota: false
   });
 
-  openHuntForm(hunt: Hunt): void {
+  openHuntForm(): void {
     this.huntFormModal?.open();
-    this.huntFormGroup.patchValue({
-      ...hunt,
-      lat: hunt.coords.split(',')[0],
-      long: hunt.coords.split(',')[1]});
+    this._huntSub = this.hunt$.subscribe((hunt) => {
+      this.huntFormGroup.patchValue({...hunt});
+    });
     this.firstInputRef?.nativeElement.focus();
   }
 
   update(): void {
-    this._adminService.updateHunt(this.huntFormGroup.value).subscribe((hunt) => {
-      console.log('Hunt updated', hunt);
-    });
+    // this._adminService.updateHunt(this.huntFormGroup.value).subscribe((hunt) => {
+    //   console.log('Hunt updated', hunt);
+    // });
   }
 
   closeHuntForm(): void {
+    this._huntSub.unsubscribe();
+    this.huntFormGroup.reset();
+    this._router.navigate([], { queryParams: { h: null } });
     this.huntFormModal?.close();
   }
 

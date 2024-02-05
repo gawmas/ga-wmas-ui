@@ -18,4 +18,5 @@ export interface Hunt {
   histClimateId: number;
   physLat?: number;
   physLong?: number;
+  isBonusQuota?: boolean;
 }

@@ -1,4 +1,4 @@
-<hunt-filters />
+<gawmas-hunt-filters />
 
 <table class="w-[95%] text-sm text-left text-gray-300 -pt-2">
   @if (screenWidth() > 1000) {
@@ -16,6 +16,11 @@
           <tr class="border-b bg-gray-800 border-gray-500">
             <td class="px-6 py-4 align-top bg-gray-800">
               <div class="flex flex-wrap items-center mb-1">
+                @if (isAdmin) {
+                  <a routerLink="/admin" [queryParams]="{ h: hunt.id }">
+                    <ng-icon name="heroPencilSquare" class="mr-1"></ng-icon>
+                  </a>
+                }
                 @if (hunt.physLat && hunt.physLong) {
                   <a href="https://www.google.com/maps/search/?api=1&query={{ hunt.physLat }},{{ hunt.physLong }}" target="_blank">
                     <ng-icon name="heroMapPin" class="mr-1"></ng-icon>
@@ -92,7 +97,12 @@
               </table>
             </td>
             <td class="px-6 py-4 align-top border-l border-gray-600">
-              hunt.id: <a href="javascript:;" (click)="openHuntForm(hunt)">{{ hunt.id }}</a>
+
+              <!-- hunt.id: -->
+              <!-- <a href="javascript:;" (click)="openHuntForm(hunt)">
+                {{ hunt.id }}
+              </a> -->
+              <!-- {{ hunt | json }} -->
           </tr>
         } @empty {
           <tr class="bg-gray-800 border-b border-gray-700">
@@ -220,4 +230,4 @@
   </div>
 }
 
-<gawmas-hunt-form #huntFormModal />
+

@@ -10,6 +10,10 @@ export class AdminService {
   http = inject(HttpClient);
   private endpoint = `${env.API_URL}`;
 
+  getHunt(id: string): Observable<Hunt> {
+    return this.http.get<Hunt>(`${this.endpoint}/hunt/${id}`);
+  }
+
   updateHunt(hunt: Hunt): Observable<Hunt> {
     return this.http.put<Hunt>(`${this.endpoint}/hunt/${hunt.id}`, hunt);
   }
