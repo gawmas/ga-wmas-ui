@@ -6,14 +6,14 @@ export const adminReducers = createReducer(
 
   initialAdminState,
 
-  on(adminActions.getSingleHunt, (state) => {
+  on(adminActions.getSingleHunt, adminActions.updateHunt, (state) => {
     return {
       ...state,
       loading: true
     };
   }),
 
-  on(adminActions.getSingleHuntComplete, (state, { hunt }) => {
+  on(adminActions.getSingleHuntComplete, adminActions.updateHuntComplete, (state, { hunt }) => {
     return {
       ...state,
       hunt: hunt,

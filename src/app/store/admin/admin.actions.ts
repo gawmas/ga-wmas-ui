@@ -1,4 +1,4 @@
-import { Hunt } from "@model";
+import { Hunt, HuntPayload } from "@model";
 import { createAction, props } from "@ngrx/store";
 
 const prefix = '[Admin]';
@@ -19,3 +19,16 @@ export const getSingleHuntError = createAction(
   `${prefix} Get Single Hunt Error`,
   props<{ error: string }>()
 );
+
+export const updateHunt = createAction(
+  `${prefix} Update Hunt`,
+  props<{ huntPayload: HuntPayload }>());
+
+export const updateHuntComplete = createAction(
+  `${prefix} Update Hunt Complete`,
+  props<{ hunt: Hunt }>());
+
+  export const updateHuntError = createAction(
+    `${prefix} Update Hunt Error`,
+    props<{ error: string }>()
+  );

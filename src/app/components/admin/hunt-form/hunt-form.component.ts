@@ -12,6 +12,7 @@ import { selectHunt } from 'store/admin/admin.selectors';
 import { selectFiltersAuxData } from 'store/filters/filters.selectors';
 import * as adminActions from "store/admin/admin.actions";
 import { DatePipe } from '@angular/common';
+import { HuntPayload } from '@model';
 
 @Component({
   selector: 'gawmas-hunt-form',
@@ -83,9 +84,8 @@ export class HuntFormComponent {
   }
 
   update(): void {
-    // this._adminService.updateHunt(this.huntFormGroup.value).subscribe((hunt) => {
-    //   console.log('Hunt updated', hunt);
-    // });
+    const payload = this.huntFormGroup?.value as HuntPayload;
+    this._store.dispatch(adminActions.updateHunt({ huntPayload: payload }));
   }
 
   private _clearHuntDatesArray(): void {

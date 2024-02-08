@@ -10,8 +10,6 @@ export interface Hunt {
   does: number;
   bucks: number;
   hunterCount: number;
-  // startDate: string;
-  // endDate: string;
   huntDates: HuntDate[];
   quota: number | null;
   location: string;
@@ -26,4 +24,9 @@ export interface Hunt {
 export interface HuntDate {
   start: string;
   end: string;
+}
+
+export interface HuntPayload extends Hunt {
+  startDates: string[];
+  endDates: string[];
 }

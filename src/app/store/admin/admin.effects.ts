@@ -24,6 +24,19 @@ export class AdminEffects {
     )
   );
 
+  updateHunt$ = createEffect(() =>
+    this._actions$.pipe(
+      ofType(adminActions.updateHunt),
+      map((action) => action.huntPayload),
+      switchMap((payload) =>
+        this._adminService.updateHunt(payload).pipe(
+          map((updatedHunt) => adminActions.updateHuntComplete({ hunt: updatedHunt })),
+          catchError((error) => of(adminActions.updateHuntError({ error })))
+        )
+      )
+    )
+  );
+
   error$ = createEffect(
     () =>
       this._actions$.pipe(
