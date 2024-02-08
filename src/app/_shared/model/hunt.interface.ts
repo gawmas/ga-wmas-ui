@@ -6,11 +6,13 @@ export interface Hunt {
   season: string;
   details: string;
   weapon: string;
+  weaponId: number;
   does: number;
   bucks: number;
   hunterCount: number;
-  startDate: string;
-  endDate: string;
+  // startDate: string;
+  // endDate: string;
+  huntDates: HuntDate[];
   quota: number | null;
   location: string;
   climateTown: string;
@@ -19,4 +21,9 @@ export interface Hunt {
   physLat?: number;
   physLong?: number;
   isBonusQuota?: boolean;
+}
+
+export interface HuntDate {
+  start: string;
+  end: string;
 }

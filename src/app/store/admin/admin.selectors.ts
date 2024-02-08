@@ -1,4 +1,3 @@
-import { Hunt } from '@model';
 import { createSelector } from '@ngrx/store';
 import { AppStateInterface } from '@store-model';
 import { AdminState } from '_shared/model/store/admin.model';

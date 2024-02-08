@@ -1,6 +1,6 @@
 import { createReducer, on } from "@ngrx/store";
-import * as adminActions from "./admin.actions";
 import { initialAdminState } from '_shared/model/store/admin.model';
+import * as adminActions from "./admin.actions";
 
 export const adminReducers = createReducer(
 
@@ -21,4 +21,11 @@ export const adminReducers = createReducer(
     };
   }),
 
-);
+  on(adminActions.clearSingleHunt, (state) => {
+    return {
+      ...state,
+      hunt: null
+    };
+  }
+
+));

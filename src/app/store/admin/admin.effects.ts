@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { map, switchMap, catchError, of, tap} from 'rxjs';
-import * as adminActions from './admin.actions';
 import { AdminService } from '@services';
+import * as adminActions from './admin.actions';
 
 @Injectable()
 export class AdminEffects {

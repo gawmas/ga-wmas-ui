@@ -7,6 +7,10 @@ export const getSingleHunt = createAction(
   `${prefix} Get Single Hunt`,
   props<{ id: string }>());
 
+export const clearSingleHunt = createAction(
+  `${prefix} Clear Single Hunt`
+);
+
 export const getSingleHuntComplete = createAction(
   `${prefix} Get Single Hunt Complete`,
   props<{ hunt: Hunt }>());

@@ -1,11 +1,11 @@
 import { Hunt } from "@model";
 
 export interface AdminState {
-  hunt: Hunt;
+  hunt: Hunt | null;
   loading: boolean;
 }
 
 export const initialAdminState: AdminState = {
-  hunt: {} as Hunt,
+  hunt: null,
   loading: false
 };

@@ -58,16 +58,22 @@
             <input tabindex="7" id="does" formControlName="does" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
           </div>
         </div>
-        <div class="flex items-center mb-1">
-          <div class="w-1/2">
-            <label for="startDate" class="font-bold text-sm uppercase">Start Date</label>
-            <input tabindex="8" id="startDate" formControlName="startDate"
-              mask="M0/d0/0000" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+        <div class="grid grid-cols-2 gap-2">
+          <div class="w-full">
+            <div formArrayName="startDates" class="mb-1"
+              *ngFor="let d of (huntFormGroup | formArray: 'startDates')?.controls; let i = index">
+                <label for="start{{ i }}" class="font-bold text-sm uppercase">Start Date</label>
+                  <input type="text" [formControlName]="i" id="start{{ i }}" [tabindex]="8 + i"
+                    class="w-full rounded-md text-gray-200 bg-gray-600" />
+            </div>
           </div>
-          <div class="w-1/2 ml-2">
-            <label for="endDate" class="font-bold text-sm uppercase">End Date</label>
-            <input tabindex="9" id="endDate" formControlName="endDate"
-              mask="d0/M0/0000" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+          <div class="w-full">
+            <div formArrayName="endDates" class="mb-1"
+              *ngFor="let d of (huntFormGroup | formArray: 'endDates')?.controls; let i = index">
+                <label for="end{{ i }}" class="font-bold text-sm uppercase">End Date</label>
+                  <input type="text" [formControlName]="i" id="end{{ i }}" [tabindex]="8 + i"
+                    class="w-full rounded-md text-gray-200 bg-gray-600" />
+            </div>
           </div>
         </div>
         <div class="flex items-center mx-3 my-3">

@@ -63,14 +63,11 @@
               <div class="mt-1 text-xs" [innerHTML]="hunt.details | detailsHighlight"></div>
             </td>
             <td class="px-6 py-4 align-top bg-gray-800">
-              <div>
-                <span class="uppercase text-xs font-semibold text-gray-400">Start:</span>
-                <span class="mx-1">{{ hunt.startDate | date: 'MM/dd/yyy' }}</span>
-              </div>
-              <div>
-                <span class="uppercase text-xs font-semibold text-gray-400">End:</span>
-                <span class="mx-1">{{ hunt.endDate | date: 'MM/dd/yyy' }}</span>
-              </div>
+              @for (date of hunt.huntDates; track date) {
+                <div class="mx-1">
+                  {{ date.start | date: 'MMM d' }} &ndash; {{ date.end | date: 'MMM d' }}
+                </div>
+              }
             </td>
             <td class="px-6 align-top bg-gray-900">
               <table class="w-full mt-1 mb-1">
@@ -97,12 +94,8 @@
               </table>
             </td>
             <td class="px-6 py-4 align-top border-l border-gray-600">
-
-              <!-- hunt.id: -->
-              <!-- <a href="javascript:;" (click)="openHuntForm(hunt)">
-                {{ hunt.id }}
-              </a> -->
-              <!-- {{ hunt | json }} -->
+              {{ hunt.huntDates | json }}
+            </td>
           </tr>
         } @empty {
           <tr class="bg-gray-800 border-b border-gray-700">
@@ -163,8 +156,13 @@
                   }
                 }
                 <span class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-full bg-blue-900 text-blue-300">
-                  {{ hunt.startDate | date: 'MM/dd/yyyy' }} - {{ hunt.endDate | date: 'MM/dd/yyyy' }}
+                  {{ hunt.season }}
                 </span>
+                @for (date of hunt.huntDates; track date) {
+                  <span class="text-xs font-medium me-2 my-1 px-2.5 py-0.5 rounded-full bg-gray-400 text-gray-700">
+                    {{ date.start | date: 'MM/dd' }} &ndash; {{ date.end | date: 'MM/dd' }}
+                  </span>
+                }
                 @if (hunt.quota) {
                   <span class="text-sm font-medium me-2 px-2.5 py-0.5 rounded-full bg-red-900 text-red-300">
                     <span class="text-xs uppercase">Quota:</span> <span>{{ hunt.quota }}</span>
@@ -222,7 +220,7 @@
 </table>
 
 @if ((isEndOfResults$ | async) && (hunts$ | async)!.length > 0) {
-  <div class="w-[99%] md:w-[85%] flex justify-center mt-1 mb-12">
+  <div class="w-[95%] flex justify-center mt-1 mb-12 bg-gray-900 py-1">
     <div class="flex items-center text-gawmas-yeller text-sm">
       <ng-icon name="heroCheckCircle" class="mr-1"></ng-icon>
       <span class="italic uppercase">End of results</span>

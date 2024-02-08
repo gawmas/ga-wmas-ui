@@ -13,11 +13,6 @@ export const selectFilter = createSelector(
   (state: HuntState) => state.filter
 );
 
-export const selectHuntsLoaded = createSelector(
-  selectHuntsState,
-  (state: HuntState) => state.hunts
-);
-
 export const selectAllHuntsLength = createSelector(
   selectHuntsState,
   (state: HuntState) => state.hunts.length

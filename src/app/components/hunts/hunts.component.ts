@@ -1,13 +1,12 @@
 import { selectEndOfResults, selectFilter, selectHunts, selectHuntsLoading } from 'store/hunts/hunts.selectors';
 import { SHARED_MODULES } from '@shared-imports';
-import { Component, HostListener, Input, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
+import { Component, HostListener, Input, OnInit, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FiltersComponent } from 'components/filters/filters.component';
 import { AppStateInterface } from '@store-model';
 import { DetailsHighlightPipe, SuccessRateColorPipe, SuccessRatePipe } from "@pipes";
 import { NgIconComponent } from '@ng-icons/core';
 import { take } from 'rxjs';
-import { Hunt } from '@model';
 import { HuntFormComponent } from 'components/admin/hunt-form/hunt-form.component';
 import * as huntsActions from 'store/hunts/hunts.actions';
 
