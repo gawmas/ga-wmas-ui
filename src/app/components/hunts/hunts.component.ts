@@ -6,7 +6,7 @@ import { FiltersComponent } from 'components/filters/filters.component';
 import { AppStateInterface } from '@store-model';
 import { DetailsHighlightPipe, SuccessRateColorPipe, SuccessRatePipe } from "@pipes";
 import { NgIconComponent } from '@ng-icons/core';
-import { take } from 'rxjs';
+import { combineLatest, distinctUntilChanged, take } from 'rxjs';
 import { HuntFormComponent } from 'components/admin/hunt-form/hunt-form.component';
 import * as huntsActions from 'store/hunts/hunts.actions';
 
@@ -48,7 +48,8 @@ export class HuntsComponent implements OnInit {
         seasons: [],
         weapons: [],
         sort: null
-      } }));
+      }
+    }));
   }
 
   @HostListener('window:resize', ['$event'])
@@ -70,10 +71,15 @@ export class HuntsComponent implements OnInit {
     const windowBottom = windowHeight + window.pageYOffset;
 
     if (windowBottom >= (docHeight * .95)) {
-      this.isEndOfResults$
-        .pipe(take(1))
-        .subscribe(isEndOfResults => {
-          if (!isEndOfResults) {
+      combineLatest([
+        this.isLoading$,
+        this.isEndOfResults$
+      ])
+        .pipe(
+          take(1),
+          distinctUntilChanged())
+        .subscribe(([isLoading, isEndOfResults]) => {
+          if (!isLoading && !isEndOfResults) {
             this._store.dispatch(huntsActions.getMoreHunts({ filter: undefined }));
           }
         });

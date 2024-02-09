@@ -65,7 +65,7 @@ export const appConfig: ApplicationConfig = {
       RouterModule.forRoot(routes),
       StoreModule.forRoot(appReducers),
       EffectsModule.forRoot([HuntEffects, FiltersEffects, AdminEffects]),
-      StoreDevtoolsModule.instrument({ maxAge: 25 }),
+      StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: false }),
       NgIconsModule.withIcons(heroIcons),
     )
   ]
