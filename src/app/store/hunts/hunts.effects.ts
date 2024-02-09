@@ -61,7 +61,8 @@ export class HuntEffects {
             wmas: filter?.wmas,
             seasons: filter?.seasons,
             weapons: filter?.weapons,
-            successRate: filter?.successRate
+            successRate: filter?.successRate,
+            sort: filter?.sort
           } as Filter)
           .pipe(
             map((result) => huntsActions.getMoreHuntsComplete({ hunts: result }))
