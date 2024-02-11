@@ -223,7 +223,8 @@ export class FiltersComponent implements OnInit, OnDestroy {
       wmas: this._extractCheckIds('wmas', 'wmas'),
       seasons: this._extractCheckIds('seasons', 'seasons'),
       weapons: this._extractCheckIds('weapons', 'weapons'),
-      successRate: this.filterForm.controls['successRate'].value
+      successRate: this.filterForm.controls['successRate'].value,
+      sort: this.sortForm.controls['sort'].value
     });
   }
 

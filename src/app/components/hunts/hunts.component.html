@@ -94,7 +94,20 @@
               </table>
             </td>
             <td class="px-6 py-4 align-top border-l border-gray-600">
-              {{ hunt.huntDates | json }}
+              <!-- {{ hunt.wxHistAvgs | json }} -->
+              <div class="font-bold uppercase text-xs border-b border-gray-600 pl-2 mb-1">
+                <ng-icon name="heroClock" class="mr-1"></ng-icon>
+                Historical Average Temps
+              </div>
+              @for (w of hunt.wxHistAvgs; track w.startDate; let i = $index) {
+                <div [ngClass]="{'border-b border-gray-700' : (hunt.wxHistAvgs!.length > 0 && i !== hunt.wxHistAvgs!.length - 1) }">
+                  <div class="text-xs pl-2 font-semibold mb-1">{{ w.startDate | date: 'MMM dd' }} &ndash; {{ w.endDate | date: 'MMM dd' }}</div>
+                  <div class="flex items-center w-full text-xs mb-1">
+                    <div class="w-1/2 text-center"><span>High:</span> {{ w.avgHigh }}&deg;</div>
+                    <div class="w-1/2 text-center"><span>Low:</span> {{ w.avgLow }}&deg;</div>
+                  </div>
+                </div>
+              }
             </td>
           </tr>
         } @empty {

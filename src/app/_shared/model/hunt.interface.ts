@@ -19,6 +19,7 @@ export interface Hunt {
   physLat?: number;
   physLong?: number;
   isBonusQuota?: boolean;
+  wxHistAvgs?: WxHistAverageTemps[];
 }
 
 export interface HuntDate {
@@ -29,4 +30,11 @@ export interface HuntDate {
 export interface HuntPayload extends Hunt {
   startDates: string[];
   endDates: string[];
+}
+
+export interface WxHistAverageTemps {
+  avgHigh: number;
+  avgLow: number;
+  startDate: string;
+  endDate: string;
 }
