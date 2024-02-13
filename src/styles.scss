@@ -46,6 +46,26 @@ body {
   font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", 'Helvetica', 'Arial', 'sans-serif';
 }
 
+.nav-current {
+  @apply
+    block
+    md:p-0
+    text-white
+    md:bg-transparent
+    border-b-2
+    border-gawmas-yeller
+}
+
+.nav-link {
+  @apply
+    block
+    md:p-0
+    text-gray-200
+    hover:text-white
+    md:bg-transparent
+    hover:underline
+}
+
 .detail-bonus-deer {
   @apply text-gawmas-yeller font-semibold;
 }

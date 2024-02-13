@@ -1,4 +1,4 @@
-import { SHARED_MODULES } from './../../_shared/index';
+import { SHARED_MODULES } from '../_shared/index';
 import { Component, HostListener, inject, signal } from "@angular/core";
 import { NgIconComponent } from "@ng-icons/core";
 import { Store } from '@ngrx/store';

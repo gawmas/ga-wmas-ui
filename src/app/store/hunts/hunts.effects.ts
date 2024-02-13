@@ -16,26 +16,21 @@ export class HuntEffects {
     private readonly _huntService: HuntService,
     private _store: Store<AppStateInterface>) { }
 
-  private noFiltersApplied(filter: Filter): boolean {
-    if (!filter) return true;
-    // Ignore the 'skip' property
-    const { skip, ...rest } = filter;
-    // Test if 'successRate' has a value
-    const successRateHasValue = rest.successRate !== undefined && rest.successRate !== null;
-    // Test if any of the array properties are not empty
-    const arraysNotEmpty = Object.values(rest).some(prop => Array.isArray(prop) && prop.length > 0);
-    return successRateHasValue && !arraysNotEmpty;
-  }
-
   getInitialHunts$ = createEffect(() =>
     this._actions$.pipe(
       ofType(huntsActions.getInitialHunts, huntsActions.filtersChanged),
       withLatestFrom(this._store.select(selectFilter)),
-      map((value) => value[0].filter as Filter),
+      map((value) => { // Append pageSize to filter if it exists, wtf is not available when selecting state.filter 💩 ...
+        if (value[1]?.pageSize) {
+          return { ...value[0].filter, pageSize: value[1]?.pageSize } as Filter;
+        } else {
+          return value[0].filter as Filter;
+        }
+      }),
       exhaustMap((filter) =>
         this._huntService.getHunts(filter).pipe(
           map((result) => {
-            return huntsActions.getHuntsComplete({ hunts: result })
+            return huntsActions.getHuntsComplete({ hunts: result, filter: filter })
           }),
           catchError((error) =>
             of(huntsActions.huntsError({ error: error }))
@@ -47,7 +42,7 @@ export class HuntEffects {
 
   getMoreHunts$ = createEffect(() =>
     this._actions$.pipe(
-      debounceTime(1000), // Remove before deploying ...
+      debounceTime(500), // Remove before deploying ...
       ofType(huntsActions.getMoreHunts),
       concatLatestFrom(() => [
         this._store.select(selectAllHuntsLength),

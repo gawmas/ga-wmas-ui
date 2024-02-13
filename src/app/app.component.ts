@@ -1,9 +1,9 @@
 import { AfterViewChecked, Component, OnInit, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NgIconComponent } from '@ng-icons/core';
-import { HeaderComponent } from 'layout/header/header.component';
+import { HeaderComponent } from 'layout/header.component';
 import { initFlowbite } from 'flowbite';
-import { FooterComponent } from 'layout/footer/footer.component';
+import { FooterComponent } from 'layout/footer.component';
 import { SplashComponent } from 'components/splash.component';
 
 @Component({

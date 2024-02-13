@@ -25,6 +25,8 @@
 
   @if ((filter$ | async); as filters) {
 
+    <!-- <span class="text-white">{{ filters | json }}</span> -->
+
     @if (filters.successRate! > 0) {
       <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-green-500 text-gray-200 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500">
         Success Rate &gt; {{ filters.successRate }}&percnt;
