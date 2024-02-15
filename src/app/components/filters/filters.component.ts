@@ -165,7 +165,7 @@ export class FiltersComponent implements OnInit, OnDestroy {
         .pipe(
           take(1),
           takeUntil(this._destroyed$),
-          tap((auxData) => this.auxData = auxData),
+          // tap((auxData) => this.auxData = auxData),
           map((auxData) => {
             const updatedWmas = auxData.wmas.map((wma: Wma) => ({ ...wma, visible: true }));
             return { ...auxData, wmas: [...updatedWmas], filteredWmas: [...updatedWmas] };

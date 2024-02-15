@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
-import { Hunt } from "@model";
+import { Hunt, Wma } from "@model";
 import { env } from "environment";
 import { Observable } from "rxjs";
 
@@ -16,6 +16,10 @@ export class AdminService {
 
   updateHunt(hunt: Hunt): Observable<Hunt> {
     return this.http.put<Hunt>(`${this.endpoint}/hunt/${hunt.id}`, hunt);
+  }
+
+  getAdminWmas(): Observable<Wma[]> {
+    return this.http.get<Wma[]>(`${this.endpoint}/adminWmas`);
   }
 
 }

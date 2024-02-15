@@ -7,3 +7,5 @@ export * from './filterAuxData.interface';
 export * from './drawerCloseEvent.interface';
 export * from './modalCloseEvent.interface';
 export * from './histClimateLocation.interface';
+export * from './climateLocation.interface';
+export * from './mapCoords.interface';

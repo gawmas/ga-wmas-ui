@@ -7,4 +7,9 @@ export interface Wma {
   visible?: boolean;
   physLat?: number;
   physLong?: number;
+  hasBonusQuotas?: boolean;
+  physTown?: string;
+  histClimateTown?: string;
+  histClimateLat?: number;
+  histClimateLong?: number;
 }

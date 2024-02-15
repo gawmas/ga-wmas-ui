@@ -1,4 +1,4 @@
-import { Hunt, HuntPayload } from "@model";
+import { HistClimateLocation, Hunt, HuntPayload, MapCoords, Wma } from "@model";
 import { createAction, props } from "@ngrx/store";
 
 const prefix = '[Admin]';
@@ -28,7 +28,20 @@ export const updateHuntComplete = createAction(
   `${prefix} Update Hunt Complete`,
   props<{ hunt: Hunt }>());
 
-  export const updateHuntError = createAction(
-    `${prefix} Update Hunt Error`,
-    props<{ error: string }>()
-  );
+export const updateHuntError = createAction(
+  `${prefix} Update Hunt Error`,
+  props<{ error: string }>()
+);
+
+export const enterWmasPage = createAction(
+  `${prefix} Enter Wmas Page`
+);
+
+export const getWmasComplete = createAction(
+  `${prefix} Get Wmas Complete`,
+  props<{ wmas: Wma[], histClimateLocations: HistClimateLocation[], histClimateCoords: MapCoords[] }>());
+
+export const getWmasError = createAction(
+  `${prefix} Get Wmas Error`,
+  props<{ error: string }>()
+);

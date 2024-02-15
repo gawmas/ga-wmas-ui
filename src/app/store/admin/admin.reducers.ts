@@ -26,6 +26,15 @@ export const adminReducers = createReducer(
       ...state,
       hunt: null
     };
+  }),
+
+  on(adminActions.getWmasComplete, (state, { wmas, histClimateLocations, histClimateCoords }) => {
+    return {
+      ...state,
+      wmas: wmas,
+      histClimateLocations: histClimateLocations,
+      histClimateCoords: histClimateCoords,
+    };
   }
 
 ));

@@ -1,0 +1,77 @@
+<gawmas-modal #wmaForm [targetElement]="wmaFormTarget">
+  <form [formGroup]="wmaFormGroup">
+    <div class="flex items-start justify-between rounded-t border-b p-5 dark:border-gray-600">
+      <h3 class="text-xl font-semibold text-white lg:text-2xl">
+        Update WMA
+      </h3>
+      <button (click)="closeWmaForm()" type="button"
+        class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-600 hover:text-white">
+          <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+          </svg>
+        <span class="sr-only">Close modal</span>
+      </button>
+    </div>
+    <div class="p-6">
+      @if (climateLocations$ | async; as locations) {
+        <div class="w-full mb-2">
+          <label for="name" class="font-bold text-sm uppercase">Name</label>
+          <input #firstInputRef tabindex="1" id="name" formControlName="name" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+        </div>
+        <ul class="items-center w-full text-sm font-medium rounded-lg sm:flex bg-gray-800 text-white mb-2">
+          <li class="w-full border-b sm:border-b-0 sm:border-r border-gray-600">
+            <div class="flex items-center ps-3">
+              <input formControlName="isSP" tabindex="2" id="isSP" type="checkbox" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500">
+              <label for="isSP" class="w-full py-3 ms-2 text-sm font-medium text-gray-300">State Park</label>
+            </div>
+          </li>
+          <li class="w-full border-b sm:border-b-0 sm:border-r border-gray-600">
+            <div class="flex items-center ps-3">
+              <input formControlName="isVPA" tabindex="3" id="isVPA" type="checkbox" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500">
+              <label for="isVPA" class="w-full py-3 ms-2 text-sm font-medium text-gray-300">VPA</label>
+            </div>
+          </li>
+          <li class="w-full border-b sm:border-b-0 sm:border-r border-gray-600">
+            <div class="flex items-center ps-3">
+              <input formControlName="hasBonusQuotas" tabindex="4" id="hasBonusQuotas" type="checkbox" value="" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500">
+              <label for="hasBonusQuotas" class="w-full py-3 ms-2 text-sm font-medium text-gray-300">Has Bonus/Quotas</label>
+            </div>
+          </li>
+        </ul>
+        <div class="w-full mb-2">
+          <label for="histClimateTownId" class="font-bold text-sm uppercase">Climate Town</label>
+          <select tabindex="5" id="histClimateTownId" formControlName="histClimateTownId" class="select text-base rounded-md bg-gray-600">
+            @for (l of locations; track l.id) {
+              <option [value]="l.id">{{ l.town }}</option>
+            }
+          </select>
+        </div>
+        <div class="flex items-center mb-2">
+          <div class="w-1/2 mr-1">
+            <label for="physLat" class="font-bold text-sm uppercase">WMA Lat</label>
+            <input tabindex="6" id="physLat" formControlName="physLat" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+          </div>
+          <div class="w-1/2">
+            <label for="physLong" class="font-bold text-sm uppercase">WMA Long</label>
+            <input tabindex="7" id="physLong" formControlName="physLong" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+          </div>
+        </div>
+        @if (wmaFormGroup.controls['physLat'].value || wmaFormGroup.controls['physLong'].value) {
+          <div class="w-full h-[35vh]">
+            <!-- <span class="text-white">{{ wmaCoords | json }}</span> -->
+            <gawmas-climate-locations-map #climateLocationsMap [coords]="(climateCoords$ | async)!" [wmaCoords]="wmaCoords" />
+          </div>
+        }
+      }
+      <pre class="text-xs">{{ wmaFormGroup.value | json }}</pre>
+    </div>
+    <div class="flex items-center pl-2 py-2 rtl:space-x-reverse rounded-b border-t border-gray-600">
+      <button type="submit" class="btn btn-primary">
+        Save
+      </button>
+      <button (click)="closeWmaForm()" type="button" class="btn btn-default">
+        Close
+      </button>
+    </div>
+  </form>
+</gawmas-modal>
