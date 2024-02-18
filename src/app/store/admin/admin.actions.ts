@@ -45,3 +45,15 @@ export const getWmasError = createAction(
   `${prefix} Get Wmas Error`,
   props<{ error: string }>()
 );
+
+export const updateWma = createAction(
+  `${prefix} Update Wma`,
+  props<{ wma: Wma }>());
+
+export const updateWmaComplete = createAction(
+  `${prefix} Update Wma Complete`,
+  props<{ wma: Wma }>());
+
+export const updateWmaError = createAction(
+  `${prefix} Update Wma Error`,
+  props<{ error: string }>());

@@ -22,4 +22,8 @@ export class AdminService {
     return this.http.get<Wma[]>(`${this.endpoint}/adminWmas`);
   }
 
+  updateWma(wma: Wma): Observable<Wma> {
+    return this.http.put<Wma>(`${this.endpoint}/wma/${wma.id}`, wma);
+  }
+
 }

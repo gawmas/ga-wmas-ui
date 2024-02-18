@@ -43,7 +43,7 @@ export class AdminEffects {
 
   fetchAdminWmas$ = createEffect(() =>
     this._actions$.pipe(
-      ofType(adminActions.enterWmasPage),
+      ofType(adminActions.enterWmasPage, adminActions.updateWmaComplete),
       switchMap(() =>
         combineLatest([
           this._adminService.getAdminWmas(),
@@ -52,6 +52,19 @@ export class AdminEffects {
         ]).pipe(
           map(([wmas, histClimateLocations, histClimateCoords]) => adminActions.getWmasComplete({ wmas, histClimateLocations, histClimateCoords })),
           catchError((error) => of(adminActions.getWmasError({ error })))
+        )
+      )
+    )
+  );
+
+  updateWma$ = createEffect(() =>
+    this._actions$.pipe(
+      ofType(adminActions.updateWma),
+      map((action) => action.wma),
+      switchMap((wma) =>
+        this._adminService.updateWma(wma).pipe(
+          map((updatedWma) => adminActions.updateWmaComplete({ wma: updatedWma })),
+          catchError((error) => of(adminActions.updateWmaError({ error })))
         )
       )
     )

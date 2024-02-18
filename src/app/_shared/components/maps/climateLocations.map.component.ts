@@ -17,25 +17,34 @@ export class ClimateLocationsMapComponent {
   markers: L.Marker[] = [];
   wmaMarker: L.Marker | undefined;
 
-  wmaIcon = new L.Icon({
-    iconUrl: './../../../../assets/leaflet/marker-icon-2x-red.png',
+  baseIconProps = {
     shadowUrl: './../../../../assets/leaflet/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
+  }
+
+  wmaIcon = new L.Icon({
+    iconUrl: './../../../../assets/leaflet/marker-icon-2x-red.png',
+    ...this.baseIconProps as any
   });
 
   climateIcon = new L.Icon({
     iconUrl: './../../../../assets/leaflet/marker-icon-2x-grey.png',
-    shadowUrl: './../../../../assets/leaflet/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
+    ...this.baseIconProps as any
   });
 
-  initializeMap() {
+  climateWarnIcon = new L.Icon({
+    iconUrl: './../../../../assets/leaflet/marker-icon-2x-yellow.png',
+    ...this.baseIconProps as any
+  });
+
+  initializeMap(wmaCoords?: MapCoords) {
+    // console.log('initializeMap', this.wmaCoords);
+    if (wmaCoords) {
+      this.wmaCoords = wmaCoords;
+    }
     if (!this.map) {
       const baseMapURl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
       this.map = L.map('map');
@@ -48,7 +57,10 @@ export class ClimateLocationsMapComponent {
   }
 
   addMarkers() {
-    this.markers = this.coords!.map(c => L.marker([c.coords[0], c.coords[1]], { title: c.town, icon: this.climateIcon }));
+    this.markers = this.coords!.map(c =>
+      L.marker([c.coords[0], c.coords[1]], {
+        title: (c.hasDailyData === false) ? `${c.town} [NO DATA]` : c.town,
+        icon: c.hasDailyData === false ? this.climateWarnIcon : this.climateIcon }));
     if (this.wmaCoords) {
       this.wmaMarker = L.marker([this.wmaCoords.coords[0], this.wmaCoords.coords[1]], { icon: this.wmaIcon, title: this.wmaCoords.town });
       this.markers.push(this.wmaMarker);

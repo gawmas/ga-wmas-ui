@@ -12,4 +12,5 @@ export interface Wma {
   histClimateTown?: string;
   histClimateLat?: number;
   histClimateLong?: number;
+  hasDailyData?: boolean;
 }

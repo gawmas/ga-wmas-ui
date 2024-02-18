@@ -42,7 +42,7 @@ export class HuntEffects {
 
   getMoreHunts$ = createEffect(() =>
     this._actions$.pipe(
-      debounceTime(500), // Remove before deploying ...
+      // debounceTime(500), // Remove before deploying ...
       ofType(huntsActions.getMoreHunts),
       concatLatestFrom(() => [
         this._store.select(selectAllHuntsLength),

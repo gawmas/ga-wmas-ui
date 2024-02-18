@@ -7,8 +7,9 @@ import { SHARED_MODULES } from "@shared-imports";
 import { AppStateInterface } from "@store-model";
 import { ClimateLocationsMapComponent } from "_shared/components/maps/climateLocations.map.component";
 import { ModalComponent } from "_shared/components/modal.component";
-import { Subject } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { selectHistClimateLocations, selectHistClimateCoords } from "store/admin/admin.selectors";
+import * as adminActions from "store/admin/admin.actions";
 
 @Component({
   selector: 'gawmas-wma-form',
@@ -16,7 +17,7 @@ import { selectHistClimateLocations, selectHistClimateCoords } from "store/admin
   templateUrl: 'wmaForm.component.html',
   imports: [SHARED_MODULES, ModalComponent, ReactiveFormsModule, ClimateLocationsMapComponent]
 })
-export class WmaFormComponent implements AfterViewInit {
+export class WmaFormComponent {
 
   @ViewChild('wmaForm') wmaFormModal: ModalComponent | undefined;
   @ViewChild('firstInputRef') firstInputRef: ElementRef | undefined;
@@ -34,46 +35,57 @@ export class WmaFormComponent implements AfterViewInit {
 
   wmaCoords: MapCoords | undefined;
 
+  coordsProvided = false;
+  coordsSubscription = new Subscription();
+
   wmaFormGroup: FormGroup = this._fb.group({
     id: '',
     name: '',
     isSP: false,
     isVPA: false,
     hasBonusQuotas: false,
+    locationId: '',
     histClimateTownId: '',
     physLat: '',
     physLong: '',
   });
 
-  ngAfterViewInit(): void {
-    // this.climateLocationsMap?.initializeMap();
-  }
-
   openWmaForm(wma: Wma): void {
     this.wmaFormModal?.open();
     this.wmaFormGroup.patchValue(wma);
+    this.coordsProvided = wma.physLat !== null && wma.physLong !== null;
     this.wmaCoords = {
       town: wma.name!,
       coords: [wma.physLat!, wma.physLong!]
     };
     this.firstInputRef?.nativeElement.focus();
-
     setTimeout(() => {
       this.climateLocationsMap?.initializeMap();
     }, 1500);
+    if (!this.coordsProvided) {
+      this.coordsSubscription = this.wmaFormGroup.valueChanges.subscribe((value) => {
+        if (value.physLat && value.physLong) {
+          this.coordsProvided = true;
+          this.wmaCoords = {
+            town: value.name,
+            coords: [value.physLat, value.physLong]
+          };
+          setTimeout(() => {
+            this.climateLocationsMap?.initializeMap(this.wmaCoords);
+          }, 1500);
+        }
+      });
+    }
+  }
+
+  updateWma(): void {
+    this._store.dispatch(adminActions.updateWma({ wma: this.wmaFormGroup.value }));
+    this.closeWmaForm();
   }
 
   closeWmaForm(): void {
-    // this._closed$.next();
-    // this._closed$.complete();
-    // this._clearHuntDatesArray();
-    // this.huntFormGroup?.reset();
-    // this._router.navigate([], { queryParams: { h: null } });
-    // this.huntFormModal?.close();
-    // setTimeout(() => {
-    //   this._store.dispatch(adminActions.clearSingleHunt());
-    // }, 1200);
     this.wmaFormModal?.close();
+    this.coordsSubscription.unsubscribe();
   }
 
 }
