@@ -10,15 +10,19 @@ export class HuntService {
     private http = inject(HttpClient);
     private endpoint = `${env.API_URL}/hunts`;
 
-    getHunts(params?: Filter): Observable<Hunt[]> {
+    getHunts(filter?: Filter): Observable<Hunt[]> {
+      // console.log(filter);
       const url = this.endpoint +
-        '?skip=' + (params?.skip ? params?.skip.toString() : '') +
-        '&pageSize=' + (params?.pageSize ? params?.pageSize.toString() : '') +
-        '&wmas=' + (params?.wmas ? params?.wmas.toString() : '') +
-        '&seasons=' + (params?.seasons ? params?.seasons.toString() : '') +
-        '&weapons=' + (params?.weapons ? params?.weapons.toString() : '') +
-        '&success=' + (params?.successRate ? params?.successRate : 0) +
-        '&sort=' + (params?.sort ? params?.sort : '');
+        '?skip=' + (filter?.skip ? filter?.skip.toString() : '') +
+        '&pageSize=' + (filter?.pageSize ? filter?.pageSize.toString() : '') +
+        '&wmas=' + (filter?.wmas ? filter?.wmas.toString() : '') +
+        '&seasons=' + (filter?.seasons ? filter?.seasons.toString() : '') +
+        '&weapons=' + (filter?.weapons ? filter?.weapons.toString() : '') +
+        '&success=' + (filter?.successRate ? filter?.successRate : 0) +
+        '&sort=' + (filter?.sort ? filter?.sort : '') +
+        '&isBonusQuota=' + (filter?.isBonusQuota ? filter?.isBonusQuota === true : false) +
+        '&isStatePark=' + (filter?.isStatePark ? filter?.isStatePark === true : false) +
+        '&isVpa=' + (filter?.isVpa ? filter?.isVpa === true : false);
       // console.log(url);
       return this.http.get<Hunt[]>(url);
     }

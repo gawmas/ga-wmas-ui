@@ -71,6 +71,9 @@ import * as adminActions from "store/admin/admin.actions";
                       <ng-icon name="heroMapPin" class="mr-1"></ng-icon>
                     </a>
                   }
+                  @if (wma.acres) {
+                    <div class="text-xs">Acreage: <span class="font-bold">{{ wma.acres }}</span></div>
+                  }
                 </td>
                 <td class="px-6 py-4">
                   <div class="font-semibold">{{ wma.physTown }}</div>

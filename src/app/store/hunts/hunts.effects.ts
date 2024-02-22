@@ -20,6 +20,7 @@ export class HuntEffects {
     this._actions$.pipe(
       ofType(huntsActions.getInitialHunts, huntsActions.filtersChanged),
       withLatestFrom(this._store.select(selectFilter)),
+      debounceTime(2000), // Remove before deploying ...
       map((value) => { // Append pageSize to filter if it exists, wtf is not available when selecting state.filter 💩 ...
         if (value[1]?.pageSize) {
           return { ...value[0].filter, pageSize: value[1]?.pageSize } as Filter;
@@ -27,6 +28,7 @@ export class HuntEffects {
           return value[0].filter as Filter;
         }
       }),
+      // tap((filter) => console.log(filter)),
       exhaustMap((filter) =>
         this._huntService.getHunts(filter).pipe(
           map((result) => {
@@ -42,7 +44,7 @@ export class HuntEffects {
 
   getMoreHunts$ = createEffect(() =>
     this._actions$.pipe(
-      // debounceTime(500), // Remove before deploying ...
+      debounceTime(500), // Remove before deploying ...
       ofType(huntsActions.getMoreHunts),
       concatLatestFrom(() => [
         this._store.select(selectAllHuntsLength),
@@ -57,7 +59,10 @@ export class HuntEffects {
             seasons: filter?.seasons,
             weapons: filter?.weapons,
             successRate: filter?.successRate,
-            sort: filter?.sort
+            sort: filter?.sort,
+            isBonusQuota: filter?.isBonusQuota,
+            isStatePark: filter?.isStatePark,
+            isVpa: filter?.isVpa
           } as Filter)
           .pipe(
             map((result) => huntsActions.getMoreHuntsComplete({ hunts: result }))

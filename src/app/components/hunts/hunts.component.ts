@@ -1,4 +1,4 @@
-import { selectEndOfResults, selectFilter, selectHunts, selectHuntsLoading } from 'store/hunts/hunts.selectors';
+import { selectEndOfResults, selectFilter, selectHunts, selectHuntsLoading, selectLoadingMoreHunts } from 'store/hunts/hunts.selectors';
 import { SHARED_MODULES } from '@shared-imports';
 import { Component, HostListener, Input, OnInit, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
@@ -8,6 +8,8 @@ import { DetailsHighlightPipe, SuccessRateColorPipe, SuccessRatePipe } from "@pi
 import { NgIconComponent } from '@ng-icons/core';
 import { combineLatest, distinctUntilChanged, take } from 'rxjs';
 import { HuntFormComponent } from 'components/admin/hunt-form/hunt-form.component';
+import { Tooltip, TooltipTriggerType } from 'flowbite';
+import { LoadingComponent } from '_shared/components/loading.component';
 import * as huntsActions from 'store/hunts/hunts.actions';
 
 @Component({
@@ -16,7 +18,8 @@ import * as huntsActions from 'store/hunts/hunts.actions';
   templateUrl: './hunts.component.html',
   imports: [SHARED_MODULES, FiltersComponent,
     SuccessRateColorPipe, SuccessRatePipe,
-    NgIconComponent, DetailsHighlightPipe, HuntFormComponent]
+    NgIconComponent, DetailsHighlightPipe,
+    HuntFormComponent, LoadingComponent]
 })
 export class HuntsComponent implements OnInit {
 
@@ -28,21 +31,23 @@ export class HuntsComponent implements OnInit {
 
   hunts$ = this._store.select(selectHunts);
   isLoading$ = this._store.select(selectHuntsLoading);
+  isLoadingMore$ = this._store.select(selectLoadingMoreHunts);
   filter$ = this._store.select(selectFilter);
   isEndOfResults$ = this._store.select(selectEndOfResults);
 
   screenWidth = signal(window.innerWidth);
   screenHeight = signal(window.innerHeight);
+  initialPageSize: number = 10;
 
   ngOnInit(): void {
     // Set initial page size based on screen height ...
-    const initialPageSize = this.screenHeight() > 2000 ? 20 :
+    this.initialPageSize = this.screenHeight() > 2000 ? 20 :
       (this.screenHeight() < 2000 && this.screenHeight() > 1000) ? 15 : 10;
 
     this._store.dispatch(huntsActions.getInitialHunts({
       filter: {
         skip: 0,
-        pageSize: initialPageSize,
+        pageSize: this.initialPageSize,
         successRate: 0,
         wmas: [],
         seasons: [],
@@ -72,14 +77,14 @@ export class HuntsComponent implements OnInit {
 
     if (windowBottom >= (docHeight * .95)) {
       combineLatest([
-        this.isLoading$,
+        this.isLoadingMore$,
         this.isEndOfResults$
       ])
         .pipe(
           take(1),
           distinctUntilChanged())
-        .subscribe(([isLoading, isEndOfResults]) => {
-          if (!isLoading && !isEndOfResults) {
+        .subscribe(([isLoadingMore, isEndOfResults]) => {
+          if (!isLoadingMore && !isEndOfResults) {
             this._store.dispatch(huntsActions.getMoreHunts({ filter: undefined }));
           }
         });
@@ -88,6 +93,12 @@ export class HuntsComponent implements OnInit {
 
   scrollTop(): void {
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+  }
+
+  showHunterDensityTooltip(targetElId: string, triggerType: TooltipTriggerType, event: any) {
+    const targetEl = document.getElementById(targetElId)
+    const tooltip = new Tooltip(targetEl, event.target as HTMLElement, { triggerType });
+    tooltip.show();
   }
 
 }

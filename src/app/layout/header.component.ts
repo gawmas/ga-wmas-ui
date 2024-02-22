@@ -13,7 +13,7 @@ import { Subject, takeUntil } from 'rxjs';
   imports: [SHARED_MODULES, NgIconComponent, ModalComponent,
     AboutComponent, IsActiveRoutePipe],
   template: `
-    <nav class="w-full bg-[url('./assets/hdr-bg4.png')] bg-no-repeat flex flex-wrap justify-between p-4">
+    <nav class="w-full bg-[url('./assets/bg-image2.png')] bg-no-repeat flex flex-wrap justify-between p-4">
       <a routerLink="/browse" class="space-x-3 rtl:space-x-reverse">
         <object data="./assets/logo.svg" type="image/svg+xml" class="h-[65px] md:h-[85px] max-h-14 md:mt-0"></object>
       </a>

@@ -5,6 +5,7 @@ export interface HuntState {
   filter: Filter | null;
   endOfResults: boolean;
   loading: boolean;
+  loadingMore: boolean;
 }
 
 export const initialHuntState: HuntState = {
@@ -15,8 +16,12 @@ export const initialHuntState: HuntState = {
     wmas: [],
     seasons: [],
     weapons: [],
+    isStatePark: null,
+    isVpa: null,
+    isBonusQuota: null,
     sort: null
   },
   endOfResults: false,
-  loading: false
+  loading: false,
+  loadingMore: false
 };

@@ -10,6 +10,8 @@ export interface Hunt {
   does: number;
   bucks: number;
   hunterCount: number;
+  hunterDensity: number;
+  wmaAcres: number;
   huntDates: HuntDate[];
   quota: number | null;
   location: string;

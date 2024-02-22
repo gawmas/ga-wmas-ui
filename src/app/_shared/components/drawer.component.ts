@@ -56,6 +56,7 @@ export class DrawerComponent {
   public close(): void {
     this.drawer.hide();
     this.closeAction.closed = true;
+    this.closeAction.saved = false;
     this.closeEventSubject?.next(this.closeAction);
   }
 

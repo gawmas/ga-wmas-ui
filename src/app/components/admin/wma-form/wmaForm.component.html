@@ -46,14 +46,18 @@
             }
           </select>
         </div>
+        <div class="w-full mb-2">
+          <label for="acres" class="font-bold text-sm uppercase">Acres</label>
+          <input tabindex="6" id="acres" formControlName="acres" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+        </div>
         <div class="flex items-center mb-2">
           <div class="w-1/2 mr-1">
             <label for="physLat" class="font-bold text-sm uppercase">WMA Lat</label>
-            <input tabindex="6" id="physLat" formControlName="physLat" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+            <input tabindex="7" id="physLat" formControlName="physLat" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
           </div>
           <div class="w-1/2">
             <label for="physLong" class="font-bold text-sm uppercase">WMA Long</label>
-            <input tabindex="7" id="physLong" formControlName="physLong" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
+            <input tabindex="8" id="physLong" formControlName="physLong" type="text" class="w-full rounded-md text-gray-200 bg-gray-600" />
           </div>
         </div>
         @if (coordsProvided) {

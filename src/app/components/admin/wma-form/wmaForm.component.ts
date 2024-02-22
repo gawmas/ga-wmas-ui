@@ -48,6 +48,7 @@ export class WmaFormComponent {
     histClimateTownId: '',
     physLat: '',
     physLong: '',
+    acres: ''
   });
 
   openWmaForm(wma: Wma): void {

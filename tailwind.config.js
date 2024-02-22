@@ -9,6 +9,9 @@ module.exports = {
         'gawmas-green': '#0C343D',
         'gawmas-yeller': '#F9BF4B',
       },
+      // animation: {
+      //   fade: 'fadeOut 5s ease-in-out',
+      // },
     },
     container: {
       // you can configure the container to be centered
@@ -28,7 +31,8 @@ module.exports = {
     },
   },
   plugins: [
-    require('flowbite/plugin') // add this line
+    require('flowbite/plugin'),
+    require('tailwindcss-animated')
   ],
 }
 

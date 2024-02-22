@@ -13,4 +13,5 @@ export interface Wma {
   histClimateLat?: number;
   histClimateLong?: number;
   hasDailyData?: boolean;
+  acres: number;
 }

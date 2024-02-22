@@ -54,6 +54,7 @@ body {
     md:bg-transparent
     border-b-2
     border-gawmas-yeller
+    md:font-bold
 }
 
 .nav-link {
@@ -63,6 +64,7 @@ body {
     text-gray-200
     hover:text-white
     md:bg-transparent
+    md:font-semibold
     hover:underline
 }
 
@@ -85,7 +87,7 @@ button.btn {
     font-medium
     text-center
     rounded-full
-    focus:ring-4
+    focus:ring-1
     focus:outline-none;
 
   &-primary {
@@ -93,7 +95,7 @@ button.btn {
       text-white
       bg-blue-600
       hover:bg-blue-500
-      focus:ring-blue-300;
+      focus:ring-white;
   }
 
   &-default {
@@ -110,6 +112,14 @@ button.btn {
       disabled:bg-red-300
       disabled:text-gray-400
       text-gray-100;
+  }
+
+  &-loading {
+    @apply
+      bg-gray-700
+      text-gray-400
+      cursor-not-allowed;
+
   }
 }
 

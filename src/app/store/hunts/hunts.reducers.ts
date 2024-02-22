@@ -6,11 +6,18 @@ export const huntsReducers = createReducer(
 
   initialHuntState,
 
-  on(appActions.getInitialHunts, appActions.getMoreHunts, (state) => {
+  on(appActions.getInitialHunts, (state) => {
     return {
       ...state,
       filter: state.filter,
       loading: true
+    };
+  }),
+
+  on(appActions.getMoreHunts, (state) => {
+    return {
+      ...state,
+      loadingMore: true
     };
   }),
 
@@ -19,7 +26,7 @@ export const huntsReducers = createReducer(
       ...state,
       hunts: [...state.hunts, ...hunts],
       endOfResults: hunts.length < (state.filter?.pageSize ?? 10),
-      loading: false,
+      loadingMore: false,
     };
   }),
 

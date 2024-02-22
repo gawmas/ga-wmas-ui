@@ -5,5 +5,8 @@ export interface Filter {
   seasons?: number[] | null;
   weapons?: number[] | null;
   successRate?: number | null;
+  isBonusQuota?: boolean | null;
+  isStatePark?: boolean | null;
+  isVpa?: boolean | null;
   sort: string | null;
 }

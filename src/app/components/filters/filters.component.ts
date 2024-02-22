@@ -6,8 +6,8 @@ import { Subject, Subscription, combineLatest, distinctUntilChanged, map, startW
 import { AppStateInterface } from "@store-model";
 import { Store } from "@ngrx/store";
 import { NgIconComponent } from "@ng-icons/core";
-import { selectFiltersAuxData, selectFiltersAuxDataLoading } from 'store/filters/filters.selectors';
-import { selectFilter } from 'store/hunts/hunts.selectors';
+import { selectFiltersAuxData } from 'store/filters/filters.selectors';
+import { selectFilter, selectHuntsLoading } from 'store/hunts/hunts.selectors';
 import { FormArrayPipe } from "@pipes";
 import { DrawerComponent } from "_shared/components/drawer.component";
 import { FilterObjNamePipe } from "_shared/pipes/filter-obj-name.pipe";
@@ -38,7 +38,7 @@ export class FiltersComponent implements OnInit, OnDestroy {
   private _cdr = inject(ChangeDetectorRef);
 
   auxData$ = this._store.select(selectFiltersAuxData);
-  isLoading$ = this._store.select(selectFiltersAuxDataLoading);
+  isLoading$ = this._store.select(selectHuntsLoading);
   filter$ = this._store.select(selectFilter);
 
   auxData: FilterAuxData = { wmas: [], seasons: [], weapons: [], histClimateLocations: [], filteredWmas: [] };
@@ -50,6 +50,7 @@ export class FiltersComponent implements OnInit, OnDestroy {
   filterForm: FormGroup = this._formBuilder.group({
     isStatePark: false,
     isVpa: false,
+    isBonusQuota: false,
     wmas: this._formBuilder.array([]),
     wmaFilter: '',
     successRate: 0,
@@ -62,13 +63,15 @@ export class FiltersComponent implements OnInit, OnDestroy {
   selectedWmaIds = signal<number[]>([]);
   selectedSeasonIds = signal<number[]>([]);
   selectedWeaponIds = signal<number[]>([]);
+  togglesCount = signal(0);
 
   successRateSet = signal(false);
   filterCount = computed(() => {
     return this.selectedWmasCount() +
       this.selectedSeasonIds().length +
       this.selectedWeaponIds().length +
-      (this.successRateSet() ? 1 : 0)
+      (this.successRateSet() ? 1 : 0) +
+      this.togglesCount();
   });
 
   ngOnInit(): void {
@@ -87,6 +90,9 @@ export class FiltersComponent implements OnInit, OnDestroy {
             seasons: this._extractCheckIds('seasons', 'seasons'),
             weapons: this._extractCheckIds('weapons', 'weapons'),
             successRate: this.filterForm.controls['successRate'].value,
+            isBonusQuota: this.filterForm.controls['isBonusQuota'].value,
+            isStatePark: this.filterForm.controls['isStatePark'].value,
+            isVpa: this.filterForm.controls['isVpa'].value,
             sort: sortValue
           }
         }));
@@ -111,12 +117,14 @@ export class FiltersComponent implements OnInit, OnDestroy {
     // Listen for changes to the "state park"/"vpa" toggles ...
     combineLatest([
       this.filterForm.controls['isStatePark'].valueChanges.pipe(startWith(false)),
-      this.filterForm.controls['isVpa'].valueChanges.pipe(startWith(false))])
+      this.filterForm.controls['isVpa'].valueChanges.pipe(startWith(false)),
+      this.filterForm.controls['isBonusQuota'].valueChanges.pipe(startWith(false))])
       .pipe(
         takeUntil(this._destroyed$),
         distinctUntilChanged())
-      .subscribe(([isStatePark, isVpa]) => {
+      .subscribe(([isStatePark, isVpa, isBonusQuota]) => {
         this._filterWmaType(isStatePark, isVpa);
+        this.togglesCount.set((isStatePark === true ? 1 : 0) + (isVpa === true ? 1 : 0) + (isBonusQuota === true ? 1 : 0));
       });
 
     // Filter WMAs by name ...
@@ -188,9 +196,8 @@ export class FiltersComponent implements OnInit, OnDestroy {
   private _listenToDrawerEvents() {
     this.filterDrawerSubscription = this.filterDrawer.closeEvent
       .subscribe((event: any) => {
-        // console.log(event);
         this.filterDrawerSubscription?.unsubscribe();
-        if (event.data) {
+        if (event.data && event.saved === true) {
           this._store.dispatch(huntsActions.filtersChanged({
             filter: {
               skip: 0,
@@ -198,6 +205,9 @@ export class FiltersComponent implements OnInit, OnDestroy {
               seasons: event.data.seasons,
               weapons: event.data.weapons,
               successRate: event.data.successRate,
+              isBonusQuota: event.data.isBonusQuota,
+              isStatePark: event.data.isStatePark,
+              isVpa: event.data.isVpa,
               sort: event.data.sort
             }
           }));
@@ -253,12 +263,12 @@ export class FiltersComponent implements OnInit, OnDestroy {
     formArray.at(index!).patchValue(false);
     this._store.dispatch(huntsActions.filtersChanged({
       filter: {
+        ...this.filterForm.value,
+        sort: this.sortForm.controls['sort'].value,
         skip: 0,
         wmas: this._extractCheckIds('wmas', 'wmas'),
         seasons: this._extractCheckIds('seasons', 'seasons'),
-        weapons: this._extractCheckIds('weapons', 'weapons'),
-        successRate: this.filterForm.controls['successRate'].value,
-        sort: this.sortForm.controls['sort'].value
+        weapons: this._extractCheckIds('weapons', 'weapons')
       }
     }));
   }
@@ -267,18 +277,41 @@ export class FiltersComponent implements OnInit, OnDestroy {
     this.filterForm.controls['successRate'].setValue(0);
     this._store.dispatch(huntsActions.filtersChanged({
       filter: {
+        ...this.filterForm.value,
+        sort: this.sortForm.controls['sort'].value,
+        skip: 0,
+        wmas: this._extractCheckIds('wmas', 'wmas'),
+        seasons: this._extractCheckIds('seasons', 'seasons'),
+        weapons: this._extractCheckIds('weapons', 'weapons')
+      }
+    }));
+  }
+
+  removeWmaTypeFilter(type: string) {
+    switch (type) {
+      case 'statePark':
+        this.filterForm.controls['isStatePark'].setValue(false);
+        break;
+      case 'vpa':
+        this.filterForm.controls['isVpa'].setValue(false);
+        break;
+      case 'bonusQuota':
+        this.filterForm.controls['isBonusQuota'].setValue(false);
+        break;
+    }
+    this._store.dispatch(huntsActions.filtersChanged({
+      filter: {
+        ...this.filterForm.value,
+        sort: this.sortForm.controls['sort'].value,
         skip: 0,
         wmas: this._extractCheckIds('wmas', 'wmas'),
         seasons: this._extractCheckIds('seasons', 'seasons'),
         weapons: this._extractCheckIds('weapons', 'weapons'),
-        successRate: this.filterForm.controls['successRate'].value,
-        sort: this.sortForm.controls['sort'].value
       }
     }));
   }
 
   cancel() {
-    this.clearFilters();
     this.filterDrawer.close();
   }
 

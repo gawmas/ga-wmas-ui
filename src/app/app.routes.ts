@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
 import { HuntsComponent } from '@components';
-import { AdminHomeComponent } from 'components/admin/adminHome.component';
-import { AdminWmasComponent } from 'components/admin/adminWmas.component';
 
 export const routes: Routes = [
   {
