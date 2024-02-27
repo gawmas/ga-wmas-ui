@@ -1,6 +1,7 @@
 import { createReducer, on } from "@ngrx/store";
 import { initialHuntState } from "./../../_shared/model/store/hunts.model";
 import * as appActions from "./hunts.actions";
+import { Filter } from "@model";
 
 export const huntsReducers = createReducer(
 

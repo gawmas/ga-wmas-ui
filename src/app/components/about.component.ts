@@ -1,6 +1,4 @@
-import { Component, ViewChild } from "@angular/core";
-import { SHARED_MODULES } from "@shared-imports";
-import { ModalComponent } from "_shared/components/modal.component";
+import { Component } from "@angular/core";
 
 @Component({
   selector: 'gawmas-about',

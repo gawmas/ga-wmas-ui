@@ -1,12 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, computed, inject, signal } from "@angular/core";
+// import { FilterAuxData } from './../../_shared/model/filterAuxData.interface';
+import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, OnDestroy, OnInit, ViewChild, computed, inject, signal } from "@angular/core";
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
-import { FilterAuxData, Season, Weapon, Wma } from "@model";
+import { Filter, FilterAuxData, Season, Weapon, Wma } from "@model";
 import { SHARED_MODULES } from "@shared-imports";
-import { Subject, Subscription, combineLatest, distinctUntilChanged, map, startWith, take, takeUntil, tap } from "rxjs";
-import { AppStateInterface } from "@store-model";
+import { Observable, Subject, Subscription, combineLatest, delay, distinctUntilChanged, map, startWith, take, takeUntil, tap } from "rxjs";
+import { AppStateInterface, initialHuntState } from "@store-model";
 import { Store } from "@ngrx/store";
 import { NgIconComponent } from "@ng-icons/core";
-import { selectFiltersAuxData } from 'store/filters/filters.selectors';
+import { selectFiltersAuxData, selectSeasons, selectWeapons, selectWmas } from 'store/filters/filters.selectors';
 import { selectFilter, selectHuntsLoading } from 'store/hunts/hunts.selectors';
 import { FormArrayPipe } from "@pipes";
 import { DrawerComponent } from "_shared/components/drawer.component";
@@ -24,7 +25,7 @@ import * as huntsActions from 'store/hunts/hunts.actions';
   templateUrl: './filters.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FiltersComponent implements OnInit, OnDestroy {
+export class FiltersComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('filterDrawer') filterDrawer!: DrawerComponent;
   filterDrawerSubscription: Subscription | undefined;
@@ -38,6 +39,9 @@ export class FiltersComponent implements OnInit, OnDestroy {
   private _cdr = inject(ChangeDetectorRef);
 
   auxData$ = this._store.select(selectFiltersAuxData);
+  wmas$ = this._store.select(selectWmas);
+  weapons$ = this._store.select(selectWeapons);
+  seasons$ = this._store.select(selectSeasons);
   isLoading$ = this._store.select(selectHuntsLoading);
   filter$ = this._store.select(selectFilter);
 
@@ -66,6 +70,7 @@ export class FiltersComponent implements OnInit, OnDestroy {
   togglesCount = signal(0);
 
   successRateSet = signal(false);
+  preSelectedFilters: Filter | undefined;
   filterCount = computed(() => {
     return this.selectedWmasCount() +
       this.selectedSeasonIds().length +
@@ -74,10 +79,35 @@ export class FiltersComponent implements OnInit, OnDestroy {
       this.togglesCount();
   });
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
 
-    this._store.dispatch(filterActions.getFilterAuxData());
+    // this._store.dispatch(filterActions.getFilterAuxData());
 
+    this.filter$
+      .pipe(
+        delay(2500),
+        take(1),
+        tap((filter) => this.preSelectedFilters = filter))
+      .subscribe((filter) => {
+        this.sortForm.controls['sort'].setValue((filter as Filter).sort, { emitEvent: false });
+        this._watchFilterFormChanges();
+        this.filterForm.patchValue({
+          isStatePark: filter.isStatePark,
+          isVpa: filter.isVpa,
+          isBonusQuota: filter.isBonusQuota,
+          successRate: filter.successRate
+        });
+        this.selectedWmasCount.set((filter.wmas as unknown as Wma[]).length);
+        this.selectedSeasonIds.set(filter.seasons as number[]);
+        this.selectedWeaponIds.set(filter.weapons as number[]);
+        this._cdr.detectChanges();
+        this.openFiltersDrawer();
+        this.cancel();
+      });
+
+  }
+
+  private _watchFilterFormChanges() {
     this.sortForm.controls['sort'].valueChanges
       .pipe(
         takeUntil(this._destroyed$),
@@ -123,7 +153,9 @@ export class FiltersComponent implements OnInit, OnDestroy {
         takeUntil(this._destroyed$),
         distinctUntilChanged())
       .subscribe(([isStatePark, isVpa, isBonusQuota]) => {
-        this._filterWmaType(isStatePark, isVpa);
+        if (this.auxData.filteredWmas) {
+          this._filterWmaType(isStatePark, isVpa);
+        }
         this.togglesCount.set((isStatePark === true ? 1 : 0) + (isVpa === true ? 1 : 0) + (isBonusQuota === true ? 1 : 0));
       });
 
@@ -141,7 +173,6 @@ export class FiltersComponent implements OnInit, OnDestroy {
         });
         this.noFilteredWmasFound.set(this.auxData.filteredWmas.every((wma: Wma) => !wma.visible));
       });
-
   }
 
   private _filterWmaType(isStatePark: boolean, isVpa: boolean) {
@@ -167,13 +198,12 @@ export class FiltersComponent implements OnInit, OnDestroy {
   }
 
   openFiltersDrawer() {
-
+    // console.log(this.preSelectedFilters);
     if (this.auxData.wmas.length === 0) {
+      console.log('No aux data')
       this.auxData$
         .pipe(
           take(1),
-          takeUntil(this._destroyed$),
-          // tap((auxData) => this.auxData = auxData),
           map((auxData) => {
             const updatedWmas = auxData.wmas.map((wma: Wma) => ({ ...wma, visible: true }));
             return { ...auxData, wmas: [...updatedWmas], filteredWmas: [...updatedWmas] };
@@ -182,7 +212,19 @@ export class FiltersComponent implements OnInit, OnDestroy {
         .subscribe((auxData: FilterAuxData) => {
           for (let key of Object.keys(auxData)) {
             if (key !== 'filteredWmas' && key !== 'histClimateLocations') {
-              this._buildCheckBoxes(auxData[key as keyof Omit<FilterAuxData, 'histClimateLocations'>]);
+              let passValues: number[] | undefined;
+              switch (key) {
+                case 'wmas':
+                  passValues = this.preSelectedFilters?.wmas as number[];
+                  break;
+                case 'seasons':
+                  passValues = this.preSelectedFilters?.seasons as number[];
+                  break;
+                case 'weapons':
+                  passValues = this.preSelectedFilters?.weapons as number[];
+                  break;
+              }
+              this._buildCheckBoxes(auxData[key as keyof Omit<FilterAuxData, 'histClimateLocations'>], passValues);
             }
           }
         });
@@ -200,26 +242,20 @@ export class FiltersComponent implements OnInit, OnDestroy {
         if (event.data && event.saved === true) {
           this._store.dispatch(huntsActions.filtersChanged({
             filter: {
+              ...event.data,
               skip: 0,
-              wmas: event.data.wmas,
-              seasons: event.data.seasons,
-              weapons: event.data.weapons,
-              successRate: event.data.successRate,
-              isBonusQuota: event.data.isBonusQuota,
-              isStatePark: event.data.isStatePark,
-              isVpa: event.data.isVpa,
-              sort: event.data.sort
             }
           }));
         }
       });
   }
 
-  private _buildCheckBoxes = (data: Wma[] | Season[] | Weapon[]) => {
+  private _buildCheckBoxes = (data: Wma[] | Season[] | Weapon[], values?: number[]) => {
     data.forEach((item: Wma | Season | Weapon) => {
       const arrayName = item.hasOwnProperty('season') ? 'seasons' : item.hasOwnProperty('locationId') ? 'wmas' : 'weapons';
       (this.filterForm.controls[arrayName] as unknown as FormArray)
-        .push(new FormControl(false));
+        .push(new FormControl(values && values.includes(item.id) ? true : false));
+      // console.log(item);
     });
   };
 

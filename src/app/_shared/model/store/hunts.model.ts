@@ -2,7 +2,7 @@ import { Filter, Hunt } from "@model";
 
 export interface HuntState {
   hunts: Hunt[];
-  filter: Filter | null;
+  filter: Filter;
   endOfResults: boolean;
   loading: boolean;
   loadingMore: boolean;
@@ -16,10 +16,10 @@ export const initialHuntState: HuntState = {
     wmas: [],
     seasons: [],
     weapons: [],
-    isStatePark: null,
-    isVpa: null,
-    isBonusQuota: null,
-    sort: null
+    isStatePark: false,
+    isVpa: false,
+    isBonusQuota: false,
+    sort: ''
   },
   endOfResults: false,
   loading: false,

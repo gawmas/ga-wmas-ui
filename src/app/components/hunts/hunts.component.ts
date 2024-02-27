@@ -1,16 +1,19 @@
+import { initialHuntState } from './../../_shared/model/store/hunts.model';
 import { selectEndOfResults, selectFilter, selectHunts, selectHuntsLoading, selectLoadingMoreHunts } from 'store/hunts/hunts.selectors';
 import { SHARED_MODULES } from '@shared-imports';
-import { Component, HostListener, Input, OnInit, inject, signal } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FiltersComponent } from 'components/filters/filters.component';
 import { AppStateInterface } from '@store-model';
 import { DetailsHighlightPipe, SuccessRateColorPipe, SuccessRatePipe } from "@pipes";
 import { NgIconComponent } from '@ng-icons/core';
-import { combineLatest, distinctUntilChanged, take } from 'rxjs';
+import { Subject, combineLatest, distinctUntilChanged, startWith, take, takeUntil, filter } from 'rxjs';
 import { HuntFormComponent } from 'components/admin/hunt-form/hunt-form.component';
 import { Tooltip, TooltipTriggerType } from 'flowbite';
 import { LoadingComponent } from '_shared/components/loading.component';
 import * as huntsActions from 'store/hunts/hunts.actions';
+import * as filterActions from 'store/filters/filters.actions';
+import { Filter } from '@model';
 
 @Component({
   selector: 'gawmas-browse-hunts',
@@ -21,7 +24,7 @@ import * as huntsActions from 'store/hunts/hunts.actions';
     NgIconComponent, DetailsHighlightPipe,
     HuntFormComponent, LoadingComponent]
 })
-export class HuntsComponent implements OnInit {
+export class HuntsComponent implements OnInit, OnDestroy {
 
   @Input('isAdmin') isAdmin: boolean = false;
 
@@ -29,6 +32,7 @@ export class HuntsComponent implements OnInit {
 
   topInView = signal(true);
 
+  destroyed$ = new Subject<void>();
   hunts$ = this._store.select(selectHunts);
   isLoading$ = this._store.select(selectHuntsLoading);
   isLoadingMore$ = this._store.select(selectLoadingMoreHunts);
@@ -40,21 +44,37 @@ export class HuntsComponent implements OnInit {
   initialPageSize: number = 10;
 
   ngOnInit(): void {
+    this._store.dispatch(filterActions.getFilterAuxData());
+
     // Set initial page size based on screen height ...
     this.initialPageSize = this.screenHeight() > 2000 ? 20 :
       (this.screenHeight() < 2000 && this.screenHeight() > 1000) ? 15 : 10;
 
-    this._store.dispatch(huntsActions.getInitialHunts({
-      filter: {
-        skip: 0,
-        pageSize: this.initialPageSize,
-        successRate: 0,
-        wmas: [],
-        seasons: [],
-        weapons: [],
-        sort: null
-      }
-    }));
+    const intialFilter = {
+      ...initialHuntState.filter,
+      pageSize: this.initialPageSize
+    };
+
+    this.filter$
+      .pipe(
+        take(1),
+        startWith(intialFilter))
+      .subscribe(filter => {
+        // console.log('filter', filter);
+        const updatedFilter: Filter = { ...filter, skip: 0, pageSize: this.initialPageSize };
+        this._store.dispatch(huntsActions.getInitialHunts({
+          filter: updatedFilter
+        }));
+      });
+
+    // this._store.dispatch(huntsActions.getInitialHunts({
+    //   filter: intialFilter
+    // }));
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   @HostListener('window:resize', ['$event'])

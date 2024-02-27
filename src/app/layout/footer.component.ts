@@ -10,8 +10,8 @@ import { selectHuntsLoading, selectLoadingMoreHunts } from 'store/hunts/hunts.se
   standalone: true,
   imports: [SHARED_MODULES, NgIconComponent],
   template: `
-    <footer class="fixed left-0 flex items-center bottom-0 w-[100%] mx-auto h-12 bg-gray-950 border-t border-gray-700">
-      <div class="left-2 p-3 w-1/2">
+    <footer class="fixed left-0 px-2 flex items-center bottom-0 w-[100%] mx-auto h-12 bg-gray-950 border-t border-gray-700">
+      <div class="p-4 w-1/2">
         @if (!topInView()) {
           @if (isLoading$ | async) {
             <button disabled type="button" class="py-1 px-2 text-sm font-medium rounded-full border focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 bg-gray-800 text-gray-400 border-gray-600 hover:text-white hover:bg-gray-700 inline-flex items-center">
