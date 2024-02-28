@@ -44,6 +44,7 @@ export class HuntsComponent implements OnInit, OnDestroy {
   initialPageSize: number = 10;
 
   ngOnInit(): void {
+    // Dispatch action to get filter aux data, used in the child component <gawmas-hunt-filters/>...
     this._store.dispatch(filterActions.getFilterAuxData());
 
     // Set initial page size based on screen height ...
@@ -55,6 +56,8 @@ export class HuntsComponent implements OnInit, OnDestroy {
       pageSize: this.initialPageSize
     };
 
+    // Subscribe to the filters Observable from the store and dispatch action to get initial hunts,
+    // this may be the initial set of Hunts or applies previously selected filters ...
     this.filter$
       .pipe(
         take(1),
@@ -67,9 +70,6 @@ export class HuntsComponent implements OnInit, OnDestroy {
         }));
       });
 
-    // this._store.dispatch(huntsActions.getInitialHunts({
-    //   filter: intialFilter
-    // }));
   }
 
   ngOnDestroy(): void {
@@ -77,12 +77,15 @@ export class HuntsComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
+  // Listen to window resize event and update the screenWidth and screenHeight signals ...
   @HostListener('window:resize', ['$event'])
   onResize(event: any): void {
     this.screenWidth.set(event.target.innerWidth);
     this.screenHeight.set(event.target.innerHeight);
   }
 
+  // Listen to window scroll event to trigger infinite scroll functionality, dispatch action to get
+  // more hunts when the user scrolls to the bottom of the page ...
   @HostListener('window:scroll', ['$event'])
   onScroll(event: any): void {
 
@@ -95,6 +98,8 @@ export class HuntsComponent implements OnInit, OnDestroy {
 
     const windowBottom = windowHeight + window.pageYOffset;
 
+    // User is nearing the bottom of the viewport, dispatch action to get more hunts only if
+    // the end of the results has not been reached ...
     if (windowBottom >= (docHeight * .95)) {
       combineLatest([
         this.isLoadingMore$,

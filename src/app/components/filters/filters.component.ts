@@ -1,10 +1,9 @@
-// import { FilterAuxData } from './../../_shared/model/filterAuxData.interface';
-import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, OnDestroy, OnInit, ViewChild, computed, inject, signal } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, ViewChild, computed, inject, signal } from "@angular/core";
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { Filter, FilterAuxData, Season, Weapon, Wma } from "@model";
 import { SHARED_MODULES } from "@shared-imports";
-import { Observable, Subject, Subscription, combineLatest, delay, distinctUntilChanged, map, startWith, take, takeUntil, tap } from "rxjs";
-import { AppStateInterface, initialHuntState } from "@store-model";
+import { Subject, Subscription, combineLatest, delay, distinctUntilChanged, map, startWith, take, takeUntil, tap } from "rxjs";
+import { AppStateInterface } from "@store-model";
 import { Store } from "@ngrx/store";
 import { NgIconComponent } from "@ng-icons/core";
 import { selectFiltersAuxData, selectSeasons, selectWeapons, selectWmas } from 'store/filters/filters.selectors';
@@ -13,7 +12,6 @@ import { FormArrayPipe } from "@pipes";
 import { DrawerComponent } from "_shared/components/drawer.component";
 import { FilterObjNamePipe } from "_shared/pipes/filter-obj-name.pipe";
 import { Tooltip, TooltipTriggerType } from "flowbite";
-import * as filterActions from 'store/filters/filters.actions';
 import * as huntsActions from 'store/hunts/hunts.actions';
 
 @Component({
@@ -38,6 +36,7 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
   private _formBuilder = inject(FormBuilder);
   private _cdr = inject(ChangeDetectorRef);
 
+  // Store selectors ...
   auxData$ = this._store.select(selectFiltersAuxData);
   wmas$ = this._store.select(selectWmas);
   weapons$ = this._store.select(selectWeapons);
@@ -45,6 +44,7 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
   isLoading$ = this._store.select(selectHuntsLoading);
   filter$ = this._store.select(selectFilter);
 
+  // Initialize local auxillary data for the form controls ...
   auxData: FilterAuxData = { wmas: [], seasons: [], weapons: [], histClimateLocations: [], filteredWmas: [] };
 
   sortForm: FormGroup = this._formBuilder.group({
@@ -62,13 +62,13 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
     weapons: this._formBuilder.array([]),
   });
 
+  // Signals to indicate the number of selected criteria in the filter form ...
   selectedWmasCount = signal(0);
   noFilteredWmasFound = signal(false);
   selectedWmaIds = signal<number[]>([]);
   selectedSeasonIds = signal<number[]>([]);
   selectedWeaponIds = signal<number[]>([]);
   togglesCount = signal(0);
-
   successRateSet = signal(false);
   preSelectedFilters: Filter | undefined;
   filterCount = computed(() => {
@@ -81,8 +81,7 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
 
-    // this._store.dispatch(filterActions.getFilterAuxData());
-
+    // On inital load of the component, check for pre-selected filters and apply them ...
     this.filter$
       .pipe(
         delay(2500),
@@ -90,17 +89,16 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
         tap((filter) => this.preSelectedFilters = filter))
       .subscribe((filter) => {
         this.sortForm.controls['sort'].setValue((filter as Filter).sort, { emitEvent: false });
-        this._watchFilterFormChanges();
+        this._watchFilterFormChanges(); // Watch for changes to the filter form controls ...
+        // Patch values to the filter form that are not checkbox formArrays ...
         this.filterForm.patchValue({
           isStatePark: filter.isStatePark,
           isVpa: filter.isVpa,
           isBonusQuota: filter.isBonusQuota,
           successRate: filter.successRate
         });
-        this.selectedWmasCount.set((filter.wmas as unknown as Wma[]).length);
-        this.selectedSeasonIds.set(filter.seasons as number[]);
-        this.selectedWeaponIds.set(filter.weapons as number[]);
         this._cdr.detectChanges();
+        // Open and close filter drawer to trigger patchValue of the checkbox formArrays ...
         this.openFiltersDrawer();
         this.cancel();
       });
@@ -108,6 +106,7 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
   }
 
   private _watchFilterFormChanges() {
+    // Re-apply filters when the sort order changes ...
     this.sortForm.controls['sort'].valueChanges
       .pipe(
         takeUntil(this._destroyed$),
@@ -175,6 +174,7 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
       });
   }
 
+  // Filter the list of WMAs based on "state park"/"vpa"/"bonus quota" toggles ...
   private _filterWmaType(isStatePark: boolean, isVpa: boolean) {
     this.auxData.filteredWmas.forEach((wma: Wma) => {
       if (!Array.from(this.selectedWmaIds()).includes(wma.id)) { // Exclude WMAs that are already selected
@@ -191,27 +191,29 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  // Get number of checked items in a given checkbox formArray ...
   private _controlCheckedCount(name: string): number[] {
     return this.filterForm.controls[name].value
       .map((checked: any, i: number) => checked ? (this.auxData as any)[name][i].id : null)
       .filter((v: null | number) => v !== null);
   }
 
+  // Show the filter drawer, and populate checkbox arrays based on FilterAuxData from the store ...
   openFiltersDrawer() {
-    // console.log(this.preSelectedFilters);
     if (this.auxData.wmas.length === 0) {
-      console.log('No aux data')
       this.auxData$
         .pipe(
           take(1),
-          map((auxData) => {
+          map((auxData) => { // Create a filterWmas array and mark all as "visible" ...
             const updatedWmas = auxData.wmas.map((wma: Wma) => ({ ...wma, visible: true }));
             return { ...auxData, wmas: [...updatedWmas], filteredWmas: [...updatedWmas] };
           }),
-          tap((auxData) => this.auxData = auxData))
+          tap((auxData) => this.auxData = auxData)) // Side effect, assign the local auxData w/ the results ...
         .subscribe((auxData: FilterAuxData) => {
-          for (let key of Object.keys(auxData)) {
+          for (let key of Object.keys(auxData)) { // Iterate the keys in FilterAuxData and build the checkbox arrays ...
             if (key !== 'filteredWmas' && key !== 'histClimateLocations') {
+              // Determine if there are any pre-selected filters and pass the values to the checkbox arrays
+              // so that there value is set in the formArray ...
               let passValues: number[] | undefined;
               switch (key) {
                 case 'wmas':
@@ -235,6 +237,16 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
 
   }
 
+  // Build the formArray of checkboxes based on the data from the store ...
+  private _buildCheckBoxes = (data: Wma[] | Season[] | Weapon[], values?: number[]) => {
+    data.forEach((item: Wma | Season | Weapon) => {
+      const arrayName = item.hasOwnProperty('season') ? 'seasons' : item.hasOwnProperty('locationId') ? 'wmas' : 'weapons';
+      (this.filterForm.controls[arrayName] as unknown as FormArray)
+        .push(new FormControl(values && values.includes(item.id) ? true : false)); // Mark as "true" if the value is in the pre-selected filters ...
+    });
+  };
+
+  // Listener function to dispatch search with filters are applied ...
   private _listenToDrawerEvents() {
     this.filterDrawerSubscription = this.filterDrawer.closeEvent
       .subscribe((event: any) => {
@@ -249,15 +261,6 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
         }
       });
   }
-
-  private _buildCheckBoxes = (data: Wma[] | Season[] | Weapon[], values?: number[]) => {
-    data.forEach((item: Wma | Season | Weapon) => {
-      const arrayName = item.hasOwnProperty('season') ? 'seasons' : item.hasOwnProperty('locationId') ? 'wmas' : 'weapons';
-      (this.filterForm.controls[arrayName] as unknown as FormArray)
-        .push(new FormControl(values && values.includes(item.id) ? true : false));
-      // console.log(item);
-    });
-  };
 
   clearSearch() {
     this.filterForm.controls['wmaFilter'].setValue('');
@@ -274,6 +277,7 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  // Helper function to extract the checked ids from the checkbox formArrays ...
   private _extractCheckIds(ctrlName: string, collectionName: string): number[] {
     return this.filterForm.controls[ctrlName].value
       .map((checked: boolean, i: number) => checked ? this.auxData[collectionName as keyof FilterAuxData][i].id : null)
@@ -286,6 +290,7 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
     tooltip.show();
   }
 
+  // Remove a filter chip of the selected WMAs, Seasons, or Weapons ...
   removeCheckboxFilter(id: number, collectionName: string) {
     const formArray: FormArray = this.filterForm.controls[collectionName] as FormArray;
     let index: number | undefined;
@@ -309,6 +314,7 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
     }));
   }
 
+  // Remove the success rate filter chip ...
   removeSuccessRate() {
     this.filterForm.controls['successRate'].setValue(0);
     this._store.dispatch(huntsActions.filtersChanged({
@@ -323,6 +329,7 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
     }));
   }
 
+  // Remove the "state park"/"vpa"/"bonus quota" filter chips ...
   removeWmaTypeFilter(type: string) {
     switch (type) {
       case 'statePark':
