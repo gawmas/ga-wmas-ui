@@ -13,9 +13,9 @@ import { Subject, takeUntil } from 'rxjs';
   imports: [SHARED_MODULES, NgIconComponent, ModalComponent,
     AboutComponent, IsActiveRoutePipe],
   template: `
-    <nav class="w-full bg-[url('./assets/bg-image2.png')] bg-no-repeat flex flex-wrap justify-between p-4">
+    <nav class="w-full bg-[url('./assets/header-bg-image.png')] bg-no-repeat flex flex-wrap justify-between p-4">
       <a routerLink="/browse" class="space-x-3 rtl:space-x-reverse">
-        <object data="./assets/logo.svg" type="image/svg+xml" class="h-[65px] md:h-[85px] max-h-14 md:mt-0"></object>
+        <object data="./assets/gawmas-logo.svg" type="image/svg+xml" class="h-[65px] md:h-[85px] max-h-14 md:mt-0"></object>
       </a>
       <button data-collapse-toggle="navbar-solid-bg" type="button"
         class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-200 rounded-lg md:hidden hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-200"

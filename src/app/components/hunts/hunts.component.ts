@@ -5,7 +5,7 @@ import { Component, HostListener, Input, OnDestroy, OnInit, inject, signal } fro
 import { Store } from '@ngrx/store';
 import { FiltersComponent } from 'components/filters/filters.component';
 import { AppStateInterface } from '@store-model';
-import { DetailsHighlightPipe, SuccessRateColorPipe, SuccessRatePipe } from "@pipes";
+import { DetailsHighlightPipe, SuccessRateColorPipe, SuccessRatePipe, WxAvgTempDeparturePipe, WxDetailTypePipe, SafePipe } from "@pipes";
 import { NgIconComponent } from '@ng-icons/core';
 import { Subject, combineLatest, distinctUntilChanged, startWith, take, takeUntil, filter } from 'rxjs';
 import { HuntFormComponent } from 'components/admin/hunt-form/hunt-form.component';
@@ -22,7 +22,8 @@ import { Filter } from '@model';
   imports: [SHARED_MODULES, FiltersComponent,
     SuccessRateColorPipe, SuccessRatePipe,
     NgIconComponent, DetailsHighlightPipe,
-    HuntFormComponent, LoadingComponent]
+    HuntFormComponent, LoadingComponent,
+    WxDetailTypePipe, WxAvgTempDeparturePipe]
 })
 export class HuntsComponent implements OnInit, OnDestroy {
 

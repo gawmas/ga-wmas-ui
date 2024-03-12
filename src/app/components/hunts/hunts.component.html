@@ -107,13 +107,48 @@
                 </tr>
               </table>
             </td>
-            <td class="px-6 py-4 align-top border-l border-gray-600">
-              <!-- {{ hunt.wxHistAvgs | json }} -->
-              <div class="font-bold uppercase text-xs border-b border-gray-600 pl-2 mb-1">
-                <ng-icon name="heroClock" class="mr-1"></ng-icon>
-                Historical Average Temps
-              </div>
-              @for (w of hunt.wxHistAvgs; track w.startDate; let i = $index) {
+            <td class="px-6 py-4 align-top">
+
+              @if (hunt.wxDetails) {
+                @switch (hunt.wxDetails[0] | wxDetailType) {
+                  @case ('summary') {
+                    @for (wx of $any(hunt.wxDetails); track wx) {
+                      <div class="w-full uppercase text-xs">
+                        <div class="flex items-center uppercase font-bold text-xs border-b border-gray-600 ml-2">
+                          <ng-icon name="heroClock" class="mr-1"></ng-icon>
+                          <span class="mr-2">Averages</span>
+                          <span class="italic ml-2 text-gray-400">
+                            {{ wx.start | date: 'MMM d' }} &ndash; {{ wx.end | date: 'MMM d' }}
+                          </span>
+                        </div>
+                        <div class="flex items-center m-auto py-1">
+                          <span class="font-semibold px-2 text-gray-400">High:</span>
+                          <span [class]="wx.avgMaxTemp | wxAvgTempDeparture:true:wx.start:hunt.wxHistAvgs!">
+                            {{ wx.avgMaxTemp }}&deg;
+                          </span>
+                          <span class="font-semibold px-2 text-gray-400">Low:</span>
+                          <span [class]="wx.avgMaxTemp | wxAvgTempDeparture:false:wx.start:hunt.wxHistAvgs!">
+                            {{ wx.avgMinTemp }}&deg;
+                          </span>
+                        </div>
+                        <div class="flex items-center m-auto py-1">
+                          <span class="font-semibold px-2 text-gray-400">Max High:</span>
+                          <span class="text-gray-200">{{ wx.maxTemp }}&deg;</span>
+                          <span class="font-semibold px-2 text-gray-400">Min Low:</span>
+                          <span class="text-gray-200">{{ wx.minTemp }}&deg;</span>
+                        </div>
+                      </div>
+                    }
+                  }
+                  @case ('detailed') {
+                    detailed ...
+                  }
+                  @default {
+                    No weather details found.
+                  }
+                }
+              }
+              <!-- @for (w of hunt.wxHistAvgs; track w.startDate; let i = $index) {
                 <div [ngClass]="{'border-b border-gray-700' : (hunt.wxHistAvgs!.length > 0 && i !== hunt.wxHistAvgs!.length - 1) }">
                   <div class="text-xs pl-2 font-semibold mb-1">{{ w.startDate | date: 'MMM dd' }} &ndash; {{ w.endDate | date: 'MMM dd' }}</div>
                   <div class="flex items-center w-full text-xs mb-1">
@@ -121,7 +156,7 @@
                     <div class="w-1/2 text-center"><span>Low:</span> {{ w.avgLow }}&deg;</div>
                   </div>
                 </div>
-              }
+              } -->
               <div class="w-full text-xs text-gray-400 border-t border-gray-600 pt-1 pl-2 mr-1 flex items-center">
                 &#64; {{ hunt.climateTown }}, GA
               </div>

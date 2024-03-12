@@ -22,6 +22,7 @@ export interface Hunt {
   physLong?: number;
   isBonusQuota?: boolean;
   wxHistAvgs?: WxHistAverageTemps[];
+  wxDetails?: WxHistDetailedHunt[] | WxHistSummaryHunt[];
 }
 
 export interface HuntDate {
@@ -39,4 +40,24 @@ export interface WxHistAverageTemps {
   avgLow: number;
   startDate: string;
   endDate: string;
+}
+
+export interface WxHistDetailedHunt {
+  date: string;
+  high: number;
+  low: number;
+  middayDescr: string;
+  middayIcon: string;
+  moonIllum: number;
+  moonPhase: string;
+}
+
+export interface WxHistSummaryHunt {
+  start: string;
+  end: string;
+  location: string;
+  avgMaxTemp: number;
+  avgMinTemp: number;
+  maxTemp: number;
+  minTemp: number;
 }

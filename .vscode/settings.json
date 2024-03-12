@@ -3,5 +3,6 @@
     "[Monokai]": {
       "tab.activeBorderTop": "#ff0000",
     }
-  }
+  },
+  "svg.preview.background": "editor"
 }
