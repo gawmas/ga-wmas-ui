@@ -50,6 +50,7 @@ export interface WxHistDetailedHunt {
   middayIcon: string;
   moonIllum: number;
   moonPhase: string;
+  ident: string;
 }
 
 export interface WxHistSummaryHunt {
@@ -60,4 +61,5 @@ export interface WxHistSummaryHunt {
   avgMinTemp: number;
   maxTemp: number;
   minTemp: number;
+  ident: string;
 }

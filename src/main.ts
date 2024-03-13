@@ -16,7 +16,7 @@ import { heroTableCells, heroUsers, heroBarsArrowUp,
   heroChartPie, heroSun, heroMoon, heroChevronDoubleDown, heroChevronDoubleUp,
   heroInformationCircle, heroNoSymbol, heroFaceFrown, heroBars3,
   heroChatBubbleBottomCenterText, heroDocumentText, heroCheckCircle,
-  heroPencilSquare, heroClock, heroExclamationTriangle } from '@ng-icons/heroicons/outline';
+  heroPencilSquare, heroClock, heroExclamationTriangle, heroArrowTopRightOnSquare } from '@ng-icons/heroicons/outline';
 import { heroCheckCircleSolid, heroXCircleSolid, heroExclamationTriangleSolid } from '@ng-icons/heroicons/solid';
 import { AppStateInterface } from '_shared/model/store';
 import { huntsReducers } from './app/store/hunts/hunts.reducers';
@@ -54,7 +54,8 @@ const heroIcons = {
   heroClock,
   heroXCircleSolid,
   heroExclamationTriangleSolid,
-  heroExclamationTriangle
+  heroExclamationTriangle,
+  heroArrowTopRightOnSquare
 };
 
 const appReducers: ActionReducerMap<AppStateInterface> = {

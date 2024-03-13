@@ -6,3 +6,4 @@ export * from "./is-route-active.pipe";
 export * from "./wx-detail-type.pipe";
 export * from "./wx-avg-temp-departure.pipe";
 export * from "./safe.pipe";
+export * from "./wx-cond-icon.pipe";
