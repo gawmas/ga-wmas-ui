@@ -121,7 +121,8 @@ export class HuntsComponent implements OnInit, OnDestroy {
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   }
 
-  showHunterDensityTooltip(targetElId: string, triggerType: TooltipTriggerType, event: any) {
+  showTooltip(targetElId: string, triggerType: TooltipTriggerType, event: any) {
+    // console.log('targetElId', targetElId, 'event', event);
     const targetEl = document.getElementById(targetElId)
     const tooltip = new Tooltip(targetEl, event.target as HTMLElement, { triggerType });
     tooltip.show();
