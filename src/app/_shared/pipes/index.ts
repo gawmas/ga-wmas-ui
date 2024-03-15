@@ -7,3 +7,5 @@ export * from "./wx-detail-type.pipe";
 export * from "./wx-avg-temp-departure.pipe";
 export * from "./safe.pipe";
 export * from "./wx-cond-icon.pipe";
+export * from "./ordinal.pipe";
+export * from "./trim-time.pipe";

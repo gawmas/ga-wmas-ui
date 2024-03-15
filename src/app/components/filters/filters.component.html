@@ -44,8 +44,7 @@
           <a class="cursor-pointer hover:text-white" (click)="removeSuccessRate()">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
-          <div id="successRate" role="tooltip"
-            class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-full shadow-sm opacity-0 tooltip">
+          <div id="successRate" role="tooltip" class="gawmas-tooltip tooltip">
             Remove <span class="italic">'Success rate &gt; {{ filters.successRate }}'</span> from filters.
             <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
@@ -60,8 +59,7 @@
           <a class="cursor-pointer hover:text-white" (click)="removeWmaTypeFilter('bonusQuota')">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
-          <div id="quotaBonus" role="tooltip"
-            class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-full shadow-sm opacity-0 tooltip">
+          <div id="quotaBonus" role="tooltip" class="gawmas-tooltip tooltip">
             Remove <span class="italic">'Quota/Bonus'</span> from filters.
             <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
@@ -76,8 +74,7 @@
           <a class="cursor-pointer hover:text-white" (click)="removeWmaTypeFilter('statePark')">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
-          <div id="statePark" role="tooltip"
-            class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-full shadow-sm opacity-0 tooltip">
+          <div id="statePark" role="tooltip" class="gawmas-tooltip tooltip">
             Remove <span class="italic">'State Park'</span> from filters.
             <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
@@ -92,8 +89,7 @@
           <a class="cursor-pointer hover:text-white" (click)="removeWmaTypeFilter('vpa')">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
-          <div id="vpa" role="tooltip"
-            class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-full shadow-sm opacity-0 tooltip">
+          <div id="vpa" role="tooltip" class="gawmas-tooltip tooltip">
             Remove <span class="italic">'VPA'</span> from filters.
             <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
@@ -110,8 +106,7 @@
             <a class="cursor-pointer hover:text-cyan-800" (click)="removeCheckboxFilter(wmaId, 'wmas')">
               <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
             </a>
-            <div id="{{ wmaId }}" role="tooltip"
-              class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-full shadow-sm opacity-0 tooltip">
+            <div id="{{ wmaId }}" role="tooltip" class="gawmas-tooltip tooltip">
                 Remove  <span class="italic">'{{ wmaId | filterObjName: anxData.wmas }}'</span> from filters.
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
@@ -126,8 +121,7 @@
             <a class="cursor-pointer hover:text-cyan-800" (click)="removeCheckboxFilter(seasonId, 'seasons')">
               <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
             </a>
-              <div id="{{ seasonId }}" role="tooltip"
-                class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-full shadow-sm opacity-0 tooltip">
+              <div id="{{ seasonId }}" role="tooltip" class="gawmas-tooltip tooltip">
               Remove <span class="italic">'{{ seasonId | filterObjName: anxData.seasons }}'</span> filters.
               <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
@@ -142,8 +136,7 @@
             <a class="cursor-pointer hover:text-cyan-800" (click)="removeCheckboxFilter(weaponId, 'weapons')">
               <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
             </a>
-            <div id="{{ weaponId }}" role="tooltip"
-              class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-full shadow-sm opacity-0 tooltip">
+            <div id="{{ weaponId }}" role="tooltip" class="gawmas-tooltip tooltip">
               Remove <span class="italic">'{{ weaponId | filterObjName: anxData.weapons }}'</span> from filters.
               <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
@@ -355,65 +348,47 @@
           <li>
             <input type="radio" id="new" name="hosting" value="hosting-small" class="hidden peer">
             <label data-tooltip-target="new-tip" data-tooltip-placement="bottom" for="new"
-              class="p-2 inline-flex items-center justify-between rounded-l-xl bg-gray-300 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-200">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7">
-                <circle cx="12" cy="12" r="10" fill="black" />
-              </svg>
+              class="p-2 inline-flex items-center justify-between rounded-l-xl bg-gray-700 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-800">
+              <object data="/assets/lunar-svg/new.svg" type="image/svg+xml" class="w-[28px] h-[28px]"></object>
             </label>
-            <div id="new-tip" role="tooltip"
-              class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
-              New Moon
+            <div id="new-tip" role="tooltip" class="gawmas-tooltip tooltip">New Moon
               <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
           </li>
           <li>
             <input type="radio" id="first" name="hosting" value="hosting-small" class="hidden peer">
             <label data-tooltip-target="first-tip" data-tooltip-placement="bottom" for="first"
-              class="inline-flex items-center justify-between p-2 bg-gray-300 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-200">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7">
-                <circle cx="12" cy="12" r="10" stroke="black" stroke-width="2" fill="white" />
-                <path d="M12 2 A10 10 0 0 1 12 22 L12 2 Z" fill="black" />
-              </svg>
+              class="inline-flex items-center justify-between p-2 bg-gray-700 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-800">
+              <object data="/assets/lunar-svg/first-qtr.svg" type="image/svg+xml" class="w-[28px] h-[28px]"></object>
             </label>
-            <div id="first-tip" role="tooltip"
-              class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
-              First Quarter
+            <div id="first-tip" role="tooltip" class="gawmas-tooltip tooltip">First Quarter
               <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
           </li>
           <li>
             <input type="radio" id="last" name="hosting" value="hosting-small" class="hidden peer">
             <label data-tooltip-target="last-tip" data-tooltip-placement="bottom" for="last"
-              class="inline-flex items-center justify-between p-2 bg-gray-300 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-200">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7">
-                <circle cx="12" cy="12" r="10" stroke="black" stroke-width="2" fill="white" />
-                <path d="M12 2 A10 10 0 0 0 12 22 L12 2 Z" fill="black" />
-              </svg>
+              class="inline-flex items-center justify-between p-2 bg-gray-700 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-800">
+              <object data="/assets/lunar-svg/last-qtr.svg" type="image/svg+xml" class="w-[28px] h-[28px]"></object>
             </label>
-            <div id="last-tip" role="tooltip"
-              class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
-              Last Quarter
+            <div id="last-tip" role="tooltip" class="gawmas-tooltip ooltip">Last Quarter
               <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
           </li>
           <li>
             <input type="radio" id="full" name="hosting" value="hosting-small" class="hidden peer">
             <label data-tooltip-target="full-tip" data-tooltip-placement="bottom" for="full"
-              class="inline-flex items-center justify-between p-2 bg-gray-300 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-200">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7">
-                <circle cx="12" cy="12" r="10" stroke="black" stroke-width="2" fill="white" />
-              </svg>
+              class="inline-flex items-center justify-between p-2 bg-gray-700 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-800">
+              <object data="/assets/lunar-svg/full.svg" type="image/svg+xml" class="w-[28px] h-[28px]"></object>
             </label>
-            <div id="full-tip" role="tooltip"
-              class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-gray-300 transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
-              Full Moon
+            <div id="full-tip" role="tooltip" class="gawmas-tooltip tooltip">Full Moon
               <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
           </li>
           <li>
             <input type="radio" id="ignore" name="hosting" value="hosting-small" class="hidden peer">
             <label for="ignore"
-              class="inline-flex items-center rounded-r-xl text-gray-800 italic text-sm justify-between p-3 bg-gray-300 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 peer-checked:text-gray-200 hover:bg-gray-200">
+              class="inline-flex items-center rounded-r-xl text-gray-200 italic text-sm justify-between p-3 bg-gray-700 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 peer-checked:text-white hover:bg-gray-800">
               <ng-icon name="heroNoSymbol" class="font-extrabold mr-1"></ng-icon> Ignore
             </label>
           </li>

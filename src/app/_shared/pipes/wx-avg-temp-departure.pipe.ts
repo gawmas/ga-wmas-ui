@@ -81,7 +81,8 @@ export class WxAvgTempDeparturePipe implements PipeTransform {
 
         return {
           class: colorClass,
-          msg: `${text} than average temperatures for period. Historical average ${isHigh ? 'high' : 'low'}: ${avgTemp}&deg;` };
+          msg: text.length ? `${text} than average temperatures for period. Historical average ${isHigh ? 'high' : 'low'}: ${avgTemp}&deg;` : ''
+        };
 
       }
 

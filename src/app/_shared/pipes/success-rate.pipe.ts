@@ -3,7 +3,7 @@ import { Hunt } from '@model';
 
 @Pipe({ name: 'successRate', standalone: true })
 export class SuccessRatePipe {
-  transform(hunt: Hunt): string {
+  transform(hunt: Hunt | Partial<Hunt>): string {
     if (hunt.hunterCount === null) return '0';
     const perc = ((hunt.bucks ?? 0) + (hunt.does ?? 0)) / (hunt.hunterCount ?? 0) * 100;
     const value = parseFloat(perc.toString()).toFixed(2);

@@ -3,7 +3,7 @@ import { Hunt } from "@model";
 
 @Pipe({ name: 'successRateColor', standalone: true })
 export class SuccessRateColorPipe {
-  transform(hunt: Hunt) {
+  transform(hunt: Hunt | Partial<Hunt>) {
     if (hunt.hunterCount === null) return 'text-stone-300';
     const perc = ((hunt.bucks ?? 0) + (hunt.does ?? 0)) / (hunt.hunterCount ?? 0) * 100;
     if (perc >= 50) {

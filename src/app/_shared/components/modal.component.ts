@@ -12,8 +12,8 @@ import { Subject } from "rxjs";
     <div [id]="targetElement"
       class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center inset-2 h-modal md:h-full"
       tabindex="-1">
-      <div class="relative max-h-full w-full max-w-2xl">
-        <div class="relative rounded-lg shadow bg-gray-700 text-gray-200">
+      <div class="relative max-h-full w-full max-w-3xl">
+        <div class="relative rounded-2xl shadow bg-gray-700 text-gray-200">
           <ng-content></ng-content>
         </div>
       </div>

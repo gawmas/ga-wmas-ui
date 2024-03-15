@@ -1,4 +1,5 @@
 <gawmas-hunt-filters />
+<gawmas-wx-details #wxDetailsModal />
 
 @if (isLoading$ | async) {
   <gawmas-loading />
@@ -130,9 +131,7 @@
                                 (mouseover)="showTooltip(i + '' + wx.ident + 'high', 'hover', $event)">
                                   {{ wx.avgMaxTemp }}&deg;
                               </span>
-                              <div id="{{ i }}{{ wx.ident }}high" role="tooltip"
-                                class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-gray-800 normal-case transition-opacity duration-300 bg-gray-300 rounded-full shadow-sm opacity-0 tooltip"
-                                [innerHTML]="maxDepart.msg">
+                              <div id="{{ i }}{{ wx.ident }}high" role="tooltip" class="gawmas-tooltip tooltip" [innerHTML]="maxDepart.msg">
                               </div>
                             } @else {
                               <span [class]="maxDepart.class">
@@ -147,9 +146,7 @@
                                 (mouseover)="showTooltip(i + '' + wx.ident + 'low', 'hover', $event)">
                                   {{ wx.avgMinTemp }}&deg;
                               </span>
-                              <div id="{{ i }}{{ wx.ident }}low" role="tooltip"
-                                class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-gray-800 normal-case transition-opacity duration-300 bg-gray-300 rounded-full shadow-sm opacity-0 tooltip"
-                                [innerHTML]="minDepart.msg">
+                              <div id="{{ i }}{{ wx.ident }}low" role="tooltip" class="gawmas-tooltip tooltip" [innerHTML]="minDepart.msg">
                               </div>
                             } @else {
                               <span [class]="minDepart.class">
@@ -160,7 +157,7 @@
                         </div>
                       </div>
                     }
-                    <div class="text-xs text-gray-500 pl-2 flex items-center">
+                    <div class="text-xs text-gray-500 pl-2 flex items-center italic">
                       &#64; {{ $any(hunt.wxDetails[0]).location }}, GA
                     </div>
                   }
@@ -170,7 +167,7 @@
                       <span class="font-semibold ml-2">Observed Conditions</span>
                     </div>
                     <div class="w-full flex items-center font-bold uppercase mb-3">
-                      @for (wx of $any(hunt.wxDetails); track wx.date; let i= $index, last = $last) {
+                      @for (wx of $any(hunt.wxDetails); track wx.date; let i = $index, last = $last) {
                         <div class="p-1 text-xs text-gray-400 {{ hunt.wxDetails.length < 3 ? 'w-1/2' : 'w-1/3' }} {{ !last ? 'border-r border-gray-400' : 'border-none' }}">
                           <div class="flex-none italic text-center">
                             {{ wx.date | date: 'EEE' }}, {{ wx.date | date: 'MM/dd' }}
@@ -179,9 +176,7 @@
                             <object [data]="wx.middayIcon | wxCondIcon | safe"
                               type="image/svg+xml" class="w-[50px] h-[50px]"
                               (mouseover)="showTooltip(i + '' + wx.ident + 'cond', 'hover', $event)"></object>
-                            <div id="{{ i }}{{ wx.ident }}cond" role="tooltip"
-                              class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-gray-800 normal-case transition-opacity duration-300 bg-gray-300 rounded-full shadow-sm opacity-0 tooltip"
-                              [innerHTML]="wx.middayDescr"></div>
+                            <div id="{{ i }}{{ wx.ident }}cond" role="tooltip" class="gawmas-tooltip tooltip" [innerHTML]="wx.middayDescr"></div>
                           </div>
                           <div class="flex-none text-center">
                             <div>
@@ -197,12 +192,13 @@
                       }
                     </div>
                     <div class="text-xs text-gray-500 pl-2 flow-root">
-                      <div class="float-left pt-1">&#64; {{ $any(hunt.wxDetails[0]).location }}, GA</div>
+                      <div class="float-left pt-1 italic">&#64; {{ $any(hunt.wxDetails[0]).location }}, GA</div>
                       <div class="float-right">
-                        <button type="button" class="px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white">
-                          <ng-icon name="heroArrowTopRightOnSquare" class="w-4 h-4 mr-1"></ng-icon>
-                          More Details
-                          </button>
+                        <button type="button" (click)="openWxDetails(hunt.id, hunt.huntDates, $any(hunt.wxDetails[0]).location, hunt.hunterCount, hunt.bucks, hunt.does)"
+                          class="px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white">
+                            <ng-icon name="heroArrowTopRightOnSquare" class="w-4 h-4 mr-1"></ng-icon>
+                              More Details
+                        </button>
                       </div>
                     </div>
                   }

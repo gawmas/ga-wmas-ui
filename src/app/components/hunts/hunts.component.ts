@@ -1,7 +1,7 @@
 import { initialHuntState } from './../../_shared/model/store/hunts.model';
 import { selectEndOfResults, selectFilter, selectHunts, selectHuntsLoading, selectLoadingMoreHunts } from 'store/hunts/hunts.selectors';
 import { SHARED_MODULES } from '@shared-imports';
-import { Component, HostListener, Input, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FiltersComponent } from 'components/filters/filters.component';
 import { AppStateInterface } from '@store-model';
@@ -13,7 +13,9 @@ import { Tooltip, TooltipTriggerType } from 'flowbite';
 import { LoadingComponent } from '_shared/components/loading.component';
 import * as huntsActions from 'store/hunts/hunts.actions';
 import * as filterActions from 'store/filters/filters.actions';
-import { Filter } from '@model';
+import * as wxDetailsActions from 'store/wxDetails/wxDetails.actions';
+import { Filter, HuntDate } from '@model';
+import { WxDetailsComponent } from 'components/wxDetails/wxDetails.component';
 
 @Component({
   selector: 'gawmas-browse-hunts',
@@ -21,13 +23,14 @@ import { Filter } from '@model';
   templateUrl: './hunts.component.html',
   imports: [SHARED_MODULES, FiltersComponent,
     SuccessRateColorPipe, SuccessRatePipe,
-    NgIconComponent, DetailsHighlightPipe,
+    NgIconComponent, DetailsHighlightPipe, WxDetailsComponent,
     HuntFormComponent, LoadingComponent, SafePipe,
     WxDetailTypePipe, WxAvgTempDeparturePipe, WxConditionIconPipe]
 })
 export class HuntsComponent implements OnInit, OnDestroy {
 
   @Input('isAdmin') isAdmin: boolean = false;
+  @ViewChild('wxDetailsModal') wxDetailsModal: WxDetailsComponent | undefined;
 
   private _store = inject(Store<AppStateInterface>);
 
@@ -126,6 +129,12 @@ export class HuntsComponent implements OnInit, OnDestroy {
     const targetEl = document.getElementById(targetElId)
     const tooltip = new Tooltip(targetEl, event.target as HTMLElement, { triggerType });
     tooltip.show();
+  }
+
+  openWxDetails(huntId: number, huntDates: HuntDate[], location: string, hunters: number, does: number, bucks: number) {
+    this._store.dispatch(wxDetailsActions.clearWxDetails());
+    this.wxDetailsModal?.open(huntDates, location, hunters, bucks, does);
+    this._store.dispatch(wxDetailsActions.getWxDetails({ id: String(huntId) }));
   }
 
 }

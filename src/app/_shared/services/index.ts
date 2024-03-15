@@ -5,3 +5,4 @@ export * from  './weapon.service';
 export * from  './histClimateLocation.service';
 export * from  './admin.service';
 export * from  './map.service';
+export * from  './wxDetails.service';

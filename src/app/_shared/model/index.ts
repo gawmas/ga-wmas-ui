@@ -9,3 +9,4 @@ export * from './modalCloseEvent.interface';
 export * from './histClimateLocation.interface';
 export * from './climateLocation.interface';
 export * from './mapCoords.interface';
+export * from './wxDetail.interface';

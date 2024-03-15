@@ -34,7 +34,13 @@ import { Subject, takeUntil } from 'rxjs';
             <a routerLink="/browse"
               [ngClass]="{'nav-current': (currentRoute | isActiveRoute:'/browse'), 'nav-link': !(currentRoute | isActiveRoute:'/browse')}"
               aria-current="page">
-                Browse Hunt Results
+                Hunt Results
+            </a>
+          </li>
+          <li class="flex items-center text-sm py-2 px-2">
+            <ng-icon name="heroMap" class="text-lg text-gray-200 ml-2 mr-1"></ng-icon>
+            <a href="#" class="nav-link" aria-current="page">
+              Success Map
             </a>
           </li>
           <li class="flex items-center text-sm py-2 px-2">

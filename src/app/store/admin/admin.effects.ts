@@ -1,4 +1,3 @@
-import { HistClimateLocation } from '@model';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { map, switchMap, catchError, of, tap, combineLatest } from 'rxjs';

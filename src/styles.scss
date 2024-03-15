@@ -153,6 +153,25 @@ button.btn {
     focus:ring-blue-500 focus:border-blue-500;
 }
 
+.gawmas-tooltip {
+  @apply
+    absolute
+    z-10
+    invisible
+    inline-block
+    px-3 py-2
+    text-xs
+    font-medium
+    text-gray-800
+    normal-case
+    transition-opacity
+    duration-300
+    bg-gray-300
+    rounded-full
+    shadow-sm
+    opacity-0
+}
+
 .scroll-container {
   max-width: 100%; /* Set the maximum width as needed */
   overflow-x: auto; /* Enable horizontal scrolling */
