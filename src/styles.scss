@@ -22,8 +22,7 @@
 }
 
 .toggle {
-  @apply
-    w-11
+  @apply w-11
     h-6
     bg-gray-300
     after:content-['']
@@ -37,35 +36,34 @@
     after:h-5 after:w-5
     after:transition-all
     border-gray-600
-    peer-checked:bg-blue-500
+    peer-checked:bg-blue-500;
 }
 
 body {
   overflow-x: hidden;
   letter-spacing: 0.025em;
-  font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", 'Helvetica', 'Arial', 'sans-serif';
+  font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", "Helvetica",
+    "Arial", "sans-serif";
 }
 
 .nav-current {
-  @apply
-    block
+  @apply block
     md:p-0
     text-white
     md:bg-transparent
     border-b-2
     border-gawmas-yeller
-    md:font-bold
+    md:font-bold;
 }
 
 .nav-link {
-  @apply
-    block
+  @apply block
     md:p-0
     text-gray-200
     hover:text-white
     md:bg-transparent
     md:font-semibold
-    hover:underline
+    hover:underline;
 }
 
 .detail-bonus-deer {
@@ -77,8 +75,7 @@ body {
 }
 
 button.btn {
-  @apply
-    mr-1.5
+  @apply mr-1.5
     relative
     inline-flex
     items-center
@@ -91,23 +88,20 @@ button.btn {
     focus:outline-none;
 
   &-primary {
-    @apply
-      text-white
+    @apply text-white
       bg-blue-600
       hover:bg-blue-500
       focus:ring-white;
   }
 
   &-default {
-    @apply
-      bg-gray-300
+    @apply bg-gray-300
       hover:bg-gray-200
       text-gray-700;
   }
 
   &-danger {
-    @apply
-      bg-red-600
+    @apply bg-red-600
       hover:bg-red-500
       disabled:bg-red-300
       disabled:text-gray-400
@@ -115,17 +109,14 @@ button.btn {
   }
 
   &-loading {
-    @apply
-      bg-gray-700
+    @apply bg-gray-700
       text-gray-400
       cursor-not-allowed;
-
   }
 }
 
 .count-badge {
-  @apply
-    absolute
+  @apply absolute
     inline-flex
     items-center
     justify-center
@@ -141,8 +132,7 @@ button.btn {
 }
 
 .select {
-  @apply
-    block
+  @apply block
     py-3 px-5
     text-xs
     border
@@ -154,8 +144,7 @@ button.btn {
 }
 
 .gawmas-tooltip {
-  @apply
-    absolute
+  @apply absolute
     z-10
     invisible
     inline-block
@@ -169,7 +158,7 @@ button.btn {
     bg-gray-300
     rounded-full
     shadow-sm
-    opacity-0
+    opacity-0;
 }
 
 .scroll-container {
@@ -177,5 +166,31 @@ button.btn {
   overflow-x: auto; /* Enable horizontal scrolling */
 }
 
-@tailwind utilities;
+.legend {
+  line-height: 18px;
+  color: #FFFFFF;
+}
+.legend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin-right: 8px;
+  opacity: 0.7;
+}
+.info {
+  padding: 6px 8px;
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: white;
+  background: rgba(76, 73, 73, 0.8);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+.info h4 {
+  margin: 0 0 5px;
+  color: #ffffff;
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 1px solid #CCCCCC;
+}
 
+@tailwind utilities;

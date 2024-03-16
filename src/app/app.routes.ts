@@ -12,6 +12,10 @@ export const routes: Routes = [
     component: HuntsComponent
   },
   {
+    path: 'successmap',
+    loadComponent: () => import('./components/success-map/success-map.component').then(c => c.SuccessMapComponent)
+  },
+  {
     path: 'about',
     loadComponent: () => import('./components/about.component').then(c => c.AboutComponent)
   },

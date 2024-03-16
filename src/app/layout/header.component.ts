@@ -39,16 +39,18 @@ import { Subject, takeUntil } from 'rxjs';
           </li>
           <li class="flex items-center text-sm py-2 px-2">
             <ng-icon name="heroMap" class="text-lg text-gray-200 ml-2 mr-1"></ng-icon>
-            <a href="#" class="nav-link" aria-current="page">
-              Success Map
+            <a routerLink="/successmap"
+              [ngClass]="{'nav-current': (currentRoute | isActiveRoute:'/successmap'), 'nav-link': !(currentRoute | isActiveRoute:'/successmap')}"
+              aria-current="page">
+                Success Map
             </a>
           </li>
-          <li class="flex items-center text-sm py-2 px-2">
+          <!-- <li class="flex items-center text-sm py-2 px-2">
             <ng-icon name="heroStar" class="text-lg text-gray-200 ml-2 mr-1"></ng-icon>
             <a href="#" class="nav-link" aria-current="page">
               Top Hunts
             </a>
-          </li>
+          </li> -->
           <li class="flex items-center text-sm py-2 px-2">
             <ng-icon name="heroArrowTrendingUp" class="text-lg text-gray-200 ml-2 mr-1"></ng-icon>
             <a href="#" class="nav-link" aria-current="page">
