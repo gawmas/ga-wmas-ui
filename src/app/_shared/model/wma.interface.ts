@@ -16,15 +16,4 @@ export interface Wma {
   acres: number;
 }
 
-export interface WmaCoord {
-  id: number;
-  name: string;
-  lat: number;
-  lng: number;
-  // acreage: number | null;
-}
 
-export interface WmaSuccess {
-  id: number;
-  success: number;
-}

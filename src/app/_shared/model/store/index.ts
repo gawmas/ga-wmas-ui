@@ -1,6 +1,7 @@
 import { AdminState } from './admin.model';
 import { FilterAuxDataState } from './filters.model';
 import { HuntState } from './hunts.model';
+import { SuccessMapState } from './successMap.model';
 import { WxDetailsState } from './wxDetails.model';
 
 export { initialHuntState, HuntState } from './hunts.model';
@@ -11,4 +12,5 @@ export interface AppStateInterface  {
   filterAuxDataState: FilterAuxDataState;
   adminState: AdminState;
   wxDetailsState: WxDetailsState;
+  successMapState: SuccessMapState;
 }

@@ -10,3 +10,4 @@ export * from './histClimateLocation.interface';
 export * from './climateLocation.interface';
 export * from './mapCoords.interface';
 export * from './wxDetail.interface';
+export * from './successMap.interface';

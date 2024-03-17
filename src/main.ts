@@ -17,7 +17,7 @@ import { heroTableCells, heroUsers, heroBarsArrowUp,
   heroInformationCircle, heroNoSymbol, heroFaceFrown, heroBars3,
   heroChatBubbleBottomCenterText, heroDocumentText, heroCheckCircle,
   heroPencilSquare, heroClock, heroExclamationTriangle, heroArrowTopRightOnSquare,
-  heroHandThumbUp, heroMap } from '@ng-icons/heroicons/outline';
+  heroHandThumbUp, heroMap, heroGlobeAlt } from '@ng-icons/heroicons/outline';
 import { heroCheckCircleSolid, heroXCircleSolid, heroExclamationTriangleSolid } from '@ng-icons/heroicons/solid';
 import { AppStateInterface } from '_shared/model/store';
 import { huntsReducers } from './app/store/hunts/hunts.reducers';
@@ -27,6 +27,8 @@ import { FiltersEffects } from 'store/filters/filters.effects';
 import { adminReducers } from 'store/admin/admin.reducers';
 import { AdminEffects } from 'store/admin/admin.effects';
 import { WxDetailsEffects } from 'store/wxDetails/wxDetails.effects';
+import { successMapReducers } from 'store/successMap/successMap.reducers';
+import { SuccessMapEffects } from 'store/successMap/successMap.effects';
 
 const heroIcons = {
   heroTableCells,
@@ -60,14 +62,16 @@ const heroIcons = {
   heroExclamationTriangle,
   heroArrowTopRightOnSquare,
   heroHandThumbUp,
-  heroMap
+  heroMap,
+  heroGlobeAlt
 };
 
 const appReducers: ActionReducerMap<AppStateInterface> = {
   huntState: huntsReducers,
   filterAuxDataState: filterAuxDataReducers,
   adminState: adminReducers,
-  wxDetailsState: wxDetailsReducers
+  wxDetailsState: wxDetailsReducers,
+  successMapState: successMapReducers
 };
 
 export const appConfig: ApplicationConfig = {
@@ -77,7 +81,12 @@ export const appConfig: ApplicationConfig = {
       HttpClientModule,
       RouterModule.forRoot(routes),
       StoreModule.forRoot(appReducers),
-      EffectsModule.forRoot([HuntEffects, FiltersEffects, AdminEffects, WxDetailsEffects]),
+      EffectsModule.forRoot([
+        HuntEffects,
+        FiltersEffects,
+        AdminEffects,
+        WxDetailsEffects,
+        SuccessMapEffects]),
       StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: false }),
       NgIconsModule.withIcons(heroIcons),
     )

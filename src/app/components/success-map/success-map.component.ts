@@ -1,31 +1,36 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, inject } from "@angular/core";
 import { Wma, WmaCoord, WmaSuccess } from "@model";
 import { StaticData } from "_shared/static-data";
-import * as L from 'leaflet';
-import 'leaflet.heat/dist/leaflet-heat.js';
-import 'leaflet.heat';
 import { AppConfig } from "app.config";
 import { SuccessMapFiltersComponent } from "./success-map-filters.component";
 import { SHARED_MODULES } from "@shared-imports";
+import { Store } from "@ngrx/store";
+import { AppStateInterface } from "@store-model";
+import * as L from 'leaflet';
+import * as successMapActions from 'store/successMap/successMap.actions';
 
 @Component({
   standalone: true,
   imports: [SHARED_MODULES, SuccessMapFiltersComponent],
   template: `
     <gawmas-success-map-filters />
-    <div id="map" class="h-[80vh] rounded-br-md border border-gray-700 m-2"></div>
-  `,
-  styles: [``]
+    <div id="map" class="h-[80vh] rounded-br-2xl rounded-tr-2xl border-r border-t border-b border-gray-700 m-2"></div>
+  `
 })
 export class SuccessMapComponent implements OnInit {
 
   mapCoords: WmaCoord[] = StaticData.wmaCoords;
-  successData: WmaSuccess[] = StaticData.wholeSeason;
+  successData: WmaSuccess[] = StaticData.archerySuccess;
+
+  private _store = inject(Store<AppStateInterface>);
 
   private map!: L.Map;
   private markers: L.CircleMarker[] = [];
 
   ngOnInit(): void {
+
+    this._store.dispatch(successMapActions.enterSuccessMap());
+
     if (!this.map) {
 
       const baseMapURL = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
@@ -33,7 +38,7 @@ export class SuccessMapComponent implements OnInit {
         zoomControl: false
       }).setView([51.505, -0.09], 10);
       L.tileLayer(baseMapURL).addTo(this.map);
-      L.control.zoom({ position: 'bottomright' }).addTo(this.map);
+      L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
 
       const successCategories = this.categorizeSuccess(this.successData.filter(s => s.success));
       console.log(successCategories.map((c: any) => c.min));
