@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { HistClimateLocationService, SeasonService, WeaponService, WmaService } from '@services';
-import { map, switchMap, catchError, of, tap, combineLatest, exhaustMap, startWith, withLatestFrom, filter } from 'rxjs';
-import * as filterActions from '../filters/filters.actions';
+import { map, catchError, of, tap, combineLatest, exhaustMap, withLatestFrom, filter } from 'rxjs';
 import { selectFiltersAuxData } from './filters.selectors';
-import { state } from '@angular/animations';
 import { AppStateInterface } from '@store-model';
 import { Store } from '@ngrx/store';
+import * as filterActions from '../filters/filters.actions';
 
 @Injectable()
 export class FiltersEffects {

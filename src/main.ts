@@ -27,8 +27,8 @@ import { FiltersEffects } from 'store/filters/filters.effects';
 import { adminReducers } from 'store/admin/admin.reducers';
 import { AdminEffects } from 'store/admin/admin.effects';
 import { WxDetailsEffects } from 'store/wxDetails/wxDetails.effects';
-import { successMapReducers } from 'store/successMap/successMap.reducers';
-import { SuccessMapEffects } from 'store/successMap/successMap.effects';
+import { mapReducers } from 'store/successMap/successMap.reducers';
+import { MapEffects } from 'store/successMap/successMap.effects';
 
 const heroIcons = {
   heroTableCells,
@@ -71,7 +71,7 @@ const appReducers: ActionReducerMap<AppStateInterface> = {
   filterAuxDataState: filterAuxDataReducers,
   adminState: adminReducers,
   wxDetailsState: wxDetailsReducers,
-  successMapState: successMapReducers
+  mapState: mapReducers
 };
 
 export const appConfig: ApplicationConfig = {
@@ -86,7 +86,7 @@ export const appConfig: ApplicationConfig = {
         FiltersEffects,
         AdminEffects,
         WxDetailsEffects,
-        SuccessMapEffects]),
+        MapEffects]),
       StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: false }),
       NgIconsModule.withIcons(heroIcons),
     )

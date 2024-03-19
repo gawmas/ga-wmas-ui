@@ -1,15 +1,21 @@
-import { HistClimateLocation, Hunt, MapCoords, SeasonHarvestData, SeasonSuccessData, Wma, WmaCoord, WmaHarvest, WmaSuccess } from "@model";
+import { MapData, MapDataResult, Season, WmaCoord } from "@model";
 
-export interface SuccessMapState {
+export interface MapState {
   wmaCoords: WmaCoord[];
-  seasonHarvestData: SeasonHarvestData;
-  seasonSuccessData: SeasonSuccessData;
+  mapData?: MapDataResult;
+  seasons: Season[];
+  selectedWeapon: number;
+  selectedSeason: number;
+  mapTitle: string;
   loading: boolean;
 }
 
-export const initialSuccessMapState: SuccessMapState = {
+export const initialMapState: MapState = {
   loading: false,
+  seasons: [],
   wmaCoords: [],
-  seasonHarvestData: {} as SeasonHarvestData,
-  seasonSuccessData: {} as SeasonSuccessData
+  mapData: undefined,
+  selectedWeapon: 0,
+  selectedSeason: 0,
+  mapTitle: ''
 };

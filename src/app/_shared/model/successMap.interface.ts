@@ -6,34 +6,24 @@ export interface WmaCoord {
   // acreage: number | null;
 }
 
-export interface WmaSuccess {
+export interface MapData {
   id: number;
-  success: number;
+  value: number;
 }
 
-export interface WmaHarvest {
-  id: number;
-  harvest: number;
+export interface MapDataResult {
+  type: string;
+  weapons: WeaponResult[];
 }
 
-export interface WeaponHarvest {
+export interface WeaponResult {
   weapon: string;
   weaponId: number;
-  data: WmaHarvest[];
+  data: MapData[];
 }
 
-export interface WeaponSuccess {
-  weapon: string;
-  weaponId: number;
-  data: WmaSuccess[];
-}
-
-export interface SeasonHarvestData {
-  weapons: WeaponHarvest[];
-  totalHarvest: WmaHarvest[];
-}
-
-export interface SeasonSuccessData {
-  weapons: WeaponSuccess[];
-  totalSuccess: WmaSuccess[];
+export interface LegendCategory {
+  min: number;
+  max: number;
+  factor: number;
 }

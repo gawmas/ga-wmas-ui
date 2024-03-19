@@ -193,4 +193,10 @@ button.btn {
   border-bottom: 1px solid #CCCCCC;
 }
 
+.leaflet-popup {
+  @apply
+    bg-gray-900
+    text-gray-200;
+}
+
 @tailwind utilities;

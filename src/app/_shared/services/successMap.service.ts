@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
-import { SeasonHarvestData, SeasonSuccessData, WmaCoord, WmaHarvest, WmaSuccess } from "@model";
+import { MapDataResult, WmaCoord } from "@model";
 import { env } from "environment";
 
 @Injectable({ providedIn: 'root' })
@@ -11,12 +11,8 @@ export class SuccessMapService {
 
   wmaCoords$ = this.http.get<WmaCoord[]>(`${this.endpoint}/wmacoords`);
 
-  getWmaHarvestBySeason(seasonId: number) {
-    return this.http.get<SeasonHarvestData>(`${this.endpoint}/harvest/${seasonId}`);
-  }
-
-  getWmaSuccessBySeason(seasonId: number) {
-    return this.http.get<SeasonSuccessData>(`${this.endpoint}/success/${seasonId}`);
+  getSeasonMapData(seasonId: number, dataType: string) {
+    return this.http.get<MapDataResult>(`${this.endpoint}/${dataType}/${seasonId}`);
   }
 
 }

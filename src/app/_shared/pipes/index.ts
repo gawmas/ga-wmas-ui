@@ -9,3 +9,4 @@ export * from "./safe.pipe";
 export * from "./wx-cond-icon.pipe";
 export * from "./ordinal.pipe";
 export * from "./trim-time.pipe";
+export * from "./season-text.pipe";
