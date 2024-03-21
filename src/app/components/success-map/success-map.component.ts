@@ -1,13 +1,12 @@
-import { weaponChange } from './../../store/successMap/successMap.actions';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject, signal } from "@angular/core";
 import { LegendCategory, MapData, MapDataResult, Season, WeaponResult, WmaCoord } from "@model";
-import { AppConfig } from "app.config";
 import { SuccessMapFiltersComponent } from "./success-map-filters.component";
 import { SHARED_MODULES } from "@shared-imports";
 import { Store } from "@ngrx/store";
 import { AppStateInterface } from "@store-model";
 import { LoadingComponent } from "_shared/components/loading.component";
-import { Subject, combineLatest, startWith, takeUntil } from 'rxjs';
+import { Subject, distinctUntilChanged, takeUntil, tap } from 'rxjs';
+import { NgIconComponent } from '@ng-icons/core';
 import * as L from 'leaflet';
 import * as successMapActions from 'store/successMap/successMap.actions';
 import * as successMapSelectors from 'store/successMap/successMap.selectors';
@@ -15,7 +14,7 @@ import * as successMapSelectors from 'store/successMap/successMap.selectors';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [SHARED_MODULES, SuccessMapFiltersComponent, LoadingComponent],
+  imports: [SHARED_MODULES, SuccessMapFiltersComponent, LoadingComponent, NgIconComponent],
   template: `
     @if (loading$ | async) {
       <gawmas-loading />
@@ -32,19 +31,26 @@ export class SuccessMapComponent implements OnInit, OnDestroy {
   wmaCoords: WmaCoord[] | undefined;
   mapDataResult: MapDataResult | undefined;
 
-  // Observables from the store ...
   loading$ = this._store.select(successMapSelectors.selectSuccessMapLoading);
-  season$ = this._store.select(successMapSelectors.selectSelectedSeason).pipe(startWith(0));
-  seasons$ = this._store.select(successMapSelectors.selectSeasons).pipe(startWith([] as Season[]));
-  mapData$ = this._store.select(successMapSelectors.selectMapData).pipe(startWith(undefined));
-  coords$ = this._store.select(successMapSelectors.selectSuccessMapWmaCoords).pipe(startWith([] as WmaCoord[]));
-  weapon$ = this._store.select(successMapSelectors.selectWeapon).pipe(startWith(undefined));
 
   // Map shit ...
   private map!: L.Map;
   private markers: L.CircleMarker[] = [];
   private legend = (L as any).control({ position: 'topright' });
-  // private gaGeoJson =
+  currentZoom = signal<number>(0);
+
+  private circleColors = [
+    '#e2e8f0',
+    '#fde68a',
+    '#facc15',
+    '#f59e0b',
+    '#fca5a5',
+    '#f87171',
+    '#dc2626',
+    '#d9f99d',
+    '#22c55e',
+    '#a21caf'
+  ];
 
   private destroyed$ = new Subject<void>();
 
@@ -61,7 +67,8 @@ export class SuccessMapComponent implements OnInit, OnDestroy {
 
     this._store.select(successMapSelectors.selectChanges)
       .pipe(
-        takeUntil(this.destroyed$)
+        takeUntil(this.destroyed$),
+        distinctUntilChanged()
       ).subscribe(({ wmaCoords, seasons, selectedSeason, mapData, weapon }) => {
 
         if (mapData?.weapons.length && weapon! > -1 && wmaCoords?.length > 0 && selectedSeason! > -1 && seasons) {
@@ -75,7 +82,6 @@ export class SuccessMapComponent implements OnInit, OnDestroy {
           const weaponName = (this.mapDataResult.weapons.find(w => w.weaponId === weapon) as WeaponResult).weapon;
           const weaponData = (this.mapDataResult.weapons.find(w => w.weaponId === weapon) as WeaponResult).data;
           let categories: LegendCategory[] = this.categorizeResults(weaponData, this.mapDataResult.type);
-          console.log('categories:', categories);
 
           this.buildMapMarkers(
             weaponData,
@@ -118,38 +124,46 @@ export class SuccessMapComponent implements OnInit, OnDestroy {
 
   private setUpMap() {
     if (!this.map) {
+
       const baseMapURL = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
       this.map = L.map('map', {
         zoomControl: false
-      }).setView([51.505, -0.09], 10);
+      }).setView([32.6782, -83.2220], 8);
       L.tileLayer(baseMapURL).addTo(this.map);
       L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
+
       this.addGeorgiaBoundary();
+
+      this.map.on('zoomend', (event) => {
+        this.currentZoom.set(event.target._zoom);
+      });
     }
   }
 
   private buildMapMarkers(data: MapData[], categories: LegendCategory[], season: Season, type: string, weapon: string) {
 
-    // Create markers and bind popups
-    this.wmaCoords!.forEach(c => {
+    const categoriesWithColors = categories.map((c: LegendCategory, i: number) => ({ ...c, color: this.circleColors[i] }));
 
-      const item: MapData | undefined = data.find(s => s.id === c.id);
+    // Create markers and bind popups
+    this.wmaCoords!.forEach(coord => {
+
+      const item: MapData | undefined = data.find(s => s.id === coord.id);
 
       if (item) {
-        const marker = L.circleMarker([c.lat, c.lng], {
-          radius: categories.find((cat: any) => item.value >= cat.min && item.value <= cat.max)?.factor || 5,
+        const marker = L.circleMarker([coord.lat, coord.lng], {
+          radius: categories.find((cat: any) => item.value >= cat.min && item.value <= cat.max)?.factor || 7,
           stroke: false,
           opacity: 1,
           fill: true,
-          fillColor: AppConfig.getSuccessRateColor(item.value || 0),
+          fillColor: categoriesWithColors.find((cat: any) => item.value >= cat.min && item.value <= cat.max)?.color || '#000000',
           fillOpacity: 0.7
         }).addTo(this.map);
 
         const valueLabel = type === 'success' ? 'Success Rate' : type === 'harvest' ? 'Total Harvest' : 'Harvest Rate';
-        const valueSuffix = type === 'success' ? '%' : type === 'harvest' ? ' deer' : ' deer/acre';
+        const valueSuffix = type === 'success' ? '%' : type === 'harvest' ? ' deer' : ' deer / 100 acres';
 
         marker.bindPopup(`
-          <div class="uppercase font-bold border-b border-gray-500 mb-1">${c.name}</div>
+          <div class="uppercase font-bold border-b border-gray-500 mb-1">${coord.name}</div>
           <div class="flex items-center">
             <span>${season.season}</span>,
             <span class="font-semibold ml-1">${weapon === 'Total' ? 'All Weapons' : weapon}</span>
@@ -158,8 +172,16 @@ export class SuccessMapComponent implements OnInit, OnDestroy {
             <span>${valueLabel}:</span>
             <span class="font-semibold pl-1">${item.value || 0}${valueSuffix}</span>
           </div>
+          <div class="text-center mt-2">
+            <button type="button"
+              class="px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white">                
+                  View Results
+            </button>
+          </div>
         `);
+
         this.markers.push(marker);
+
       }
     });
   }
@@ -170,8 +192,8 @@ export class SuccessMapComponent implements OnInit, OnDestroy {
 
     this.legend.onAdd = () => {
 
-      let div = L.DomUtil.create('div', 'info legend'),
-        grades = categories.map((c: any) => c.min).filter((m: number) => m <= 125),
+      let lgd = L.DomUtil.create('div', 'info legend'),
+        grades = categories.map((c: any) => c.min),
         labels = [];
 
       let title = ''
@@ -182,20 +204,40 @@ export class SuccessMapComponent implements OnInit, OnDestroy {
         case 'harvest':
           title = 'Total Harvest'
           break;
-        case 'harvestRate':
-          title = 'Harvest Rate (deer/acre)';
+        case 'harvestrate':
+          title = '*Harvest Rate';
           break;
       }
 
-      div.innerHTML = `<h4>${title}</h4>`;
+      let legendHtml = '';
+      legendHtml = `<h4>${title}</h4>`;
+      if (type === 'harvestrate') {
+        legendHtml += `<div class="italic text-xs mt-0">* deer per 100 acres</div>`;
+      }
       // loop through our density intervals and generate a label with a colored square for each interval
       for (var i = 0; i < grades.length; i++) {
-        div.innerHTML +=
-          '<div style="clear: both;"><i style="background:' + AppConfig.getSuccessRateColor(grades[i]) + '; opacity: 0.7"></i> ' +
-          parseFloat(grades[i]).toFixed(0) + (grades[i + 1] ? '&ndash;' + parseFloat(grades[i + 1]).toFixed(0) + '&percnt;<br>' : '+&percnt;') + '</div>';
-      }
+        legendHtml +=
+          `<div style="clear: both; margin-bottom: 3px;">
+            <span style="background: ${this.circleColors[i]}; opacity: 0.7; border-radius: 50%; height: 18px; width: 18px; display: inline-block; vertical-align: middle"></span>
+            <span style="vertical-align: middle">`;
 
-      return div;
+        switch (type) {
+          case 'success':
+            legendHtml += `${parseFloat(grades[i]).toFixed(0)}${(grades[i + 1] ? ' &ndash; ' + parseFloat(grades[i + 1]).toFixed(0) + '&percnt;' : '&percnt;+')}`
+            break;
+          case 'harvest':
+            legendHtml += `${parseFloat(grades[i]).toFixed(0)}${(grades[i + 1] ? ' &ndash; ' + parseFloat(grades[i + 1]).toFixed(0) : '+')}`
+            break;
+          case 'harvestrate':
+            legendHtml += `${parseFloat(grades[i]).toFixed(3)}${(grades[i + 1] ? ' &ndash; ' + parseFloat(grades[i + 1]).toFixed(3) : '+')}`
+            break;
+        }
+
+        legendHtml += '</span></div>';
+      }
+      // console.log(lgd);
+      lgd.innerHTML = legendHtml;
+      return lgd;
     };
 
     this.legend.addTo(this.map);
@@ -209,26 +251,12 @@ export class SuccessMapComponent implements OnInit, OnDestroy {
     let rangeSize = (maxSuccess - minSuccess) / 10;
     let categories: any = [];
 
-    let factor = 0;
-    // console.log(type)
-    switch (type) {
-      case 'success':
-        factor = 5;
-        break;
-      case 'harvest':
-        factor = 2.5;
-        break;
-      case 'harvestrate':
-        factor = 10;
-        break;
-    }
-
     // Initialize categories
     for (let i = 0; i < 10; i++) {
       categories[i] = {
         min: parseFloat((minSuccess + rangeSize * i).toFixed(2)),
         max: parseFloat((minSuccess + rangeSize * (i + 1)).toFixed(2)),
-        factor: +((i + 1) * factor).toFixed(2).toString()
+        factor: +((i + 1) * 7).toFixed(2).toString()
       };
     }
 
@@ -238,7 +266,9 @@ export class SuccessMapComponent implements OnInit, OnDestroy {
   private centerMap() {
     this.markers.forEach(marker => marker.addTo(this.map));
     const bounds = L.latLngBounds(this.markers.map(marker => marker.getLatLng()));
-    this.map.fitBounds(bounds);
+    if (this.currentZoom() === 0) {
+      this.map.fitBounds(bounds);
+    }
   }
 }
 

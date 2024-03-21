@@ -26,4 +26,5 @@ export interface LegendCategory {
   min: number;
   max: number;
   factor: number;
+  color: string;
 }

@@ -38,7 +38,7 @@ import { Subject, takeUntil } from 'rxjs';
             </a>
           </li>
           <li class="flex items-center text-sm py-2 px-2">
-            <ng-icon name="heroMap" class="text-lg text-gray-200 ml-2 mr-1"></ng-icon>
+            <ng-icon name="heroGlobeAlt" class="text-lg text-gray-200 ml-2 mr-1"></ng-icon>
             <a routerLink="/successmap"
               [ngClass]="{'nav-current': (currentRoute | isActiveRoute:'/successmap'), 'nav-link': !(currentRoute | isActiveRoute:'/successmap')}"
               aria-current="page">

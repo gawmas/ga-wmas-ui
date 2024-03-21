@@ -22,7 +22,7 @@ import { SeasonTextPipe } from "@pipes";
   `],
   template: `
     <div class="ml-2 z-9999 text-gray-200 text-xs border-r border-b border-gray-600 rounded-br-2xl bg-gray-900 filter-box p-2 animate-jump-in animate-delay-100 animate-once">
-      <div class="mb-2 text-base flex items-center border-b border-gray-400 justify-center">
+      <div class="mb-2 mt-0 text-base flex items-center border-b border-gray-400 justify-center">
         <span class="border-r border-gray-600 px-2">
           {{ (seasons$ | async)! | seasonText:mapFilterForm.controls.season.value ?? ''}}
         </span>
@@ -49,7 +49,7 @@ import { SeasonTextPipe } from "@pipes";
               <input type="radio" id="rateRadio" formControlName="statType" value="hosting-small" class="hidden peer" value="harvestrate">
               <label for="rateRadio"
                 class="inline-flex items-center justify-between px-3 py-2 bg-gray-700 cursor-pointer peer-checked:bg-blue-600 peer-checked:underline peer-checked:font-bold hover:bg-gray-800 text-nowrap">
-                  Harvest per Acre
+                  Harvest/Acre
               </label>
             </li>
             <li>
@@ -87,36 +87,10 @@ import { SeasonTextPipe } from "@pipes";
               <input type="radio" id="any" formControlName="weapon" value="hosting-small" class="hidden peer" value="0">
               <label for="any"
                 class="rounded-r-full inline-flex items-center justify-between px-3 py-2 bg-gray-700 cursor-pointer peer-checked:bg-blue-600 peer-checked:underline peer-checked:font-bold hover:bg-gray-800">
-                  Any
+                  All
               </label>
             </li>
           </ul>
-
-          <!-- <div class="ml-2">
-            <button data-tooltip-target="extenttip">
-              <ng-icon name="heroGlobeAlt" class="text-2xl text-gray-200"></ng-icon>
-            </button>
-            <div id="extenttip" role="tooltip"
-              class="absolute z-10 invisible inline-block px-3 py-2 text-xs font-medium text-gray-800 transition-opacity duration-300 bg-gray-300 rounded-full shadow-sm opacity-0 tooltip">
-                Zoom to full extent
-              <div class="tooltip-arrow" data-popper-arrow></div>
-            </div>
-          </div>
-
-          <div class="ml-2">
-            <button data-popover-target="mappop" data-popover-placement="right">
-              <ng-icon name="heroInformationCircle" class="text-2xl text-gray-200"></ng-icon>
-            </button>
-          </div>
-          <div data-popover id="mappop" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0">
-            <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg">
-              <h3 class="font-semibold text-gray-900">About this Map</h3>
-            </div>
-            <div class="px-3 py-2">
-              <p>Map visualization of total deer harvest or success rates based on WMA location. Use the toggles to explore. The larger the dot, the larger the value.</p>
-            </div>
-            <div data-popper-arrow></div>
-          </div> -->
 
         </div>
       </form>
