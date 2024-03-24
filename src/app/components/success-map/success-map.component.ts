@@ -1,12 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject, signal } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, inject } from "@angular/core";
 import { LegendCategory, MapData, MapDataResult, Season, WeaponResult, WmaCoord } from "@model";
 import { SuccessMapFiltersComponent } from "./success-map-filters.component";
 import { SHARED_MODULES } from "@shared-imports";
 import { Store } from "@ngrx/store";
 import { AppStateInterface } from "@store-model";
 import { LoadingComponent } from "_shared/components/loading.component";
-import { Subject, distinctUntilChanged, takeUntil, tap } from 'rxjs';
+import { Subject, distinctUntilChanged, takeUntil } from 'rxjs';
 import { NgIconComponent } from '@ng-icons/core';
+import { SuccessMapTitleComponent } from "./success-map-title.component";
 import * as L from 'leaflet';
 import * as successMapActions from 'store/successMap/successMap.actions';
 import * as successMapSelectors from 'store/successMap/successMap.selectors';
@@ -14,16 +15,31 @@ import * as successMapSelectors from 'store/successMap/successMap.selectors';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [SHARED_MODULES, SuccessMapFiltersComponent, LoadingComponent, NgIconComponent],
+  imports: [
+    SHARED_MODULES, SuccessMapFiltersComponent,
+    SuccessMapTitleComponent, LoadingComponent, NgIconComponent],
   template: `
     @if (loading$ | async) {
       <gawmas-loading />
     }
-    <gawmas-success-map-filters />
-    <div id="map" class="h-[80vh] rounded-br-2xl rounded-tr-2xl border-r border-t border-b border-gray-700 m-2"></div>
+    <div class="mt-2 md:ml-1 w-full flex items-center justify-center mb-0 bg-gray-900 text-gray-200 md:rounded-tl-xl">
+      <!-- Title -->
+      <gawmas-success-map-title />
+    </div>
+    <div class="block md:flex md:pl-1 md:pb-1">
+      <div class="hidden md:visible md:inline-block w-56 transition-transform -translate-x-full sm:translate-x-0 rounded-bl-xl">
+        <div class="h-[75vh] bg-gray-900 text-gray-200 px-2 rounded-bl-xl">
+          <!-- Filters -->
+          <gawmas-success-map-filters />
+        </div>
+      </div>
+      <div id="map" class="md:flex-1 ml-0 flex-1 mt-0 border border-gray-500 md:rounded-br-xl md:rounded-tr-xl h-[75vh] w-full">
+        <!-- Map -->
+      </div>
+    </div>
   `
 })
-export class SuccessMapComponent implements OnInit, OnDestroy {
+export class SuccessMapComponent implements AfterViewInit, OnDestroy {
 
   private _store = inject(Store<AppStateInterface>);
   private _cdr = inject(ChangeDetectorRef);
@@ -32,12 +48,12 @@ export class SuccessMapComponent implements OnInit, OnDestroy {
   mapDataResult: MapDataResult | undefined;
 
   loading$ = this._store.select(successMapSelectors.selectSuccessMapLoading);
+  mapChanges$ = this._store.select(successMapSelectors.selectChanges);
 
   // Map shit ...
   private map!: L.Map;
   private markers: L.CircleMarker[] = [];
   private legend = (L as any).control({ position: 'topright' });
-  currentZoom = signal<number>(0);
 
   private circleColors = [
     '#e2e8f0',
@@ -59,44 +75,46 @@ export class SuccessMapComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
 
     this._store.dispatch(successMapActions.enterSuccessMap());
 
     this.setUpMap();
 
-    this._store.select(successMapSelectors.selectChanges)
-      .pipe(
-        takeUntil(this.destroyed$),
-        distinctUntilChanged()
-      ).subscribe(({ wmaCoords, seasons, selectedSeason, mapData, weapon }) => {
+    this.mapChanges$.pipe(
+      takeUntil(this.destroyed$),
+      distinctUntilChanged()
+    ).subscribe(({ wmaCoords, seasons, selectedSeason, mapData, weapon, setZoomFull }) => {
 
-        if (mapData?.weapons.length && weapon! > -1 && wmaCoords?.length > 0 && selectedSeason! > -1 && seasons) {
+      if (mapData?.weapons.length && weapon! > -1 && wmaCoords?.length > 0 && selectedSeason! > -1 && seasons) {
 
-          this.wmaCoords = wmaCoords;
-          this.mapDataResult = mapData;
+        this.wmaCoords = wmaCoords;
+        this.mapDataResult = mapData;
 
-          this.markers.forEach(marker => marker.remove());
-          this.markers = [];
+        this.markers.forEach(marker => marker.remove());
+        this.markers = [];
 
-          const weaponName = (this.mapDataResult.weapons.find(w => w.weaponId === weapon) as WeaponResult).weapon;
-          const weaponData = (this.mapDataResult.weapons.find(w => w.weaponId === weapon) as WeaponResult).data;
-          let categories: LegendCategory[] = this.categorizeResults(weaponData, this.mapDataResult.type);
+        const weaponName = (this.mapDataResult.weapons.find(w => w.weaponId === weapon) as WeaponResult).weapon;
+        const weaponData = (this.mapDataResult.weapons.find(w => w.weaponId === weapon) as WeaponResult).data;
+        let categories: LegendCategory[] = this.categorizeResults(weaponData, this.mapDataResult.type);
 
-          this.buildMapMarkers(
-            weaponData,
-            categories,
-            seasons.find(s => s.id === selectedSeason)!,
-            this.mapDataResult.type,
-            weaponName);
+        this.buildMapMarkers(
+          weaponData,
+          categories,
+          seasons.find(s => s.id === selectedSeason)!,
+          this.mapDataResult.type,
+          weaponName);
 
-          this.buildLegend(categories, this.mapDataResult.type);
+        this.buildLegend(categories, this.mapDataResult.type);
 
+        if (setZoomFull) {
           this.centerMap();
-
-          this._cdr.detectChanges();
         }
-      });
+
+        this._cdr.detectChanges();
+
+      }
+    });
 
   }
 
@@ -128,15 +146,12 @@ export class SuccessMapComponent implements OnInit, OnDestroy {
       const baseMapURL = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
       this.map = L.map('map', {
         zoomControl: false
-      }).setView([32.6782, -83.2220], 8);
+      }).setView([32.6782, -83.2220], 7);
       L.tileLayer(baseMapURL).addTo(this.map);
-      L.control.zoom({ position: 'bottomleft' }).addTo(this.map);
+      L.control.zoom({ position: 'topleft' }).addTo(this.map);
 
       this.addGeorgiaBoundary();
 
-      this.map.on('zoomend', (event) => {
-        this.currentZoom.set(event.target._zoom);
-      });
     }
   }
 
@@ -266,9 +281,7 @@ export class SuccessMapComponent implements OnInit, OnDestroy {
   private centerMap() {
     this.markers.forEach(marker => marker.addTo(this.map));
     const bounds = L.latLngBounds(this.markers.map(marker => marker.getLatLng()));
-    if (this.currentZoom() === 0) {
-      this.map.fitBounds(bounds);
-    }
+    this.map.fitBounds(bounds);
   }
 }
 

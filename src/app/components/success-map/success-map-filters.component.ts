@@ -5,9 +5,9 @@ import { Store } from "@ngrx/store";
 import { SHARED_MODULES } from "@shared-imports";
 import { AppStateInterface } from "@store-model";
 import { Subject, takeUntil } from "rxjs";
+import { SeasonTextPipe } from "@pipes";
 import * as successMapSelectors from 'store/successMap/successMap.selectors';
 import * as mapActions from 'store/successMap/successMap.actions';
-import { SeasonTextPipe } from "@pipes";
 
 @Component({
   selector: "gawmas-success-map-filters",
@@ -21,79 +21,67 @@ import { SeasonTextPipe } from "@pipes";
     }
   `],
   template: `
-    <div class="ml-2 z-9999 text-gray-200 text-xs border-r border-b border-gray-600 rounded-br-2xl bg-gray-900 filter-box p-2 animate-jump-in animate-delay-100 animate-once">
-      <div class="mb-2 mt-0 text-base flex items-center border-b border-gray-400 justify-center">
-        <span class="border-r border-gray-600 px-2">
-          {{ (seasons$ | async)! | seasonText:mapFilterForm.controls.season.value ?? ''}}
-        </span>
-        <span class="italic ml-2 tracking-widest"> {{ mapTitle$ | async }}</span>
-      </div>
+    <div class="h-[70vh] bg-gray-900 text-gray-200 text-xs md:text-sm md:p-2 animate-jump-in animate-delay-100 animate-once">
+      
       <form [formGroup]="mapFilterForm">
-        <div class="flex items-center">
-
-          <select formControlName="season" class="select py-2 px-3">
+       
+        <div class="w-full p-2">
+          <div class="font-semibold text-left mb-1 pl-1">Season</div>
+          <select formControlName="season" class="select py-2 px-3 w-full">
             @for (s of seasons$ | async; track s.id) {
               <option [value]="s.id" [innerHTML]="s.season"></option>
             }
           </select>
+        </div>
 
-          <ul class="invisible md:visible w-full gap-0 inline-flex ml-2">
+        <div class="w-full p-2">
+          <div class="font-semibold text-left mb-1 pl-1">Map Type</div>
+          <ul class="invisible md:visible">
             <li>
               <input type="radio" id="successRadio" formControlName="statType" value="hosting-small" class="hidden peer" value="success">
-              <label for="successRadio"
-                class="rounded-l-full px-3 py-2 inline-flex items-center justify-between bg-gray-700 cursor-pointer peer-checked:bg-blue-600 peer-checked:underline peer-checked:font-bold hover:bg-gray-800 text-nowrap">
-                  Success Rate
-              </label>
+              <label for="successRadio" class="map-filter-opt rounded-t-xl">Success Rate</label>
             </li>
             <li>
               <input type="radio" id="rateRadio" formControlName="statType" value="hosting-small" class="hidden peer" value="harvestrate">
-              <label for="rateRadio"
-                class="inline-flex items-center justify-between px-3 py-2 bg-gray-700 cursor-pointer peer-checked:bg-blue-600 peer-checked:underline peer-checked:font-bold hover:bg-gray-800 text-nowrap">
-                  Harvest/Acre
-              </label>
+              <label for="rateRadio" class="map-filter-opt">Harvest/Acre</label>
             </li>
             <li>
               <input type="radio" id="harvestRadio" formControlName="statType" value="hosting-small" class="hidden peer" value="harvest">
-              <label for="harvestRadio"
-                class="rounded-r-full inline-flex items-center justify-between px-3 py-2 bg-gray-700 cursor-pointer peer-checked:bg-blue-600 peer-checked:underline peer-checked:font-bold hover:bg-gray-800 text-nowrap">
-                Total Harvest
-              </label>
+              <label for="harvestRadio" class="map-filter-opt rounded-b-xl">Total Harvest</label>
             </li>
           </ul>
+        </div>
 
-          <ul class="invisible md:visible w-full gap-0 inline-flex ml-2">
+        <div class="w-full p-2">
+          <div class="font-semibold text-left mb-1 pl-1">Weapon</div>
+          <ul class="invisible md:visible">
             <li>
               <input type="radio" id="archery" formControlName="weapon" value="hosting-small" class="hidden peer" value="2">
-              <label for="archery"
-                class="rounded-l-full px-3 py-2 inline-flex items-center justify-between bg-gray-700 cursor-pointer peer-checked:bg-blue-600 peer-checked:underline peer-checked:font-bold hover:bg-gray-800">
-                  Archery
-              </label>
-            </li>
-            <li>
-              <input type="radio" id="primitive" formControlName="weapon" value="hosting-small" class="hidden peer" value="3">
-              <label for="primitive"
-                class="inline-flex items-center justify-between px-3 py-2 bg-gray-700 cursor-pointer peer-checked:bg-blue-600 peer-checked:underline peer-checked:font-bold hover:bg-gray-800">
-                  Primitive
-              </label>
+              <label for="archery" class="map-filter-opt rounded-t-xl">Archery</label>
             </li>
             <li>
               <input type="radio" id="firearms" formControlName="weapon" value="hosting-small" class="hidden peer" value="1">
-              <label for="firearms"
-                class="inline-flex items-center justify-between px-3 py-2 bg-gray-700 cursor-pointer peer-checked:bg-blue-600 peer-checked:underline peer-checked:font-bold hover:bg-gray-800">
-                  Firearms
-              </label>
+              <label for="firearms" class="map-filter-opt">Firearms</label>
             </li>
             <li>
-              <input type="radio" id="any" formControlName="weapon" value="hosting-small" class="hidden peer" value="0">
-              <label for="any"
-                class="rounded-r-full inline-flex items-center justify-between px-3 py-2 bg-gray-700 cursor-pointer peer-checked:bg-blue-600 peer-checked:underline peer-checked:font-bold hover:bg-gray-800">
-                  All
-              </label>
+              <input type="radio" id="primitive" formControlName="weapon" value="hosting-small" class="hidden peer" value="3">
+              <label for="primitive" class="map-filter-opt">Primitive</label>
+            </li>
+            <li>
+              <input type="radio" id="all" formControlName="weapon" value="hosting-small" class="hidden peer" value="0">
+              <label for="all" class="map-filter-opt rounded-b-xl">All Weapons</label>
             </li>
           </ul>
-
         </div>
+
       </form>
+
+      <div class="w-full p-2 text-center">
+        <button (click)="zoomFull()" class="btn btn-dark mt-2 flex items-center">   
+          <ng-icon name="heroGlobeAlt" class="text-lg text-gray-200 ml-2 mr-1"></ng-icon>       
+          Full Extent
+        </button>
+      </div>
 
     </div>
   `,
@@ -155,6 +143,10 @@ export class SuccessMapFiltersComponent implements AfterViewInit, OnDestroy {
         }
       });
 
+  }
+
+  zoomFull(): void {
+    this._store.dispatch(mapActions.setZoomFull({ value: true }));
   }
 
 }

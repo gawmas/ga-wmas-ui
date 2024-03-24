@@ -113,6 +113,13 @@ button.btn {
       text-gray-400
       cursor-not-allowed;
   }
+
+  &-dark {
+    @apply bg-gray-800
+      hover:bg-gray-700
+      text-gray-200
+      border border-gray-600;
+  }
 }
 
 .count-badge {
@@ -178,8 +185,12 @@ button.btn {
   opacity: 0.7;
 }
 .info {
+  @apply
+    invisible
+    md:visible
+    text-xs
+    md:text-sm;
   padding: 6px 8px;
-  font: 14px/16px Arial, Helvetica, sans-serif;
   background: white;
   background: #333333;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
@@ -198,6 +209,19 @@ button.btn {
   @apply
     bg-gray-900
     text-gray-200;
+}
+
+.map-filter-opt {
+  @apply
+    px-3 py-2 w-full 
+    inline-flex items-center justify-center
+    bg-gray-700 
+    cursor-pointer 
+    peer-checked:bg-blue-600 
+    peer-checked:underline 
+    peer-checked:font-bold 
+    hover:bg-gray-800 hover:underline
+    text-nowrap; 
 }
 
 @tailwind utilities;

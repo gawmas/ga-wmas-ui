@@ -7,6 +7,7 @@ export interface MapState {
   selectedWeapon: number;
   selectedSeason: number;
   mapTitle: string;
+  setZoomFull: boolean;
   loading: boolean;
 }
 
@@ -17,5 +18,6 @@ export const initialMapState: MapState = {
   mapData: undefined,
   selectedWeapon: 0,
   selectedSeason: 0,
-  mapTitle: ''
+  mapTitle: '',
+  setZoomFull: false
 };

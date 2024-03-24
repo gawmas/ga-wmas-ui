@@ -1,14 +1,17 @@
 import { SHARED_MODULES } from '../_shared/index';
-import { Component, HostListener, inject, signal } from "@angular/core";
+import { Component, HostListener, OnDestroy, OnInit, inject, signal } from "@angular/core";
+import { NavigationEnd, Router } from '@angular/router';
 import { NgIconComponent } from "@ng-icons/core";
 import { Store } from '@ngrx/store';
+import { IsActiveRoutePipe } from '@pipes';
 import { AppStateInterface } from '@store-model';
-import { selectHuntsLoading, selectLoadingMoreHunts } from 'store/hunts/hunts.selectors';
+import { Subject, takeUntil } from 'rxjs';
+import { selectLoadingMoreHunts } from 'store/hunts/hunts.selectors';
 
 @Component({
   selector: 'gawmas-footer',
   standalone: true,
-  imports: [SHARED_MODULES, NgIconComponent],
+  imports: [SHARED_MODULES, NgIconComponent, IsActiveRoutePipe],
   template: `
     <footer class="fixed left-0 px-2 flex items-center bottom-0 w-[100%] mx-auto h-12 bg-gray-950 border-t border-gray-700">
       <div class="p-4 w-1/2">
@@ -22,10 +25,12 @@ import { selectHuntsLoading, selectLoadingMoreHunts } from 'store/hunts/hunts.se
               Loading...
             </button>
           } @else {
-            <button (click)="scrollTop()" type="button" class="py-1 px-2 text-sm font-medium rounded-full border focus:z-10 focus:ring-1 focus:ring-white focus:text-white bg-gray-800 text-gray-300 border-gray-600 hover:text-white hover:bg-gray-700 inline-flex items-center">
-              <ng-icon name="heroBarsArrowUp" class="mr-1"></ng-icon>
-              Back to Top
-            </button>
+            @if (!(currentRoute | isActiveRoute:'/successmap')) {
+              <button (click)="scrollTop()" type="button" class="py-1 px-2 text-sm font-medium rounded-full border focus:z-10 focus:ring-1 focus:ring-white focus:text-white bg-gray-800 text-gray-300 border-gray-600 hover:text-white hover:bg-gray-700 inline-flex items-center">
+                <ng-icon name="heroBarsArrowUp" class="mr-1"></ng-icon>
+                Back to Top
+              </button>
+            }
           }
         }
       </div>
@@ -42,12 +47,32 @@ import { selectHuntsLoading, selectLoadingMoreHunts } from 'store/hunts/hunts.se
     </footer>
   `
 })
-export class FooterComponent {
+export class FooterComponent implements OnInit, OnDestroy {
 
   private _store = inject(Store<AppStateInterface>);
+  private _router = inject(Router);
+  private _destroyed$ = new Subject<void>();
 
   topInView = signal(false);
   isLoading$ = this._store.select(selectLoadingMoreHunts);
+
+  currentRoute: string = '';
+
+  ngOnInit(): void {
+    this._router.events
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          this.currentRoute = event.url;
+          console.log(this.currentRoute);
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this._destroyed$.next();
+    this._destroyed$.complete();
+  }
 
   @HostListener('window:scroll', ['$event'])
   onScroll(event: any): void {

@@ -1,4 +1,3 @@
-import { select } from '@ngrx/store';
 import { createSelector } from '@ngrx/store';
 import { AppStateInterface } from '@store-model';
 import { MapState } from '_shared/model/store/successMap.model';
@@ -40,12 +39,19 @@ export const selectMapTitle = createSelector(
   (state: MapState) => state.mapTitle
 );
 
+export const selectSetZoomFull = createSelector(
+  selectSuccessMapState,
+  (state: MapState) => state.setZoomFull
+);
+
 export const selectChanges = createSelector(
   selectSuccessMapWmaCoords,
   selectSeasons,
   selectSelectedSeason,
   selectMapData,
   selectWeapon,
-  (wmaCoords, seasons, selectedSeason, mapData, weapon) => {
-    return { wmaCoords, seasons, selectedSeason, mapData, weapon };
+  selectSetZoomFull,
+  (wmaCoords, seasons, selectedSeason, mapData, weapon, setZoomFull) => {
+    return { wmaCoords, seasons, selectedSeason, mapData, weapon, setZoomFull };
 });
+

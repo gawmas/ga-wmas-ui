@@ -24,7 +24,7 @@ module.exports = {
       // the container size changes at 728px
       screens: {
         sm: '600px',
-        md: '860px',
+        md: '870px',
         lg: '1024px',
         xl: '1240px',
       },

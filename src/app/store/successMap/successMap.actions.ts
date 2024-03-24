@@ -59,3 +59,9 @@ export const weaponChange = createAction(
   `${prefix} Weapon Change`,
   props<{ weaponId: number }>()
 );
+
+export const setZoomFull = createAction(
+  `${prefix} Set Zoom Full`,
+  props<{ value: boolean }>()
+);
+

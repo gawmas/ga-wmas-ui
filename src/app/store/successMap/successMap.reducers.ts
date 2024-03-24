@@ -24,6 +24,7 @@ export const mapReducers = createReducer(
       selectedWeapon: 0,
       selectedSeason: seasons[0].id,
       loading: false,
+      setZoomFull: true,
       mapTitle: `WMA Success Rate - All Weapons`
     };
   }),
@@ -36,12 +37,13 @@ export const mapReducers = createReducer(
     };
   }),
 
-  on(mapActions.getSeasonMapDataComplete, (state, { mapData, dataType, seasonId, }) => {
+  on(mapActions.getSeasonMapDataComplete, (state, { mapData, dataType, seasonId }) => {
     return {
       ...state,
       mapData: mapData,
       selectedSeason: seasonId,
       loading: false,
+      setZoomFull: false,
       mapTitle: `WMA ${titleDescr(dataType)} - ${weaponText(state.selectedWeapon)}`
     };
   }),
@@ -50,8 +52,16 @@ export const mapReducers = createReducer(
     return {
       ...state,
       selectedWeapon: weaponId,
+      setZoomFull: false,
       mapTitle: `WMA ${titleDescr(state.mapData?.type!)} - ${weaponText(weaponId)}`
     };
+  }),
+
+  on(mapActions.setZoomFull, (state, { value }) => {
+    return {
+      ...state,
+      setZoomFull: value
+    }
   })
 
 );
