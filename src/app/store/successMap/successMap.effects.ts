@@ -7,7 +7,6 @@ import { selectSuccessMapState } from './successMap.selectors';
 import { Store } from '@ngrx/store';
 import { SeasonService } from '@services';
 import * as mapActions from './successMap.actions';
-import { MapData, MapDataResult } from '@model';
 
 @Injectable()
 export class MapEffects {

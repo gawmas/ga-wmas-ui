@@ -5,7 +5,7 @@
   <gawmas-loading />
 }
 
-<table class="w-[95%] text-sm text-left text-gray-300 -pt-2">
+<table class="w-[100%] text-sm text-left text-gray-300 -pt-2">
   @if (screenWidth() > 1000) {
     <thead class="text-xs text-gray-400 uppercase bg-gray-800 border-gray-400 border-b-2 border-t-1">
       <tr>
@@ -237,8 +237,8 @@
     <thead class="sr-only">
       <tr>
         <th scope="col" class="px-6 py-3">&nbsp;</th>
-        <th scope="col" class="px-6 py-3 w-[135px]">Results</th>
-        <th scope="col" class="px-6 py-3 w-[300px]">Weather</th>
+        <th scope="col" class="px-6 py-3">Results</th>
+        <th scope="col" class="px-6 py-3">Weather</th>
       </tr>
     </thead>
     <tbody>
@@ -290,8 +290,8 @@
             </td>
           </tr>
           <tr class="bg-gray-800 border-b border-gray-600">
-            <td class="text-xs px-2 pb-2 align-top max-w-16 bg-gray-900">
-              <table class="w-full mt-1 mb-1">
+            <td class="max-w-[135px] text-xs px-2 pb-2 align-top bg-gray-900">
+              <table class="mt-1 mb-1">
                 <tr>
                   <td class="px-2 w-1/2 uppercase text-xs font-semibold text-right text-gray-400 border-r border-gray-600">Hunters</td>
                   <td class="px-2 w-1/2">{{ hunt.hunterCount }}</td>
@@ -314,8 +314,103 @@
                 </tr>
               </table>
             </td>
-            <td class="px-2 border-t border-l border-gray-600 align-top">
-              hunt.id: {{ hunt.id }}
+            <td class="max-w-[215px] p-1 border-t border-l border-gray-600 align-top">
+             
+              @if (hunt.wxDetails) {
+                @switch (hunt.wxDetails[0] | wxDetailType) {
+                  @case ('summary') {
+                    @for (wx of $any(hunt.wxDetails); track wx; let i = $index) {
+                      <div class="w-full uppercase text-xs">
+                        <div class="flex items-center uppercase font-bold text-xs border-b border-gray-700">
+                          <span class="italic ml-2 text-gray-400 pb-1">
+                            {{ wx.start | date: 'MMM d' }} &ndash; {{ wx.end | date: 'MMM d' }}
+                          </span>
+                        </div>
+                        <div class="flex items-center m-auto py-1 mb-3">
+                          @if ((wx.avgMaxTemp | wxAvgTempDeparture:true:wx.start:hunt.wxHistAvgs!); as maxDepart) {
+                            <span class="font-semibold px-2 text-gray-400">High:</span>
+                            @if (maxDepart.msg?.length) {
+                              <span [class]="maxDepart.class"
+                                (mouseover)="showTooltip(i + '' + wx.ident + 'high', 'hover', $event)">
+                                  {{ wx.avgMaxTemp }}&deg;
+                              </span>
+                              <div id="{{ i }}{{ wx.ident }}high" role="tooltip" class="gawmas-tooltip tooltip" [innerHTML]="maxDepart.msg">
+                              </div>
+                            } @else {
+                              <span [class]="maxDepart.class">
+                                {{ wx.avgMaxTemp }}&deg;
+                              </span>
+                            }
+                          }
+                          @if ((wx.avgMinTemp | wxAvgTempDeparture:false:wx.start:hunt.wxHistAvgs!); as minDepart) {
+                            <span class="font-semibold px-2 text-gray-400">Low:</span>
+                            @if (minDepart.msg?.length) {
+                              <span [class]="minDepart.class"
+                                (mouseover)="showTooltip(i + '' + wx.ident + 'low', 'hover', $event)">
+                                  {{ wx.avgMinTemp }}&deg;
+                              </span>
+                              <div id="{{ i }}{{ wx.ident }}low" role="tooltip" class="gawmas-tooltip tooltip" [innerHTML]="minDepart.msg">
+                              </div>
+                            } @else {
+                              <span [class]="minDepart.class">
+                                {{ wx.avgMinTemp }}&deg;
+                              </span>
+                            }
+                          }
+                        </div>
+                      </div>
+                    }
+                    <div class="text-xs text-gray-500 pl-2 flex items-center italic">
+                      &#64; {{ $any(hunt.wxDetails[0]).location }}, GA
+                    </div>
+                  }
+                  @case ('detailed') {
+                    <div class="w-full flex items-center font-bold uppercase mb-3">
+                      @for (wx of $any(hunt.wxDetails); track wx.date; let i = $index, last = $last) {
+                        <div class="p-1 text-xs text-gray-400 {{ hunt.wxDetails.length < 3 ? 'w-1/2' : 'w-1/3' }} {{ !last ? 'border-r border-gray-400' : 'border-none' }}">
+                          <div class="flex-none italic text-center">
+                            {{ wx.date | date: 'EEE' }}
+                          </div>
+                          <div class="flex-none italic text-center">
+                            {{ wx.date | date: 'MM/dd' }}
+                          </div>
+                          <div class="flex justify-center items-center">
+                            <object [data]="wx.middayIcon | wxCondIcon | safe"
+                              type="image/svg+xml" class="w-[35px] h-[35px]"
+                              (mouseover)="showTooltip(i + '' + wx.ident + 'cond', 'hover', $event)"></object>
+                            <div id="{{ i }}{{ wx.ident }}cond" role="tooltip" class="gawmas-tooltip tooltip" [innerHTML]="wx.middayDescr"></div>
+                          </div>
+                          <div class="flex-none text-center">
+                            <div>
+                              <span class="px-2">High:</span>
+                              <span class="font-normal text-gray-200">{{ wx.high }}&deg;</span>
+                            </div>
+                            <div>
+                              <span class="px-2">Low:</span>
+                              <span class="font-normal text-gray-200">{{ wx.low }}&deg;</span>
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                    <div class="text-xs text-gray-500 pl-2 flow-root">
+                      <div class="float-left pt-1 italic">&#64; {{ $any(hunt.wxDetails[0]).location }}, GA</div>
+                      <div class="float-right">
+                        <button type="button" (click)="openWxDetails(hunt.id, hunt.huntDates, $any(hunt.wxDetails[0]).location, hunt.hunterCount, hunt.bucks, hunt.does)"
+                          class="px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white">
+                            <ng-icon name="heroArrowTopRightOnSquare" class="w-4 h-4 mr-1"></ng-icon>
+                              More Details
+                        </button>
+                      </div>
+                    </div>
+                  }
+                  @default {
+                    <span class="text-gray-400">
+                      No weather details found.
+                    </span>
+                  }
+                }
+              }
             </td>
           </tr>
         } @empty {

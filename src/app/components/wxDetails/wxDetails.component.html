@@ -2,12 +2,12 @@
   @if (wxDetails$ | async; as wx) {
 
     <gawmas-modal #wxDetailsModal [targetElement]="wxDetailsTarget">
-      <div class="flex items-start justify-between rounded-t-2xl my-2 pl-4 pt-4 mb-0 bg-gray-800">
-        <div class="flex items-center">
-          <h3 class="text-lg font-semibold text-white uppercase border-r border-gray-500 pr-2 mb-0">
+      <div class="flex items-start justify-between md:rounded-t-2xl my-2 pl-4 pt-4 mb-0 bg-gray-800">
+        <div class="flex items-center pt-2">
+          <h3 class="text-xs md:text-lg font-semibold text-white uppercase border-r border-gray-500 pr-2 mb-0">
             Observed Conditions
           </h3>
-          <div class="ml-2">
+          <div class="text-xs md:text-base ml-2">
             {{ huntDates && huntDates[0].start | date: 'MM/dd/yyyy' }} &ndash; {{ huntDates && huntDates[0].end | date: 'MM/dd/yyyy' }}
           </div>
         </div>
@@ -20,10 +20,10 @@
         </button>
       </div>
       <div class="pt-1 flow-root border-b border-gray-300 bg-gray-800">
-        <div class="float-left text-gray-400 pl-5 pb-4 -mt-1 text-sm italic">
+        <div class="text-xs md:text-sm float-left text-gray-400 pl-5 pb-4 -mt-1 italic">
           &#64; {{ location }}, Georgia
         </div>
-        <div class="float-right flex items-center text-xs p-2 bg-gray-900 rounded-tl-lg border-t border-l border-gray-500">
+        <div class="float-right flex items-center text-xs p-2 bg-gray-900 md:rounded-tl-lg border-t border-l border-gray-500">
           <span class="text-gray-400 font-semibold uppercase">Hunters:</span>
           <span class="px-1 border-r border-gray-500">{{ hunt?.hunterCount }}</span>
           <span class="mx-1 text-gray-400 font-semibold uppercase">Bucks:</span>
@@ -31,8 +31,8 @@
           <span class="mx-1 text-gray-400 font-semibold uppercase">Does:</span>
           <span class="px-1 border-r border-gray-500">{{ hunt?.does }}</span>
           @if (hunt) {
-            <span class="mx-1 text-gray-400 font-semibold uppercase">Success Rate:</span>
-            <span class="font-bold {{ hunt | successRateColor }}">{{ hunt | successRate }}&percnt;</span>
+            <span class="ml-1 text-gray-400 font-semibold uppercase">Success <span class="hidden md:inline-block">Rate</span>:</span>
+            <span class="ml-1 font-bold {{ hunt | successRateColor }}">{{ hunt | successRate }}&percnt;</span>
           }
         </div>
       </div>

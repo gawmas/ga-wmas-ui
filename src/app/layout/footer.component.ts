@@ -64,7 +64,6 @@ export class FooterComponent implements OnInit, OnDestroy {
       .subscribe((event) => {
         if (event instanceof NavigationEnd) {
           this.currentRoute = event.url;
-          console.log(this.currentRoute);
         }
       });
   }

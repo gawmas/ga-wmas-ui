@@ -16,6 +16,10 @@ export const routes: Routes = [
     loadComponent: () => import('./components/success-map/success-map.component').then(c => c.SuccessMapComponent)
   },
   {
+    path: 'trends',
+    loadComponent: () => import('./components/trends/trends.component').then(c => c.TrendsComponent)
+  },
+  {
     path: 'about',
     loadComponent: () => import('./components/about.component').then(c => c.AboutComponent)
   },

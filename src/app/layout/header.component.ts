@@ -47,8 +47,10 @@ import { Subject, takeUntil } from 'rxjs';
           </li>
           <li class="flex items-center text-sm py-2 px-2">
             <ng-icon name="heroArrowTrendingUp" class="text-lg text-gray-200 ml-2 mr-1"></ng-icon>
-            <a href="#" class="nav-link" aria-current="page">
-              Property Trends
+            <a routerLink="/trends"
+              [ngClass]="{'nav-current': (currentRoute | isActiveRoute:'/trends'), 'nav-link': !(currentRoute | isActiveRoute:'/trends')}"
+              aria-current="page">
+                Property Trends
             </a>
           </li>
           <li class="flex items-center text-sm py-2 px-2">
