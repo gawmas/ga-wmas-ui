@@ -9,4 +9,5 @@ Angular 17 frontend for georgiawmas.com
 - Tailwind CSS
 - Flowbite UI Component Libary
 - Tailwind Animations
-
+- Leaflet JS
+- Apexcharts
