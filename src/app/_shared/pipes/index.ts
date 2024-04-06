@@ -10,3 +10,4 @@ export * from "./wx-cond-icon.pipe";
 export * from "./ordinal.pipe";
 export * from "./trim-time.pipe";
 export * from "./season-text.pipe";
+export * from "./month.pipe";

@@ -2,7 +2,7 @@ import { Component, Input, ViewChild, inject } from "@angular/core";
 import { Hunt, HuntDate } from "@model";
 import { NgIcon } from "@ng-icons/core";
 import { Store } from "@ngrx/store";
-import { OrdinalPipe, SafePipe, SuccessRateColorPipe, SuccessRatePipe, TrimTimePipe, WxConditionIconPipe } from "@pipes";
+import { MonthPipe, OrdinalPipe, SafePipe, SuccessRateColorPipe, SuccessRatePipe, TrimTimePipe, WxConditionIconPipe } from "@pipes";
 import { SHARED_MODULES } from "@shared-imports";
 import { AppStateInterface } from "@store-model";
 import { LoadingComponent } from "_shared/components/loading.component";
@@ -18,7 +18,7 @@ import { WxDetailsSkeletonComponent } from "./wxDetails-skeleton.component";
   imports: [
     SHARED_MODULES, ModalComponent, LoadingComponent,
     OrdinalPipe, WxConditionIconPipe, SafePipe, TrimTimePipe, NgIcon,
-    SuccessRateColorPipe, SuccessRatePipe, WxDetailsSkeletonComponent]
+    SuccessRateColorPipe, SuccessRatePipe, WxDetailsSkeletonComponent, MonthPipe]
 })
 export class WxDetailsComponent {
 
