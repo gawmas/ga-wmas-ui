@@ -10,11 +10,11 @@ import { routes } from 'app.routes';
 import { HuntEffects } from 'store/hunts/hunts.effects';
 import { SHARED_MODULES } from '@shared-imports';
 import { NgIconsModule } from '@ng-icons/core';
-import { heroTableCells, heroUsers, heroBarsArrowUp,
-  heroArrowTrendingUp, heroStar, heroAdjustmentsHorizontal,
+import { heroTableCells, heroBarsArrowUp,
+  heroArrowTrendingUp, heroAdjustmentsHorizontal,
   heroXMark, heroBolt, heroMapPin, heroCalendar, heroWrenchScrewdriver,
   heroChartPie, heroSun, heroMoon, heroChevronDoubleDown, heroChevronDoubleUp,
-  heroInformationCircle, heroNoSymbol, heroFaceFrown, heroBars3,
+  heroInformationCircle, heroNoSymbol, heroFaceFrown,
   heroChatBubbleBottomCenterText, heroDocumentText, heroCheckCircle,
   heroPencilSquare, heroClock, heroExclamationTriangle, heroArrowTopRightOnSquare,
   heroHandThumbUp, heroMap, heroGlobeAlt } from '@ng-icons/heroicons/outline';
@@ -32,10 +32,8 @@ import { MapEffects } from 'store/successMap/successMap.effects';
 
 const heroIcons = {
   heroTableCells,
-  heroUsers,
   heroBarsArrowUp,
   heroArrowTrendingUp,
-  heroStar,
   heroAdjustmentsHorizontal,
   heroXMark,
   heroBolt,
@@ -50,7 +48,6 @@ const heroIcons = {
   heroInformationCircle,
   heroNoSymbol,
   heroFaceFrown,
-  heroBars3,
   heroChatBubbleBottomCenterText,
   heroDocumentText,
   heroCheckCircle,
