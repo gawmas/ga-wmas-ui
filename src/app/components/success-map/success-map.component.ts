@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, inject } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy, inject } from "@angular/core";
 import { LegendCategory, MapData, MapDataResult, Season, WeaponResult, WmaCoord } from "@model";
 import { SuccessMapFiltersComponent } from "./success-map-filters.component";
 import { SHARED_MODULES } from "@shared-imports";
@@ -188,8 +188,8 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
             <span class="font-semibold pl-1">${item.value || 0}${valueSuffix}</span>
           </div>
           <div class="text-center mt-2">
-            <button type="button"
-              class="px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white">                
+            <button type="button" data="${coord.id}, ${season.id}"
+              class="resultsButton px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white">
                   View Results
             </button>
           </div>
@@ -282,6 +282,20 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
     this.markers.forEach(marker => marker.addTo(this.map));
     const bounds = L.latLngBounds(this.markers.map(marker => marker.getLatLng()));
     this.map.fitBounds(bounds);
+  }
+
+  openResults(wmaId: number | undefined, seasonId: number | undefined) {
+    if (wmaId && seasonId) {
+      console.log('Open Results!', wmaId, seasonId);
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  bindResultsEvent(event: any) {
+    if (event.target.classList.contains("resultsButton")) {
+      const data = (event.target as HTMLElement).getAttribute("data")?.split(',');
+      this.openResults(+data![0], +data![1]);
+    }
   }
 }
 
