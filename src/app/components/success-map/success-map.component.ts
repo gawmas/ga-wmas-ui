@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy, inject } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy, ViewChild, inject } from "@angular/core";
 import { LegendCategory, MapData, MapDataResult, Season, WeaponResult, WmaCoord } from "@model";
 import { SuccessMapFiltersComponent } from "./success-map-filters.component";
 import { SHARED_MODULES } from "@shared-imports";
@@ -11,17 +11,19 @@ import { SuccessMapTitleComponent } from "./success-map-title.component";
 import * as L from 'leaflet';
 import * as successMapActions from 'store/successMap/successMap.actions';
 import * as successMapSelectors from 'store/successMap/successMap.selectors';
+import { SuccessMapHuntResultsComponent } from "./success-map-hunt-results.component";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    SHARED_MODULES, SuccessMapFiltersComponent,
+    SHARED_MODULES, SuccessMapFiltersComponent, SuccessMapHuntResultsComponent,
     SuccessMapTitleComponent, LoadingComponent, NgIconComponent],
   template: `
     @if (loading$ | async) {
       <gawmas-loading />
     }
+    <gawmas-success-map-hunt-results #resultsModal />
     <div class="mt-2 md:ml-1 w-full flex items-center justify-center mb-0 bg-gray-900 text-gray-200 md:rounded-tl-xl">
       <!-- Title -->
       <gawmas-success-map-title />
@@ -40,6 +42,8 @@ import * as successMapSelectors from 'store/successMap/successMap.selectors';
   `
 })
 export class SuccessMapComponent implements AfterViewInit, OnDestroy {
+
+  @ViewChild('resultsModal') resultsModal: SuccessMapHuntResultsComponent | undefined;
 
   private _store = inject(Store<AppStateInterface>);
   private _cdr = inject(ChangeDetectorRef);
@@ -115,6 +119,7 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
 
       }
     });
+
 
   }
 
@@ -286,7 +291,9 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
 
   openResults(wmaId: number | undefined, seasonId: number | undefined) {
     if (wmaId && seasonId) {
-      console.log('Open Results!', wmaId, seasonId);
+      document.getElementById('map')?.setAttribute('style', 'z-index: -1');
+      this.resultsModal?.open(wmaId, seasonId);
+      this.resultsModal?.close
     }
   }
 

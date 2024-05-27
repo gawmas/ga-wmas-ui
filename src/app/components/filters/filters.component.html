@@ -97,17 +97,59 @@
       </span>
     }
 
-    @if (auxData$ | async; as anxData) {
+    @if (filters.avgTemp !== '0') {
+      <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500">
+        {{ +filters.avgTemp! | tempDepartLabel }}
+        <div (mouseover)="showRemoveFilterTooltip('avgTemp', 'hover', $event)" class="pt-1 inline-flex items-center">
+          <a class="cursor-pointer hover:text-white" (click)="removeAvgTempFilter()">
+            <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
+          </a>
+          <div id="avgTemp" role="tooltip" class="gawmas-tooltip tooltip">
+            Remove average temperature variance from filters.
+            <div class="tooltip-arrow" data-popper-arrow></div>
+          </div>
+        </div>
+      </span>
+    }
+
+    @if (filters.phase !== '') {
+      <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-800 text-gray-200 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500">
+        @switch (filters.phase) {
+          @case ('new') {
+            <object data="/assets/lunar-svg/new.svg" type="image/svg+xml" class="w-[28px] h-[28px]"></object> New Moon
+          } @case ('first') {
+            <object data="/assets/lunar-svg/first-qtr.svg" type="image/svg+xml" class="w-[28px] h-[28px]"></object> First Quarter
+          } @case ('last') {
+            <object data="/assets/lunar-svg/last-qtr.svg" type="image/svg+xml" class="w-[28px] h-[28px]"></object> Last Quarter
+          } @case ('full') {
+            <object data="/assets/lunar-svg/full.svg" type="image/svg+xml" class="w-[28px] h-[28px]"></object> Full Moon
+          } @default {
+            Something funny goin' on.
+          }
+        }
+        <div (mouseover)="showRemoveFilterTooltip('moonPhase', 'hover', $event)" class="pt-1 inline-flex items-center">
+          <a class="cursor-pointer hover:text-white" (click)="removeMoonPhaseFilter()">
+            <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
+          </a>
+          <div id="moonPhase" role="tooltip" class="gawmas-tooltip tooltip">
+            Remove moon phase from filters.
+            <div class="tooltip-arrow" data-popper-arrow></div>
+          </div>
+        </div>
+      </span>
+    }
+
+    @if (auxData$ | async; as auxData) {
 
       @for (wmaId of filters.wmas; track wmaId) {
         <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500 ">
-          {{ wmaId | filterObjName: anxData.wmas }}
+          {{ wmaId | filterObjName: auxData.wmas }}
           <div (mouseover)="showRemoveFilterTooltip(wmaId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
             <a class="cursor-pointer hover:text-cyan-800" (click)="removeCheckboxFilter(wmaId, 'wmas')">
               <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
             </a>
             <div id="{{ wmaId }}" role="tooltip" class="gawmas-tooltip tooltip">
-                Remove  <span class="italic">'{{ wmaId | filterObjName: anxData.wmas }}'</span> from filters.
+                Remove  <span class="italic">'{{ wmaId | filterObjName: auxData.wmas }}'</span> from filters.
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
           </div>
@@ -116,13 +158,13 @@
 
       @for (seasonId of filters.seasons; track seasonId) {
         <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500 ">
-          {{ seasonId | filterObjName: anxData.seasons }}
+          {{ seasonId | filterObjName: auxData.seasons }}
           <div (mouseover)="showRemoveFilterTooltip(seasonId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
             <a class="cursor-pointer hover:text-cyan-800" (click)="removeCheckboxFilter(seasonId, 'seasons')">
               <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
             </a>
               <div id="{{ seasonId }}" role="tooltip" class="gawmas-tooltip tooltip">
-              Remove <span class="italic">'{{ seasonId | filterObjName: anxData.seasons }}'</span> filters.
+              Remove <span class="italic">'{{ seasonId | filterObjName: auxData.seasons }}'</span> filters.
               <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
           </div>
@@ -131,13 +173,13 @@
 
       @for (weaponId of filters.weapons; track weaponId) {
         <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500 ">
-          {{ weaponId | filterObjName: anxData.weapons }}
+          {{ weaponId | filterObjName: auxData.weapons }}
           <div (mouseover)="showRemoveFilterTooltip(weaponId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
             <a class="cursor-pointer hover:text-cyan-800" (click)="removeCheckboxFilter(weaponId, 'weapons')">
               <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
             </a>
             <div id="{{ weaponId }}" role="tooltip" class="gawmas-tooltip tooltip">
-              Remove <span class="italic">'{{ weaponId | filterObjName: anxData.weapons }}'</span> from filters.
+              Remove <span class="italic">'{{ weaponId | filterObjName: auxData.weapons }}'</span> from filters.
               <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
           </div>
@@ -306,96 +348,129 @@
           <span class="text-xs text-gray-400 absolute end-0 -bottom-4 mr-1 mt-0 font-bold">100%+</span>
         </div>
 
-        <div class="mt-2 flex justify-start items-center border-b border-gray-500 mb-2">
+        <div class="mt-2 flex justify-start items-center mb-2">
           <div><ng-icon name="heroSun" class="font-extrabold"></ng-icon></div>
           <div class="font-bold pb-1 pl-1">Average Temperatures</div>
         </div>
-        <div class="flex items-center mb-2 ml-2">
-          <input id="warmer" type="radio" name="default-radio"
-            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2">
-          <div class="mx-1">
-            <ng-icon name="heroChevronDoubleUp" class="font-extrabold text-red-500"></ng-icon>
+
+        <div class="w-full text-sm grid grid-cols-1 divide-y border border-gray-300 rounded-md">
+          <div class="w-full">
+            <input id="tempSigWarmer" formControlName="avgTemp" type="radio" value="2" class="hidden peer" />
+            <label for="tempSigWarmer"
+              class="w-full p-2 flex items-center cursor-pointer bg-gray-700 hover:bg-gray-800 peer-checked:bg-blue-600 rounded-t-md">
+                <ng-icon *ngIf="filterForm.controls['avgTemp'].value === '2'"
+                  name="heroCheck" class="mr-1 font-extrabold"></ng-icon>
+                    Significantly warmer than average.
+            </label>
           </div>
-          <label for="warmer" class="text-sm font-medium text-gray-300">
-            Warmer than average
-          </label>
-        </div>
-        <div class="flex items-center ml-2 mb-2">
-          <input id="cooler" type="radio" name="default-radio"
-            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2">
-          <div class="mx-1">
-            <ng-icon name="heroChevronDoubleDown" class="font-extrabold text-blue-500"></ng-icon>
+          <div class="w-full border-none">
+            <input id="tempSlightWarmer" formControlName="avgTemp" type="radio" value="1" class="hidden peer" />
+            <label for="tempSlightWarmer"
+              class="w-full p-2 flex items-center cursor-pointer bg-gray-700 hover:bg-gray-800 peer-checked:bg-blue-600">
+              <ng-icon *ngIf="filterForm.controls['avgTemp'].value === '1'"
+                name="heroCheck" class="mr-1 font-extrabold"></ng-icon>
+                  Slightly warmer than average.
+            </label>
           </div>
-          <label for="cooler" class="text-sm font-medium text-gray-300">
-            Cooler than average
-          </label>
-        </div>
-        <div class="flex items-center ml-2 mb-4">
-          <input checked id="neither" type="radio" name="default-radio"
-            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2">
-          <label for="neither" class="ml-2 text-sm font-medium text-gray-300">
-            Neither warmer nor cooler than average
-          </label>
+          <div class="w-full border-none">
+            <input id="tempNoDepart" formControlName="avgTemp" type="radio" value="0" class="hidden peer" />
+            <label for="tempNoDepart"
+              class="w-full p-2 flex items-center cursor-pointer bg-gray-700 hover:bg-gray-800 hover:text-gray-200 peer-checked:bg-blue-600">
+                <ng-icon *ngIf="filterForm.controls['avgTemp'].value === '0'"
+                  name="heroCheck" class="mr-1 font-extrabold"></ng-icon>
+                    Neither warmer nor cooler than average.
+            </label>
+          </div>
+          <div class="w-full border-none">
+            <input id="tempSlightCooler" formControlName="avgTemp" type="radio" value="-1" class="hidden peer" />
+            <label for="tempSlightCooler"
+              class="w-full p-2 flex items-center cursor-pointer bg-gray-700 hover:bg-gray-800 peer-checked:bg-blue-600">
+                <ng-icon *ngIf="filterForm.controls['avgTemp'].value === '-1'"
+                  name="heroCheck" class="mr-1 font-extrabold"></ng-icon>
+                    Slightly cooler than average.
+            </label>
+          </div>
+          <div class="w-full border-none">
+            <input id="tempSigCooler" formControlName="avgTemp" type="radio" value="-2" class="hidden peer" />
+            <label for="tempSigCooler"
+              class="w-full p-2 flex items-center cursor-pointer bg-gray-700 hover:bg-gray-800 peer-checked:bg-blue-600 rounded-b-md">
+                <ng-icon *ngIf="filterForm.controls['avgTemp'].value === '-2'"
+                  name="heroCheck" class="mr-1 font-extrabold"></ng-icon>
+                    Signficantly cooler than average.
+            </label>
+          </div>
         </div>
 
-        <div class="mt-2 flex justify-start items-center">
+        <div class="mt-4 flex justify-start items-center">
           <div>
             <ng-icon name="heroMoon" class="font-extrabold"></ng-icon>
           </div>
-          <div class="font-bold pb-1 pl-1">*Lunar Phase</div>
+          <div class="font-bold pb-1 pl-1">Lunar Phase*</div>
         </div>
-        <ul class="w-full gap-0 inline-flex">
-          <li>
-            <input type="radio" id="new" name="hosting" value="hosting-small" class="hidden peer">
-            <label data-tooltip-target="new-tip" data-tooltip-placement="bottom" for="new"
-              class="p-2 inline-flex items-center justify-between rounded-l-xl bg-gray-700 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-800">
+        <div class="text-xs italic mb-1">*Applicable only to hunts spanning 3 days or less.</div>
+
+        <ul class="grid grid-cols-5 gap-0 border border-gray-200 rounded-md">
+          <li class="w-full">
+            <input id="new" type="radio" formControlName="phase" value="new" class="hidden peer">
+            <label for="new"
+              class="w-full max-h-[40px] min-h-[40px] p-2 flex items-center justify-center rounded-l-md bg-gray-700 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-800">
               <object data="/assets/lunar-svg/new.svg" type="image/svg+xml" class="w-[28px] h-[28px]"></object>
+              <div class="hidden md:block text-xs xl:whitespace-nowrap">New Moon</div>
             </label>
-            <div id="new-tip" role="tooltip" class="gawmas-tooltip tooltip">New Moon
-              <div class="tooltip-arrow" data-popper-arrow></div>
-            </div>
           </li>
-          <li>
-            <input type="radio" id="first" name="hosting" value="hosting-small" class="hidden peer">
-            <label data-tooltip-target="first-tip" data-tooltip-placement="bottom" for="first"
-              class="inline-flex items-center justify-between p-2 bg-gray-700 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-800">
+          <li class="w-full">
+            <input type="radio" id="first" formControlName="phase" value="first" class="hidden peer">
+            <label for="first"
+              class="w-full max-h-[40px] min-h-[40px] p-2 flex items-center justify-center bg-gray-700 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-800">
               <object data="/assets/lunar-svg/first-qtr.svg" type="image/svg+xml" class="w-[28px] h-[28px]"></object>
+              <div class="hidden md:block text-xs xl:whitespace-nowrap">First Quarter</div>
             </label>
-            <div id="first-tip" role="tooltip" class="gawmas-tooltip tooltip">First Quarter
-              <div class="tooltip-arrow" data-popper-arrow></div>
-            </div>
           </li>
-          <li>
-            <input type="radio" id="last" name="hosting" value="hosting-small" class="hidden peer">
-            <label data-tooltip-target="last-tip" data-tooltip-placement="bottom" for="last"
-              class="inline-flex items-center justify-between p-2 bg-gray-700 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-800">
+          <li class="w-full">
+            <input type="radio" id="last" formControlName="phase" value="last" class="hidden peer">
+            <label for="last"
+              class="w-full max-h-[40px] min-h-[40px] p-2 flex items-center justify-center bg-gray-700 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-800">
               <object data="/assets/lunar-svg/last-qtr.svg" type="image/svg+xml" class="w-[28px] h-[28px]"></object>
+              <div class="hidden md:block text-xs xl:whitespace-nowrap">Last Quarter</div>
             </label>
-            <div id="last-tip" role="tooltip" class="gawmas-tooltip ooltip">Last Quarter
-              <div class="tooltip-arrow" data-popper-arrow></div>
-            </div>
           </li>
-          <li>
-            <input type="radio" id="full" name="hosting" value="hosting-small" class="hidden peer">
-            <label data-tooltip-target="full-tip" data-tooltip-placement="bottom" for="full"
-              class="inline-flex items-center justify-between p-2 bg-gray-700 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-800">
+          <li class="w-full">
+            <input type="radio" id="full" formControlName="phase" value="full" class="hidden peer">
+            <label for="full"
+              class="w-full max-h-[40px] min-h-[40px] p-2 flex items-center justify-center bg-gray-700 cursor-pointer peer-checked:bg-blue-600 hover:bg-gray-800">
               <object data="/assets/lunar-svg/full.svg" type="image/svg+xml" class="w-[28px] h-[28px]"></object>
+              <div class="hidden md:block text-xs xl:whitespace-nowrap">Full Moon</div>
             </label>
-            <div id="full-tip" role="tooltip" class="gawmas-tooltip tooltip">Full Moon
-              <div class="tooltip-arrow" data-popper-arrow></div>
-            </div>
           </li>
-          <li>
-            <input type="radio" id="ignore" name="hosting" value="hosting-small" class="hidden peer">
+          <li class="w-full">
+            <input type="radio" id="ignore" formControlName="phase" value="" class="hidden peer">
             <label for="ignore"
-              class="inline-flex items-center rounded-r-xl text-gray-200 italic text-sm justify-between p-3 bg-gray-700 border border-gray-200 cursor-pointer peer-checked:bg-blue-600 peer-checked:text-white hover:bg-gray-800">
-              <ng-icon name="heroNoSymbol" class="font-extrabold mr-1"></ng-icon> Ignore
+              class="w-full max-h-[40px] min-h-[40px] flex items-center justify-center p-3 rounded-r-md text-gray-200 italic text-sm bg-gray-700 cursor-pointer peer-checked:bg-blue-600 peer-checked:text-white hover:bg-gray-800">
+              <ng-icon name="heroNoSymbol" class="font-extrabold mr-1"></ng-icon>
+              <div class="hidden md:block text-xs xl:whitespace-nowrap">Ignore</div>
             </label>
           </li>
         </ul>
-        <div class="text-xs italic mt-1">*Applicable only to hunts spanning 3 days or less.</div>
-      </div>
 
+
+        <div class="font-semibold italic text-gawmas-yeller text-sm md:hidden ml-2">
+          @switch(filterForm.controls['phase'].value) {
+            @case( 'new') {
+              New Moon
+            } @case ('first') {
+              First Quarter
+            } @case ('last') {
+              Last Quarter
+            } @case ('full') {
+              Full Moon
+            } @default {
+              Ignore Moon Phase
+            }
+          }
+        </div>
+
+      </div>
+      <!-- <pre>{{ filterForm.value | json }}</pre> -->
     </div>
   </form>
 </gawmas-drawer>

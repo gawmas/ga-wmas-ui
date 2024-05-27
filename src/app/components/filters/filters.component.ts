@@ -8,10 +8,11 @@ import { Store } from "@ngrx/store";
 import { NgIconComponent } from "@ng-icons/core";
 import { selectFiltersAuxData, selectSeasons, selectWeapons, selectWmas } from 'store/filters/filters.selectors';
 import { selectFilter, selectHuntsLoading } from 'store/hunts/hunts.selectors';
-import { FormArrayPipe } from "@pipes";
+import { FormArrayPipe, WxAvgTempDeparturePipe } from "@pipes";
 import { DrawerComponent } from "_shared/components/drawer.component";
 import { FilterObjNamePipe } from "_shared/pipes/filter-obj-name.pipe";
 import { Tooltip, TooltipTriggerType } from "flowbite";
+import { TempDepartLabelPipe } from "_shared/pipes/temp-depart-label.pipe";
 import * as huntsActions from 'store/hunts/hunts.actions';
 
 @Component({
@@ -19,7 +20,7 @@ import * as huntsActions from 'store/hunts/hunts.actions';
   standalone: true,
   imports: [SHARED_MODULES, ReactiveFormsModule,
     NgIconComponent, FormArrayPipe, DrawerComponent,
-    FilterObjNamePipe],
+    FilterObjNamePipe, TempDepartLabelPipe],
   templateUrl: './filters.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -60,6 +61,8 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
     successRate: 0,
     seasons: this._formBuilder.array([]),
     weapons: this._formBuilder.array([]),
+    avgTemp: '0',
+    phase: ''
   });
 
   // Signals to indicate the number of selected criteria in the filter form ...
@@ -70,13 +73,15 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
   selectedWeaponIds = signal<number[]>([]);
   togglesCount = signal(0);
   successRateSet = signal(false);
+  wxControlCount = signal(0);
   preSelectedFilters: Filter | undefined;
   filterCount = computed(() => {
     return this.selectedWmasCount() +
       this.selectedSeasonIds().length +
       this.selectedWeaponIds().length +
       (this.successRateSet() ? 1 : 0) +
-      this.togglesCount();
+      this.togglesCount() +
+      this.wxControlCount();
   });
 
   ngAfterViewInit(): void {
@@ -122,6 +127,8 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
             isBonusQuota: this.filterForm.controls['isBonusQuota'].value,
             isStatePark: this.filterForm.controls['isStatePark'].value,
             isVpa: this.filterForm.controls['isVpa'].value,
+            avgTemp: this.filterForm.controls['avgTemp'].value,
+            phase: this.filterForm.controls['phase'].value,
             sort: sortValue
           }
         }));
@@ -172,6 +179,17 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
         });
         this.noFilteredWmasFound.set(this.auxData.filteredWmas.every((wma: Wma) => !wma.visible));
       });
+
+    combineLatest([
+      this.filterForm.controls['avgTemp'].valueChanges.pipe(startWith('0')),
+      this.filterForm.controls['phase'].valueChanges.pipe(startWith(''))])
+      .pipe(
+        takeUntil(this._destroyed$),
+        distinctUntilChanged())
+      .subscribe(([avgTemp, phase]) => {
+        this.wxControlCount.set((avgTemp !== '0' ? 1 : 0) + (phase !== '' ? 1 : 0));
+      });
+
   }
 
   // Filter the list of WMAs based on "state park"/"vpa"/"bonus quota" toggles ...
@@ -267,6 +285,7 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
   }
 
   apply() {
+    console.log(this.filterForm.value);
     this.filterDrawer.save({
       ...this.filterForm.value,
       wmas: this._extractCheckIds('wmas', 'wmas'),
@@ -354,6 +373,34 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
     }));
   }
 
+  removeAvgTempFilter() {
+    this.filterForm.controls['avgTemp'].setValue('0');
+    this._store.dispatch(huntsActions.filtersChanged({
+      filter: {
+        ...this.filterForm.value,
+        sort: this.sortForm.controls['sort'].value,
+        skip: 0,
+        wmas: this._extractCheckIds('wmas', 'wmas'),
+        seasons: this._extractCheckIds('seasons', 'seasons'),
+        weapons: this._extractCheckIds('weapons', 'weapons'),
+      }
+    }));
+  }
+
+  removeMoonPhaseFilter() {
+    this.filterForm.controls['phase'].setValue('');
+    this._store.dispatch(huntsActions.filtersChanged({
+      filter: {
+        ...this.filterForm.value,
+        sort: this.sortForm.controls['sort'].value,
+        skip: 0,
+        wmas: this._extractCheckIds('wmas', 'wmas'),
+        seasons: this._extractCheckIds('seasons', 'seasons'),
+        weapons: this._extractCheckIds('weapons', 'weapons'),
+      }
+    }));
+  }
+
   cancel() {
     this.filterDrawer.close();
   }
@@ -362,6 +409,8 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
     this.filterForm.reset();
     this.filterForm.controls['successRate'].setValue(0);
     this.filterForm.controls['wmaFilter'].setValue('');
+    this.filterForm.controls['avgTemp'].setValue('0');
+    this.filterForm.controls['phase'].setValue('');
     this.auxData.filteredWmas.forEach((wma: Wma) => wma.visible = true);
     this.noFilteredWmasFound.set(false);
   }

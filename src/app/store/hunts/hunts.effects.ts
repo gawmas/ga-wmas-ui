@@ -44,7 +44,7 @@ export class HuntEffects {
 
   getMoreHunts$ = createEffect(() =>
     this._actions$.pipe(
-      debounceTime(500), // Remove before deploying ...
+      // debounceTime(500), // Remove before deploying ...
       ofType(huntsActions.getMoreHunts),
       concatLatestFrom(() => [
         this._store.select(selectAllHuntsLength),
@@ -62,7 +62,8 @@ export class HuntEffects {
             sort: filter?.sort,
             isBonusQuota: filter?.isBonusQuota,
             isStatePark: filter?.isStatePark,
-            isVpa: filter?.isVpa
+            isVpa: filter?.isVpa,
+            avgTemp: filter?.avgTemp
           } as Filter)
           .pipe(
             map((result) => huntsActions.getMoreHuntsComplete({ hunts: result }))

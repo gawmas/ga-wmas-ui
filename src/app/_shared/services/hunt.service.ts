@@ -22,7 +22,9 @@ export class HuntService {
         '&sort=' + (filter?.sort ? filter?.sort : '') +
         '&isBonusQuota=' + (filter?.isBonusQuota ? filter?.isBonusQuota === true : false) +
         '&isStatePark=' + (filter?.isStatePark ? filter?.isStatePark === true : false) +
-        '&isVpa=' + (filter?.isVpa ? filter?.isVpa === true : false);
+        '&isVpa=' + (filter?.isVpa ? filter?.isVpa === true : false) +
+        '&avgTemp=' + filter?.avgTemp?.toString() +
+        '&phase=' + filter?.phase;
       // console.log(url);
       return this.http.get<Hunt[]>(url);
     }

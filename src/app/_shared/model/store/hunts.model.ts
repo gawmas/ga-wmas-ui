@@ -19,6 +19,8 @@ export const initialHuntState: HuntState = {
     isStatePark: false,
     isVpa: false,
     isBonusQuota: false,
+    avgTemp: '0',
+    phase: '',
     sort: ''
   },
   endOfResults: false,

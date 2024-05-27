@@ -57,9 +57,6 @@
                   }
                 }
               </div>
-              <span class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-full bg-blue-900 text-blue-300">
-                {{ hunt.season }}
-              </span>
               @if (hunt.quota) {
                 <span class="text-sm font-medium me-2 px-2.5 py-0.5 rounded-full bg-red-900 text-red-300">
                   <span class="text-xs uppercase">Quota:</span> <span>{{ hunt.quota }}</span>
@@ -72,6 +69,9 @@
                 <div class="mx-1 uppercase">
                   {{ date.start | date: 'MMM d' }} &ndash; {{ date.end | date: 'MMM d' }}
                 </div>
+                <span class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-full bg-blue-900 text-blue-300">
+                  {{ hunt.season }}
+                </span>
               }
             </td>
             <td class="px-6 align-top bg-gray-900">
@@ -315,7 +315,7 @@
               </table>
             </td>
             <td class="max-w-[215px] p-1 border-t border-l border-gray-600 align-top">
-             
+
               @if (hunt.wxDetails) {
                 @switch (hunt.wxDetails[0] | wxDetailType) {
                   @case ('summary') {

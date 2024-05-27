@@ -9,4 +9,6 @@ export interface Filter {
   isStatePark?: boolean | null;
   isVpa?: boolean | null;
   sort: string | null;
+  avgTemp?: string | null;
+  phase?: string | null;
 }
