@@ -63,7 +63,8 @@ export class HuntEffects {
             isBonusQuota: filter?.isBonusQuota,
             isStatePark: filter?.isStatePark,
             isVpa: filter?.isVpa,
-            avgTemp: filter?.avgTemp
+            avgTemp: filter?.avgTemp,
+            phase: filter?.phase
           } as Filter)
           .pipe(
             map((result) => huntsActions.getMoreHuntsComplete({ hunts: result }))
