@@ -41,7 +41,7 @@
       <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-green-500 text-gray-200 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-200">
         Success Rate &gt; {{ filters.successRate }}&percnt;
         <div (mouseover)="showRemoveFilterTooltip('successRate', 'hover', $event)" class="pt-1 inline-flex items-center">
-          <a class="cursor-pointer hover:text-white" (click)="removeSuccessRate()">
+          <a class="cursor-pointer hover:text-white" (click)="removeNonCheckboxFilter('successRate')">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
           <div id="successRate" role="tooltip" class="gawmas-tooltip tooltip">
@@ -56,7 +56,7 @@
       <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-red-900 text-red-300 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500">
         Quota/Bonus
         <div (mouseover)="showRemoveFilterTooltip('quotaBonus', 'hover', $event)" class="pt-1 inline-flex items-center">
-          <a class="cursor-pointer hover:text-white" (click)="removeWmaTypeFilter('bonusQuota')">
+          <a class="cursor-pointer hover:text-white" (click)="removeNonCheckboxFilter('isBonusQuota')">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
           <div id="quotaBonus" role="tooltip" class="gawmas-tooltip tooltip">
@@ -71,7 +71,7 @@
       <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500">
         State Park
         <div (mouseover)="showRemoveFilterTooltip('statePark', 'hover', $event)" class="pt-1 inline-flex items-center">
-          <a class="cursor-pointer hover:text-white" (click)="removeWmaTypeFilter('statePark')">
+          <a class="cursor-pointer hover:text-white" (click)="removeNonCheckboxFilter('isStatePark')">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
           <div id="statePark" role="tooltip" class="gawmas-tooltip tooltip">
@@ -86,7 +86,7 @@
       <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500">
         VPA
         <div (mouseover)="showRemoveFilterTooltip('vpa', 'hover', $event)" class="pt-1 inline-flex items-center">
-          <a class="cursor-pointer hover:text-white" (click)="removeWmaTypeFilter('vpa')">
+          <a class="cursor-pointer hover:text-white" (click)="removeNonCheckboxFilter('isVpa')">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
           <div id="vpa" role="tooltip" class="gawmas-tooltip tooltip">
@@ -101,7 +101,7 @@
       <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500">
         {{ +filters.avgTemp! | tempDepartLabel }}
         <div (mouseover)="showRemoveFilterTooltip('avgTemp', 'hover', $event)" class="pt-1 inline-flex items-center">
-          <a class="cursor-pointer hover:text-white" (click)="removeAvgTempFilter()">
+          <a class="cursor-pointer hover:text-white" (click)="removeNonCheckboxFilter('avgTemp')">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
           <div id="avgTemp" role="tooltip" class="gawmas-tooltip tooltip">
@@ -128,7 +128,7 @@
           }
         }
         <div (mouseover)="showRemoveFilterTooltip('moonPhase', 'hover', $event)" class="pt-1 inline-flex items-center">
-          <a class="cursor-pointer hover:text-white" (click)="removeMoonPhaseFilter()">
+          <a class="cursor-pointer hover:text-white" (click)="removeNonCheckboxFilter('phase')">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
           <div id="moonPhase" role="tooltip" class="gawmas-tooltip tooltip">

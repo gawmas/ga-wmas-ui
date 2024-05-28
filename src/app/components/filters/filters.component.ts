@@ -285,7 +285,7 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
   }
 
   apply() {
-    console.log(this.filterForm.value);
+    // console.log(this.filterForm.value);
     this.filterDrawer.save({
       ...this.filterForm.value,
       wmas: this._extractCheckIds('wmas', 'wmas'),
@@ -333,32 +333,25 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
     }));
   }
 
-  // Remove the success rate filter chip ...
-  removeSuccessRate() {
-    this.filterForm.controls['successRate'].setValue(0);
-    this._store.dispatch(huntsActions.filtersChanged({
-      filter: {
-        ...this.filterForm.value,
-        sort: this.sortForm.controls['sort'].value,
-        skip: 0,
-        wmas: this._extractCheckIds('wmas', 'wmas'),
-        seasons: this._extractCheckIds('seasons', 'seasons'),
-        weapons: this._extractCheckIds('weapons', 'weapons')
-      }
-    }));
-  }
-
-  // Remove the "state park"/"vpa"/"bonus quota" filter chips ...
-  removeWmaTypeFilter(type: string) {
-    switch (type) {
-      case 'statePark':
+  removeNonCheckboxFilter(name: string) {
+    switch (name) {
+      case 'isStatePark':
         this.filterForm.controls['isStatePark'].setValue(false);
         break;
-      case 'vpa':
+      case 'isVpa':
         this.filterForm.controls['isVpa'].setValue(false);
         break;
-      case 'bonusQuota':
+      case 'isBonusQuota':
         this.filterForm.controls['isBonusQuota'].setValue(false);
+        break;
+      case 'successRate':
+        this.filterForm.controls['successRate'].setValue(0);
+        break;
+      case 'avgTemp':
+        this.filterForm.controls['avgTemp'].setValue('0');
+        break;
+      case 'phase':
+        this.filterForm.controls['phase'].setValue('');
         break;
     }
     this._store.dispatch(huntsActions.filtersChanged({
@@ -368,35 +361,7 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
         skip: 0,
         wmas: this._extractCheckIds('wmas', 'wmas'),
         seasons: this._extractCheckIds('seasons', 'seasons'),
-        weapons: this._extractCheckIds('weapons', 'weapons'),
-      }
-    }));
-  }
-
-  removeAvgTempFilter() {
-    this.filterForm.controls['avgTemp'].setValue('0');
-    this._store.dispatch(huntsActions.filtersChanged({
-      filter: {
-        ...this.filterForm.value,
-        sort: this.sortForm.controls['sort'].value,
-        skip: 0,
-        wmas: this._extractCheckIds('wmas', 'wmas'),
-        seasons: this._extractCheckIds('seasons', 'seasons'),
-        weapons: this._extractCheckIds('weapons', 'weapons'),
-      }
-    }));
-  }
-
-  removeMoonPhaseFilter() {
-    this.filterForm.controls['phase'].setValue('');
-    this._store.dispatch(huntsActions.filtersChanged({
-      filter: {
-        ...this.filterForm.value,
-        sort: this.sortForm.controls['sort'].value,
-        skip: 0,
-        wmas: this._extractCheckIds('wmas', 'wmas'),
-        seasons: this._extractCheckIds('seasons', 'seasons'),
-        weapons: this._extractCheckIds('weapons', 'weapons'),
+        weapons: this._extractCheckIds('weapons', 'weapons')
       }
     }));
   }
