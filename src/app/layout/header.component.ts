@@ -45,14 +45,14 @@ import { Subject, takeUntil } from 'rxjs';
                 Success Map
             </a>
           </li>
-          <li class="flex items-center text-sm py-2 px-2">
+          <!-- <li class="flex items-center text-sm py-2 px-2">
             <ng-icon name="heroArrowTrendingUp" class="text-lg text-gray-200 ml-2 mr-1"></ng-icon>
             <a routerLink="/trends"
               [ngClass]="{'nav-current': (currentRoute | isActiveRoute:'/trends'), 'nav-link': !(currentRoute | isActiveRoute:'/trends')}"
               aria-current="page">
                 Property Trends
             </a>
-          </li>
+          </li> -->
           <li class="flex items-center text-sm py-2 px-2">
             <ng-icon name="heroInformationCircle" class="text-lg text-gray-200 ml-2 mr-1"></ng-icon>
             <a routerLink="/about"
