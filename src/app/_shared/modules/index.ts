@@ -5,6 +5,5 @@ import { RouterModule } from "@angular/router";
 
 export const MODULES: Provider[] = [
   CommonModule,
-  HttpClientModule,
   RouterModule
 ];

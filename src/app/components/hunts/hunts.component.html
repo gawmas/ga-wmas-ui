@@ -65,7 +65,7 @@
               <div class="mt-1 text-xs" [innerHTML]="hunt.details | detailsHighlight"></div>
             </td>
             <td class="px-5 py-4 align-top bg-gray-800">
-              @for (date of hunt.huntDates; track date) {
+              @for (date of hunt.huntDates; track date.start) {
                 <div class="mx-1 uppercase">
                   {{ date.start | date: 'MMM d' }} &ndash; {{ date.end | date: 'MMM d' }}
                 </div>
@@ -116,7 +116,7 @@
                     <div class="w-full uppercase text-xs flex items-center border-b border-gray-500 mb-2 pb-1">
                       <span class="font-semibold ml-2">Observed Average Temperatures</span>
                     </div>
-                    @for (wx of $any(hunt.wxDetails); track wx; let i = $index) {
+                    @for (wx of $any(hunt.wxDetails); track wx.ident; let i = $index) {
                       <div class="w-full uppercase text-xs">
                         <div class="flex items-center uppercase font-bold text-xs border-b border-gray-700">
                           <span class="italic ml-2 text-gray-400 pb-1">
@@ -167,7 +167,7 @@
                       <span class="font-semibold ml-2">Observed Conditions</span>
                     </div>
                     <div class="w-full flex items-center font-bold uppercase mb-3">
-                      @for (wx of $any(hunt.wxDetails); track wx.date; let i = $index, last = $last) {
+                      @for (wx of $any(hunt.wxDetails); track wx.ident; let i = $index, last = $last) {
                         <div class="p-1 text-xs text-gray-400 {{ hunt.wxDetails.length < 3 ? 'w-1/2' : 'w-1/3' }} {{ !last ? 'border-r border-gray-400' : 'border-none' }}">
                           <div class="flex-none italic text-center">
                             {{ wx.date | date: 'EEE' }}, {{ wx.date | date: 'MM/dd' }}
@@ -275,7 +275,7 @@
                 <span class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-full bg-blue-900 text-blue-300">
                   {{ hunt.season }}
                 </span>
-                @for (date of hunt.huntDates; track date) {
+                @for (date of hunt.huntDates; track date.start) {
                   <span class="text-xs font-medium me-2 my-1 px-2.5 py-0.5 rounded-full bg-gray-400 text-gray-700">
                     {{ date.start | date: 'MM/dd' }} &ndash; {{ date.end | date: 'MM/dd' }}
                   </span>
@@ -319,7 +319,7 @@
               @if (hunt.wxDetails) {
                 @switch (hunt.wxDetails[0] | wxDetailType) {
                   @case ('summary') {
-                    @for (wx of $any(hunt.wxDetails); track wx; let i = $index) {
+                    @for (wx of $any(hunt.wxDetails); track wx.ident; let i = $index) {
                       <div class="w-full uppercase text-xs">
                         <div class="flex items-center uppercase font-bold text-xs border-b border-gray-700">
                           <span class="italic ml-2 text-gray-400 pb-1">
@@ -366,7 +366,7 @@
                   }
                   @case ('detailed') {
                     <div class="w-full flex items-center font-bold uppercase mb-3">
-                      @for (wx of $any(hunt.wxDetails); track wx.date; let i = $index, last = $last) {
+                      @for (wx of $any(hunt.wxDetails); track wx.ident; let i = $index, last = $last) {
                         <div class="p-1 text-xs text-gray-400 {{ hunt.wxDetails.length < 3 ? 'w-1/2' : 'w-1/3' }} {{ !last ? 'border-r border-gray-400' : 'border-none' }}">
                           <div class="flex-none italic text-center">
                             {{ wx.date | date: 'EEE' }}
