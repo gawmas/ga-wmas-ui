@@ -1,7 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, provideHttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { ActionReducerMap, StoreModule } from '@ngrx/store';
@@ -75,8 +75,8 @@ const appReducers: ActionReducerMap<AppStateInterface> = {
 export const appConfig: ApplicationConfig = {
   providers: [
     SHARED_MODULES,
+    provideHttpClient(),
     importProvidersFrom(
-      HttpClientModule,
       RouterModule.forRoot(routes),
       StoreModule.forRoot(appReducers),
       EffectsModule.forRoot([
