@@ -24,7 +24,7 @@ import { SuccessMapHuntResultsComponent } from "./success-map-hunt-results.compo
       <gawmas-loading />
     }
     <!-- Results modal -->
-    <gawmas-success-map-hunt-results #resultsModal />
+    <gawmas-success-map-hunt-results #resultsModal (closeEvent)="huntResultsModalClosed()" />
 
     <div class="mt-2 md:ml-1 w-full flex items-center justify-center mb-0 bg-gray-900 text-gray-200 md:rounded-tl-xl">
       <!-- Title -->
@@ -38,7 +38,7 @@ import { SuccessMapHuntResultsComponent } from "./success-map-hunt-results.compo
           <gawmas-success-map-filters />
         </div>
       </div>
-      <div class="text-white"><a (click)="toggleMapViz()">toggle</a></div>
+
       <div id="map" class="md:flex-1 ml-0 flex-1 mt-0 border border-gray-500 md:rounded-br-xl md:rounded-tr-xl h-[75vh] w-full {{ mapVisible() ? 'visible' : 'hidden' }}">
         <!-- Map -->
       </div>
@@ -296,9 +296,8 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
 
   openResults(wmaId: number | undefined, seasonId: number | undefined) {
     if (wmaId && seasonId) {
-      document.getElementById('map')?.setAttribute('style', 'z-index: -1');
       this.resultsModal?.open(wmaId, seasonId);
-      this.resultsModal?.close
+      this.toggleMapViz();
     }
   }
 
@@ -312,6 +311,10 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
 
   toggleMapViz(): void {
     this.mapVisible.set(!this.mapVisible());
+  }
+
+  huntResultsModalClosed() {
+    this.toggleMapViz();
   }
 
 }

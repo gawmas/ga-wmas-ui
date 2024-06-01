@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, signal } from "@angular/core";
+import { Component, Input, ViewChild, output, signal } from "@angular/core";
 import { ModalComponent } from "_shared/components/modal.component";
 import { HuntsComponent } from "components/hunts/hunts.component";
 
@@ -37,6 +37,8 @@ import { HuntsComponent } from "components/hunts/hunts.component";
 export class SuccessMapHuntResultsComponent {
 
   @ViewChild('huntResultsModal') huntResultsModal: ModalComponent | undefined;
+  closeEvent = output();
+
   huntResultsTarget = 'huntResultsModal';
 
   wmaId = signal(0);
@@ -50,7 +52,7 @@ export class SuccessMapHuntResultsComponent {
 
   close() {
     console.log('Closing modal...');
+    this.closeEvent.emit();
     this.huntResultsModal?.close();
-    document.getElementById('map')?.setAttribute('style', 'z-index: 100;');
   }
 }
