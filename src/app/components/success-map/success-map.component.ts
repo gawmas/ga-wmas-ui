@@ -311,15 +311,6 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
   }
 
   toggleMapViz(): void {
-    // const map = document.getElementById('map');
-    // if (map?.classList.contains('visible')) {
-    //   document.getElementById('map')?.classList.replace('visible', 'hidden');
-    // } else {
-    //   document.getElementById('map')?.classList.replace('hidden', 'visible');
-    // }
-    // // document.getElementById('map')?.setAttribute('style', 'visibility: hidden;');
-    // // console.log(
-    // // );
     this.mapVisible.set(!this.mapVisible());
   }
 
