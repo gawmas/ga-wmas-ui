@@ -75,8 +75,8 @@ const appReducers: ActionReducerMap<AppStateInterface> = {
 export const appConfig: ApplicationConfig = {
   providers: [
     SHARED_MODULES,
-    provideHttpClient(),
     importProvidersFrom(
+      HttpClientModule,
       RouterModule.forRoot(routes),
       StoreModule.forRoot(appReducers),
       EffectsModule.forRoot([
