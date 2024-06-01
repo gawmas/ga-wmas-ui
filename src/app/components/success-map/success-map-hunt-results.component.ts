@@ -51,5 +51,6 @@ export class SuccessMapHuntResultsComponent {
   close() {
     console.log('Closing modal...');
     this.huntResultsModal?.close();
+    document.getElementById('map')?.setAttribute('style', 'z-index: 100;');
   }
 }

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy, ViewChild, inject } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy, ViewChild, inject, signal } from "@angular/core";
 import { LegendCategory, MapData, MapDataResult, Season, WeaponResult, WmaCoord } from "@model";
 import { SuccessMapFiltersComponent } from "./success-map-filters.component";
 import { SHARED_MODULES } from "@shared-imports";
@@ -23,11 +23,14 @@ import { SuccessMapHuntResultsComponent } from "./success-map-hunt-results.compo
     @if (loading$ | async) {
       <gawmas-loading />
     }
+    <!-- Results modal -->
     <gawmas-success-map-hunt-results #resultsModal />
+
     <div class="mt-2 md:ml-1 w-full flex items-center justify-center mb-0 bg-gray-900 text-gray-200 md:rounded-tl-xl">
       <!-- Title -->
       <gawmas-success-map-title />
     </div>
+
     <div class="block md:flex md:pl-1 md:pb-1">
       <div class="hidden md:visible md:inline-block w-56 transition-transform -translate-x-full sm:translate-x-0 rounded-bl-xl">
         <div class="h-[75vh] bg-gray-900 text-gray-200 px-2 rounded-bl-xl">
@@ -35,7 +38,8 @@ import { SuccessMapHuntResultsComponent } from "./success-map-hunt-results.compo
           <gawmas-success-map-filters />
         </div>
       </div>
-      <div id="map" class="md:flex-1 ml-0 flex-1 mt-0 border border-gray-500 md:rounded-br-xl md:rounded-tr-xl h-[75vh] w-full">
+      <div class="text-white"><a (click)="toggleMapViz()">toggle</a></div>
+      <div id="map" class="md:flex-1 ml-0 flex-1 mt-0 border border-gray-500 md:rounded-br-xl md:rounded-tr-xl h-[75vh] w-full {{ mapVisible() ? 'visible' : 'hidden' }}">
         <!-- Map -->
       </div>
     </div>
@@ -58,6 +62,7 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
   private map!: L.Map;
   private markers: L.CircleMarker[] = [];
   private legend = (L as any).control({ position: 'topright' });
+  mapVisible = signal(true);
 
   private circleColors = [
     '#e2e8f0',
@@ -304,5 +309,19 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
       this.openResults(+data![0], +data![1]);
     }
   }
+
+  toggleMapViz(): void {
+    // const map = document.getElementById('map');
+    // if (map?.classList.contains('visible')) {
+    //   document.getElementById('map')?.classList.replace('visible', 'hidden');
+    // } else {
+    //   document.getElementById('map')?.classList.replace('hidden', 'visible');
+    // }
+    // // document.getElementById('map')?.setAttribute('style', 'visibility: hidden;');
+    // // console.log(
+    // // );
+    this.mapVisible.set(!this.mapVisible());
+  }
+
 }
 
