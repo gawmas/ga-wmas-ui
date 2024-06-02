@@ -95,7 +95,7 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
       distinctUntilChanged()
     ).subscribe(({ wmaCoords, seasons, selectedSeason, mapData, weapon, zoomFull }) => {
 
-      console.log({ wmaCoords, seasons, selectedSeason, mapData, weapon, zoomFull });
+      // console.log({ wmaCoords, seasons, selectedSeason, mapData, weapon, zoomFull });
 
       if (mapData?.weapons.length && weapon! > -1 && wmaCoords?.length > 0 && selectedSeason! > -1 && seasons && zoomFull !== undefined) {
 
