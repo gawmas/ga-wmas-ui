@@ -14,7 +14,7 @@ import { HuntsComponent } from "components/hunts/hunts.component";
             Hunt Results
           </h3>
           <div class="text-xs md:text-base ml-2">
-            {{ wmaId() }} {{ seasonId() }}
+            {{ wmaId() }} {{ seasonId() }} {{ weaponId() }}
           </div>
         </div>
         <button (click)="close()" type="button"
@@ -34,6 +34,7 @@ import { HuntsComponent } from "components/hunts/hunts.component";
     </gawmas-modal>
   `
 })
+// type WeaponType = keyof typeof weaponMap;
 export class SuccessMapHuntResultsComponent {
 
   @ViewChild('huntResultsModal') huntResultsModal: ModalComponent | undefined;
@@ -43,15 +44,15 @@ export class SuccessMapHuntResultsComponent {
 
   wmaId = signal(0);
   seasonId = signal(0);
+  weaponId = signal('');
 
-  open(wmaId: number, seasonId: number) {
+  open(wmaId: number, seasonId: number, weapon: string) {
     this.wmaId.set(wmaId);
     this.seasonId.set(seasonId);
     this.huntResultsModal?.open();
   }
 
   close() {
-    console.log('Closing modal...');
     this.closeEvent.emit();
     this.huntResultsModal?.close();
   }

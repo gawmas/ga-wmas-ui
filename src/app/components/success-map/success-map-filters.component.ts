@@ -22,9 +22,9 @@ import * as mapActions from 'store/successMap/successMap.actions';
   `],
   template: `
     <div class="h-[70vh] bg-gray-900 text-gray-200 text-xs md:text-sm md:p-2 animate-jump-in animate-delay-100 animate-once">
-      
+
       <form [formGroup]="mapFilterForm">
-       
+
         <div class="w-full p-2">
           <div class="font-semibold text-left mb-1 pl-1">Season</div>
           <select formControlName="season" class="select py-2 px-3 w-full">
@@ -77,8 +77,8 @@ import * as mapActions from 'store/successMap/successMap.actions';
       </form>
 
       <div class="w-full p-2 text-center">
-        <button (click)="zoomFull()" class="btn btn-dark mt-2 flex items-center">   
-          <ng-icon name="heroGlobeAlt" class="text-lg text-gray-200 ml-2 mr-1"></ng-icon>       
+        <button (click)="zoomFull()" class="btn btn-dark mt-2 flex items-center">
+          <ng-icon name="heroGlobeAlt" class="text-lg text-gray-200 ml-2 mr-1"></ng-icon>
           Full Extent
         </button>
       </div>
@@ -100,11 +100,11 @@ export class SuccessMapFiltersComponent implements AfterViewInit, OnDestroy {
     statType: ['']
   });
 
-  private destroyed$ = new Subject<void>();
+  private _destroyed$ = new Subject<void>();
 
   ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
+    this._destroyed$.next();
+    this._destroyed$.complete();
   }
 
   ngAfterViewInit(): void {
@@ -116,7 +116,7 @@ export class SuccessMapFiltersComponent implements AfterViewInit, OnDestroy {
     });
 
     this.mapFilterForm.controls.weapon.valueChanges
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((weapon) => {
         if (weapon) {
           this._store.dispatch(mapActions.weaponChange({ weaponId: +weapon }))
@@ -124,7 +124,7 @@ export class SuccessMapFiltersComponent implements AfterViewInit, OnDestroy {
       });
 
     this.mapFilterForm.controls.season.valueChanges
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((season) => {
         if (season) {
           this._store.dispatch(mapActions.getSeasonMapData({
@@ -134,7 +134,7 @@ export class SuccessMapFiltersComponent implements AfterViewInit, OnDestroy {
       });
 
     this.mapFilterForm.controls.statType.valueChanges
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntil(this._destroyed$))
       .subscribe((statType) => {
         if (statType) {
           this._store.dispatch(mapActions.getSeasonMapData({

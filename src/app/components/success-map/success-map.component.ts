@@ -59,12 +59,12 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
   mapChanges$ = this._store.select(successMapSelectors.selectChanges);
 
   // Map shit ...
-  private map!: L.Map;
-  private markers: L.CircleMarker[] = [];
-  private legend = (L as any).control({ position: 'topright' });
+  private _map!: L.Map;
+  private _markers: L.CircleMarker[] = [];
+  private _legend = (L as any).control({ position: 'topright' });
   mapVisible = signal(true);
 
-  private circleColors = [
+  private _circleColors = [
     '#e2e8f0',
     '#fde68a',
     '#facc15',
@@ -77,47 +77,49 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
     '#a21caf'
   ];
 
-  private destroyed$ = new Subject<void>();
+  private _destroyed$ = new Subject<void>();
 
   ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
+    this._destroyed$.next();
+    this._destroyed$.complete();
   }
 
   ngAfterViewInit(): void {
 
     this._store.dispatch(successMapActions.enterSuccessMap());
 
-    this.setUpMap();
+    this._setUpMap();
 
     this.mapChanges$.pipe(
-      takeUntil(this.destroyed$),
+      takeUntil(this._destroyed$),
       distinctUntilChanged()
-    ).subscribe(({ wmaCoords, seasons, selectedSeason, mapData, weapon, setZoomFull }) => {
+    ).subscribe(({ wmaCoords, seasons, selectedSeason, mapData, weapon, zoomFull }) => {
 
-      if (mapData?.weapons.length && weapon! > -1 && wmaCoords?.length > 0 && selectedSeason! > -1 && seasons) {
+      console.log({ wmaCoords, seasons, selectedSeason, mapData, weapon, zoomFull });
+
+      if (mapData?.weapons.length && weapon! > -1 && wmaCoords?.length > 0 && selectedSeason! > -1 && seasons && zoomFull !== undefined) {
 
         this.wmaCoords = wmaCoords;
         this.mapDataResult = mapData;
 
-        this.markers.forEach(marker => marker.remove());
-        this.markers = [];
+        this._markers.forEach(marker => marker.remove());
+        this._markers = [];
 
         const weaponName = (this.mapDataResult.weapons.find(w => w.weaponId === weapon) as WeaponResult).weapon;
         const weaponData = (this.mapDataResult.weapons.find(w => w.weaponId === weapon) as WeaponResult).data;
-        let categories: LegendCategory[] = this.categorizeResults(weaponData, this.mapDataResult.type);
+        let categories: LegendCategory[] = this._categorizeResults(weaponData, this.mapDataResult.type);
 
-        this.buildMapMarkers(
+        this._buildMapMarkers(
           weaponData,
           categories,
           seasons.find(s => s.id === selectedSeason)!,
           this.mapDataResult.type,
           weaponName);
 
-        this.buildLegend(categories, this.mapDataResult.type);
+        this._buildLegend(categories, this.mapDataResult.type);
 
-        if (setZoomFull) {
-          this.centerMap();
+        if (zoomFull) {
+          this._centerMap();
         }
 
         this._cdr.detectChanges();
@@ -125,10 +127,9 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-
   }
 
-  private addGeorgiaBoundary() {
+  private _addGeorgiaBoundary() {
     const geoJsonLayer = L.geoJson(undefined, {
       onEachFeature: (feature, layer) => {
         if (feature.properties && feature.properties.name) {
@@ -146,28 +147,32 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
       .then(response => response.json())
       .then(data => {
         geoJsonLayer.addData(data);
-        geoJsonLayer.addTo(this.map);
+        geoJsonLayer.addTo(this._map);
       })
   }
 
-  private setUpMap() {
-    if (!this.map) {
+  private _setUpMap() {
+    if (!this._map) {
 
       const baseMapURL = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
-      this.map = L.map('map', {
+      this._map = L.map('map', {
         zoomControl: false
       }).setView([32.6782, -83.2220], 7);
-      L.tileLayer(baseMapURL).addTo(this.map);
-      L.control.zoom({ position: 'topleft' }).addTo(this.map);
+      L.tileLayer(baseMapURL).addTo(this._map);
+      L.control.zoom({ position: 'topleft' }).addTo(this._map);
 
-      this.addGeorgiaBoundary();
+      this._map.on('zoomend', () => {
+        this._store.dispatch(successMapActions.setZoomFull({ value: false }));
+      });
+
+      this._addGeorgiaBoundary();
 
     }
   }
 
-  private buildMapMarkers(data: MapData[], categories: LegendCategory[], season: Season, type: string, weapon: string) {
+  private _buildMapMarkers(data: MapData[], categories: LegendCategory[], season: Season, type: string, weapon: string) {
 
-    const categoriesWithColors = categories.map((c: LegendCategory, i: number) => ({ ...c, color: this.circleColors[i] }));
+    const categoriesWithColors = categories.map((c: LegendCategory, i: number) => ({ ...c, color: this._circleColors[i] }));
 
     // Create markers and bind popups
     this.wmaCoords!.forEach(coord => {
@@ -182,7 +187,7 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
           fill: true,
           fillColor: categoriesWithColors.find((cat: any) => item.value >= cat.min && item.value <= cat.max)?.color || '#000000',
           fillOpacity: 0.7
-        }).addTo(this.map);
+        }).addTo(this._map);
 
         const valueLabel = type === 'success' ? 'Success Rate' : type === 'harvest' ? 'Total Harvest' : 'Harvest Rate';
         const valueSuffix = type === 'success' ? '%' : type === 'harvest' ? ' deer' : ' deer / 100 acres';
@@ -198,24 +203,24 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
             <span class="font-semibold pl-1">${item.value || 0}${valueSuffix}</span>
           </div>
           <div class="text-center mt-2">
-            <button type="button" data="${coord.id}, ${season.id}"
+            <button type="button" data="${coord.id}, ${season.id}, ${weapon}"
               class="resultsButton px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white">
                   View Results
             </button>
           </div>
         `);
 
-        this.markers.push(marker);
+        this._markers.push(marker);
 
       }
     });
   }
 
-  private buildLegend(categories: LegendCategory[], type: string) {
+  private _buildLegend(categories: LegendCategory[], type: string) {
 
-    this.legend.remove();
+    this._legend.remove();
 
-    this.legend.onAdd = () => {
+    this._legend.onAdd = () => {
 
       let lgd = L.DomUtil.create('div', 'info legend'),
         grades = categories.map((c: any) => c.min),
@@ -243,7 +248,7 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
       for (var i = 0; i < grades.length; i++) {
         legendHtml +=
           `<div style="clear: both; margin-bottom: 3px;">
-            <span style="background: ${this.circleColors[i]}; opacity: 0.7; border-radius: 50%; height: 18px; width: 18px; display: inline-block; vertical-align: middle"></span>
+            <span style="background: ${this._circleColors[i]}; opacity: 0.7; border-radius: 50%; height: 18px; width: 18px; display: inline-block; vertical-align: middle"></span>
             <span style="vertical-align: middle">`;
 
         switch (type) {
@@ -265,10 +270,10 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
       return lgd;
     };
 
-    this.legend.addTo(this.map);
+    this._legend.addTo(this._map);
   }
 
-  private categorizeResults(data: MapData[], type: string): LegendCategory[] {
+  private _categorizeResults(data: MapData[], type: string): LegendCategory[] {
 
     // Calculate the range and step size for categorization
     let maxSuccess = Math.max(...data.map(d => d.value));
@@ -288,15 +293,15 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
     return categories;
   }
 
-  private centerMap() {
-    this.markers.forEach(marker => marker.addTo(this.map));
-    const bounds = L.latLngBounds(this.markers.map(marker => marker.getLatLng()));
-    this.map.fitBounds(bounds);
+  private _centerMap() {
+    this._markers.forEach(marker => marker.addTo(this._map));
+    const bounds = L.latLngBounds(this._markers.map(marker => marker.getLatLng()));
+    this._map.fitBounds(bounds);
   }
 
-  openResults(wmaId: number | undefined, seasonId: number | undefined) {
-    if (wmaId && seasonId) {
-      this.resultsModal?.open(wmaId, seasonId);
+  openResults(wmaId?: number, seasonId?: number, weapon?: string) {
+    if (wmaId && seasonId && weapon) {
+      this.resultsModal?.open(wmaId, seasonId, weapon as "Total" | "Archery" | "Primitive" | "Firearms");
       this.toggleMapViz();
     }
   }
@@ -305,7 +310,7 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
   bindResultsEvent(event: any) {
     if (event.target.classList.contains("resultsButton")) {
       const data = (event.target as HTMLElement).getAttribute("data")?.split(',');
-      this.openResults(+data![0], +data![1]);
+      this.openResults(+data![0], +data![1], data![2]);
     }
   }
 

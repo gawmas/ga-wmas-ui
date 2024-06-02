@@ -51,7 +51,7 @@ export const selectChanges = createSelector(
   selectMapData,
   selectWeapon,
   selectSetZoomFull,
-  (wmaCoords, seasons, selectedSeason, mapData, weapon, setZoomFull) => {
-    return { wmaCoords, seasons, selectedSeason, mapData, weapon, setZoomFull };
+  (wmaCoords, seasons, selectedSeason, mapData, weapon, zoomFull) => {
+    return { wmaCoords, seasons, selectedSeason, mapData, weapon, zoomFull };
 });
 
