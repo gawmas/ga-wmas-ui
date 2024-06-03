@@ -114,7 +114,8 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
           categories,
           seasons.find(s => s.id === selectedSeason)!,
           this.mapDataResult.type,
-          weaponName);
+          weaponName,
+          weapon);
 
         this._buildLegend(categories, this.mapDataResult.type);
 
@@ -170,7 +171,7 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private _buildMapMarkers(data: MapData[], categories: LegendCategory[], season: Season, type: string, weapon: string) {
+  private _buildMapMarkers(data: MapData[], categories: LegendCategory[], season: Season, type: string, weapon: string, weaponId: number) {
 
     const categoriesWithColors = categories.map((c: LegendCategory, i: number) => ({ ...c, color: this._circleColors[i] }));
 
@@ -203,7 +204,7 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
             <span class="font-semibold pl-1">${item.value || 0}${valueSuffix}</span>
           </div>
           <div class="text-center mt-2">
-            <button type="button" data="${coord.id}, ${season.id}, ${weapon}"
+            <button type="button" data="${coord.id}, ${season.id}, ${weaponId !== 0 ? weaponId : ''}"
               class="resultsButton px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white">
                   View Results
             </button>
@@ -313,7 +314,7 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
           filter: {
             wmas: [+data![0]],
             seasons: [+data![1]],
-            weapons: Number.isNaN(+data![2]) ? [] : [+data![2]],
+            weapons: +data![2] === 0 ? [] : [+data![2]],
             skip: 0,
             sort: ''
           }

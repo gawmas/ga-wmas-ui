@@ -4,13 +4,13 @@ import { Component, HostListener, OnDestroy, OnInit, ViewChild, inject, input, s
 import { Store } from '@ngrx/store';
 import { FiltersComponent } from 'components/filters/filters.component';
 import { AppStateInterface } from '@store-model';
-import { DetailsHighlightPipe, SuccessRateColorPipe, SuccessRatePipe, WxAvgTempDeparturePipe, WxDetailTypePipe, SafePipe, WxConditionIconPipe } from "@pipes";
+import { DetailsHighlightPipe, SuccessRateColorPipe, SuccessRatePipe, WxAvgTempDeparturePipe, WxDetailTypePipe, SafePipe, WxConditionIconPipe, SeasonTextPipe } from "@pipes";
 import { NgIconComponent } from '@ng-icons/core';
-import { Subject, combineLatest, distinctUntilChanged, startWith, take } from 'rxjs';
+import { Observable, Subject, combineLatest, distinctUntilChanged, startWith, take } from 'rxjs';
 import { HuntFormComponent } from 'components/admin/hunt-form/hunt-form.component';
 import { Tooltip, TooltipTriggerType } from 'flowbite';
 import { LoadingComponent } from '_shared/components/loading.component';
-import { Filter, HuntDate } from '@model';
+import { Filter, Hunt, HuntDate } from '@model';
 import { WxDetailsComponent } from 'components/wxDetails/wxDetails.component';
 import { selectMapWmaResults } from 'store/successMap/successMap.selectors';
 import * as huntsActions from 'store/hunts/hunts.actions';
@@ -23,7 +23,7 @@ import { initialHuntState } from './../../_shared/model/store/hunts.model';
   standalone: true,
   templateUrl: './hunts.component.html',
   imports: [SHARED_MODULES, FiltersComponent,
-    SuccessRateColorPipe, SuccessRatePipe,
+    SuccessRateColorPipe, SuccessRatePipe, SeasonTextPipe,
     NgIconComponent, DetailsHighlightPipe, WxDetailsComponent,
     HuntFormComponent, LoadingComponent, SafePipe,
     WxDetailTypePipe, WxAvgTempDeparturePipe, WxConditionIconPipe]
@@ -40,7 +40,8 @@ export class HuntsComponent implements OnInit, OnDestroy {
 
   topInView = signal(true);
 
-  hunts$ = this.isModal() ? this._store.select(selectMapWmaResults) : this._store.select(selectHunts);
+  hunts$!: Observable<Hunt[] | undefined>;
+
   isLoading$ = this._store.select(selectHuntsLoading);
   isLoadingMore$ = this._store.select(selectLoadingMoreHunts);
   filter$ = this._store.select(selectFilter);
@@ -53,6 +54,8 @@ export class HuntsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     if (!this.isModal()) {
+
+      this.hunts$ = this._store.select(selectHunts);
 
       // Dispatch action to get filter aux data, used in the child component <gawmas-hunt-filters/>...
       this._store.dispatch(filterActions.getFilterAuxData());
@@ -79,6 +82,8 @@ export class HuntsComponent implements OnInit, OnDestroy {
             filter: updatedFilter
           }));
         });
+    } else {
+      this.hunts$ = this._store.select(selectMapWmaResults);
     }
 
   }

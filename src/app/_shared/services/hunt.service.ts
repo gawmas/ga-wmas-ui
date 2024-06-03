@@ -11,7 +11,7 @@ export class HuntService {
     private endpoint = `${env.API_URL}/hunts`;
 
     getHunts(filter?: Filter): Observable<Hunt[]> {
-      console.log(filter);
+      // console.log(filter);
       const url = this.endpoint +
         '?skip=' + (filter?.skip ? filter?.skip.toString() : '') +
         '&pageSize=' + (filter?.pageSize ? filter?.pageSize.toString() : '') +
