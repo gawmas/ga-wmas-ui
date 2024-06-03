@@ -1,3 +1,4 @@
+import { filter } from 'rxjs';
 import { createReducer, on } from "@ngrx/store";
 import { initialMapState } from "_shared/model/store/successMap.model";
 import * as mapActions from "./successMap.actions";
@@ -62,6 +63,27 @@ export const mapReducers = createReducer(
       ...state,
       setZoomFull: value
     }
+  }),
+
+  on(mapActions.userZoomed, (state) => {
+    return {
+      ...state,
+      setZoomFull: false
+    }
+  }),
+
+  on(mapActions.getWmaResults, (state, { filter }) => {
+    return {
+      ...state,
+      mapWmaHuntFilter: filter
+    };
+  }),
+
+  on(mapActions.getWmaResultsComplete, (state, { hunts }) => {
+    return {
+      ...state,
+      mapWmaResults: hunts
+    };
   })
 
 );

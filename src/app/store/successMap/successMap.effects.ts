@@ -3,9 +3,9 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { map, switchMap, catchError, of, tap, combineLatest, withLatestFrom, filter, exhaustMap, concatMap } from 'rxjs';
 import { SuccessMapService } from '_shared/services/successMap.service';
 import { AppStateInterface } from '@store-model';
-import { selectSuccessMapState } from './successMap.selectors';
+import { selectMapWmaHuntFilter, selectSuccessMapState } from './successMap.selectors';
 import { Store } from '@ngrx/store';
-import { SeasonService } from '@services';
+import { HuntService, SeasonService } from '@services';
 import * as mapActions from './successMap.actions';
 
 @Injectable()
@@ -15,7 +15,8 @@ export class MapEffects {
     private readonly _actions$: Actions,
     private readonly _store: Store<AppStateInterface>,
     private readonly _successMapService: SuccessMapService,
-    private readonly _seasonService: SeasonService) { }
+    private readonly _seasonService: SeasonService,
+    private readonly _huntService: HuntService) { }
 
   getWmaCoords$ = createEffect(() =>
     this._actions$.pipe(
@@ -47,6 +48,19 @@ export class MapEffects {
         this._successMapService.getSeasonMapData(seasonId, dataType).pipe(
           map((mapData) => mapActions.getSeasonMapDataComplete({ mapData, dataType, seasonId })),
           catchError((error) => of(mapActions.getSeasonMapDataError({ error, dataType })))
+        )
+      )
+    )
+  );
+
+  getSeasonWmaResults$ = createEffect(() =>
+    this._actions$.pipe(
+      ofType(mapActions.getWmaResults),
+      withLatestFrom(this._store.select(selectMapWmaHuntFilter)),
+      exhaustMap(([action, filter]) =>
+        this._huntService.getHunts(filter).pipe(
+          map((hunts) => mapActions.getWmaResultsComplete({ hunts: hunts })),
+          catchError((error) => of(mapActions.getWmaResultsError({ error })))
         )
       )
     )

@@ -1,21 +1,22 @@
-import { initialHuntState } from './../../_shared/model/store/hunts.model';
 import { selectEndOfResults, selectFilter, selectHunts, selectHuntsLoading, selectLoadingMoreHunts } from 'store/hunts/hunts.selectors';
 import { SHARED_MODULES } from '@shared-imports';
-import { Component, HostListener, Input, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ViewChild, inject, input, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FiltersComponent } from 'components/filters/filters.component';
 import { AppStateInterface } from '@store-model';
 import { DetailsHighlightPipe, SuccessRateColorPipe, SuccessRatePipe, WxAvgTempDeparturePipe, WxDetailTypePipe, SafePipe, WxConditionIconPipe } from "@pipes";
 import { NgIconComponent } from '@ng-icons/core';
-import { Subject, combineLatest, distinctUntilChanged, startWith, take, takeUntil, filter } from 'rxjs';
+import { Subject, combineLatest, distinctUntilChanged, startWith, take } from 'rxjs';
 import { HuntFormComponent } from 'components/admin/hunt-form/hunt-form.component';
 import { Tooltip, TooltipTriggerType } from 'flowbite';
 import { LoadingComponent } from '_shared/components/loading.component';
+import { Filter, HuntDate } from '@model';
+import { WxDetailsComponent } from 'components/wxDetails/wxDetails.component';
+import { selectMapWmaResults } from 'store/successMap/successMap.selectors';
 import * as huntsActions from 'store/hunts/hunts.actions';
 import * as filterActions from 'store/filters/filters.actions';
 import * as wxDetailsActions from 'store/wxDetails/wxDetails.actions';
-import { Filter, HuntDate } from '@model';
-import { WxDetailsComponent } from 'components/wxDetails/wxDetails.component';
+import { initialHuntState } from './../../_shared/model/store/hunts.model';
 
 @Component({
   selector: 'gawmas-browse-hunts',
@@ -29,15 +30,17 @@ import { WxDetailsComponent } from 'components/wxDetails/wxDetails.component';
 })
 export class HuntsComponent implements OnInit, OnDestroy {
 
-  @Input('isAdmin') isAdmin: boolean = false;
+  isAdmin = input<boolean>();
+  isModal = input<boolean>();
+
   @ViewChild('wxDetailsModal') wxDetailsModal: WxDetailsComponent | undefined;
 
   private _store = inject(Store<AppStateInterface>);
+  private _destroyed$ = new Subject<void>();
 
   topInView = signal(true);
 
-  destroyed$ = new Subject<void>();
-  hunts$ = this._store.select(selectHunts);
+  hunts$ = this.isModal() ? this._store.select(selectMapWmaResults) : this._store.select(selectHunts);
   isLoading$ = this._store.select(selectHuntsLoading);
   isLoadingMore$ = this._store.select(selectLoadingMoreHunts);
   filter$ = this._store.select(selectFilter);
@@ -48,37 +51,41 @@ export class HuntsComponent implements OnInit, OnDestroy {
   initialPageSize: number = 10;
 
   ngOnInit(): void {
-    // Dispatch action to get filter aux data, used in the child component <gawmas-hunt-filters/>...
-    this._store.dispatch(filterActions.getFilterAuxData());
 
-    // Set initial page size based on screen height ...
-    this.initialPageSize = this.screenHeight() > 2000 ? 20 :
-      (this.screenHeight() < 2000 && this.screenHeight() > 1000) ? 15 : 10;
+    if (!this.isModal()) {
 
-    const intialFilter = {
-      ...initialHuntState.filter,
-      pageSize: this.initialPageSize
-    };
+      // Dispatch action to get filter aux data, used in the child component <gawmas-hunt-filters/>...
+      this._store.dispatch(filterActions.getFilterAuxData());
 
-    // Subscribe to the filters Observable from the store and dispatch action to get initial hunts,
-    // this may be the initial set of Hunts or applies previously selected filters ...
-    this.filter$
-      .pipe(
-        take(1),
-        startWith(intialFilter))
-      .subscribe(filter => {
-        // console.log('filter', filter);
-        const updatedFilter: Filter = { ...filter, skip: 0, pageSize: this.initialPageSize };
-        this._store.dispatch(huntsActions.getInitialHunts({
-          filter: updatedFilter
-        }));
-      });
+      // Set initial page size based on screen height ...
+      this.initialPageSize = this.screenHeight() > 2000 ? 20 :
+        (this.screenHeight() < 2000 && this.screenHeight() > 1000) ? 15 : 10;
+
+      const intialFilter = {
+        ...initialHuntState.filter,
+        pageSize: this.initialPageSize
+      };
+
+      // Subscribe to the filters Observable from the store and dispatch action to get initial hunts,
+      // this may be the initial set of Hunts or applies previously selected filters ...
+      this.filter$
+        .pipe(
+          take(1),
+          startWith(intialFilter))
+        .subscribe(filter => {
+          // console.log('filter', filter);
+          const updatedFilter: Filter = { ...filter, skip: 0, pageSize: this.initialPageSize };
+          this._store.dispatch(huntsActions.getInitialHunts({
+            filter: updatedFilter
+          }));
+        });
+    }
 
   }
 
   ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
+    this._destroyed$.next();
+    this._destroyed$.complete();
   }
 
   // Listen to window resize event and update the screenWidth and screenHeight signals ...

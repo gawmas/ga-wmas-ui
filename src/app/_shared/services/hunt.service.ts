@@ -11,7 +11,7 @@ export class HuntService {
     private endpoint = `${env.API_URL}/hunts`;
 
     getHunts(filter?: Filter): Observable<Hunt[]> {
-      // console.log(filter);
+      console.log(filter);
       const url = this.endpoint +
         '?skip=' + (filter?.skip ? filter?.skip.toString() : '') +
         '&pageSize=' + (filter?.pageSize ? filter?.pageSize.toString() : '') +
@@ -23,8 +23,8 @@ export class HuntService {
         '&isBonusQuota=' + (filter?.isBonusQuota ? filter?.isBonusQuota === true : false) +
         '&isStatePark=' + (filter?.isStatePark ? filter?.isStatePark === true : false) +
         '&isVpa=' + (filter?.isVpa ? filter?.isVpa === true : false) +
-        '&avgTemp=' + filter?.avgTemp?.toString() +
-        '&phase=' + filter?.phase;
+        '&avgTemp=' + (filter?.avgTemp ? filter?.avgTemp?.toString() : '') +
+        '&phase=' + (filter?.phase ? filter?.phase?.toString() : '');
       // console.log(url);
       return this.http.get<Hunt[]>(url);
     }

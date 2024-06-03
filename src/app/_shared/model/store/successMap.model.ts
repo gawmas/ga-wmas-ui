@@ -1,9 +1,11 @@
-import { MapData, MapDataResult, Season, WmaCoord } from "@model";
+import { Filter, Hunt, MapData, MapDataResult, Season, WmaCoord } from "@model";
 
 export interface MapState {
   wmaCoords: WmaCoord[];
   mapData?: MapDataResult;
   seasons: Season[];
+  mapWmaResults?: Hunt[];
+  mapWmaHuntFilter?: Filter;
   selectedWeapon: number;
   selectedSeason: number;
   mapTitle: string;

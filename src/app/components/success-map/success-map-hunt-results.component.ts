@@ -25,7 +25,9 @@ import { HuntsComponent } from "components/hunts/hunts.component";
             <span class="sr-only">Close modal</span>
         </button>
       </div>
-      <gawmas-browse-hunts />
+
+      <gawmas-browse-hunts [isModal]="true" />
+
       <div class="flex justify-center items-center pl-2 py-2 rtl:space-x-reverse rounded-b-2xl border-t border-gray-600">
         <button (click)="close()" type="button" class="btn btn-default">
           Close
@@ -46,9 +48,9 @@ export class SuccessMapHuntResultsComponent {
   seasonId = signal(0);
   weaponId = signal('');
 
-  open(wmaId: number, seasonId: number, weapon: string) {
-    this.wmaId.set(wmaId);
-    this.seasonId.set(seasonId);
+  open() {
+    // this.wmaId.set(wmaId);
+    // this.seasonId.set(seasonId);
     this.huntResultsModal?.open();
   }
 

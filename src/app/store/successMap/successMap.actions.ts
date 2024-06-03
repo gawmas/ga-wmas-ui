@@ -1,4 +1,4 @@
-import { MapDataResult, Season, WmaCoord } from "@model";
+import { Filter, Hunt, MapDataResult, Season, WmaCoord } from "@model";
 import { createAction, props } from "@ngrx/store";
 
 const prefix = '[SuccessMap]';
@@ -63,5 +63,21 @@ export const weaponChange = createAction(
 export const setZoomFull = createAction(
   `${prefix} Set Zoom Full`,
   props<{ value: boolean }>()
+);
+export const userZoomed = createAction(
+  `${prefix} User Zoomed`
+);
+
+export const getWmaResults = createAction(
+  `${prefix} Get Wma Results`,
+  props<{ filter: Filter }>()
+);
+export const getWmaResultsComplete = createAction(
+  `${prefix} Get Wma Results Complete`,
+  props<{ hunts: Hunt[] }>()
+);
+export const getWmaResultsError = createAction(
+  `${prefix} Get Wma Results Error`,
+  props<{ error: string }>()
 );
 

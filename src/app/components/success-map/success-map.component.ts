@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy, ViewChild, inject, signal } from "@angular/core";
-import { LegendCategory, MapData, MapDataResult, Season, WeaponResult, WmaCoord } from "@model";
+import { Filter, LegendCategory, MapData, MapDataResult, Season, WeaponResult, WmaCoord } from "@model";
 import { SuccessMapFiltersComponent } from "./success-map-filters.component";
 import { SHARED_MODULES } from "@shared-imports";
 import { Store } from "@ngrx/store";
@@ -162,7 +162,7 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
       L.control.zoom({ position: 'topleft' }).addTo(this._map);
 
       this._map.on('zoomend', () => {
-        this._store.dispatch(successMapActions.setZoomFull({ value: false }));
+        this._store.dispatch(successMapActions.userZoomed());
       });
 
       this._addGeorgiaBoundary();
@@ -299,18 +299,26 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
     this._map.fitBounds(bounds);
   }
 
-  openResults(wmaId?: number, seasonId?: number, weapon?: string) {
-    if (wmaId && seasonId && weapon) {
-      this.resultsModal?.open(wmaId, seasonId, weapon as "Total" | "Archery" | "Primitive" | "Firearms");
-      this.toggleMapViz();
-    }
+  openResults() {
+    this.resultsModal?.open();
+    this.toggleMapViz();
   }
 
   @HostListener('document:click', ['$event'])
   bindResultsEvent(event: any) {
     if (event.target.classList.contains("resultsButton")) {
       const data = (event.target as HTMLElement).getAttribute("data")?.split(',');
-      this.openResults(+data![0], +data![1], data![2]);
+      this._store.dispatch(
+        successMapActions.getWmaResults({
+          filter: {
+            wmas: [+data![0]],
+            seasons: [+data![1]],
+            weapons: Number.isNaN(+data![2]) ? [] : [+data![2]],
+            skip: 0,
+            sort: ''
+          }
+        }));
+      this.openResults();
     }
   }
 

@@ -55,3 +55,13 @@ export const selectChanges = createSelector(
     return { wmaCoords, seasons, selectedSeason, mapData, weapon, zoomFull };
 });
 
+export const selectMapWmaResults = createSelector(
+  selectSuccessMapState,
+  (state: MapState) => state.mapWmaResults
+);
+
+export const selectMapWmaHuntFilter = createSelector(
+  selectSuccessMapState,
+  (state: MapState) => state.mapWmaHuntFilter
+);
+
