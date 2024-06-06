@@ -1,20 +1,44 @@
-import { Component, Input, ViewChild, output, signal } from "@angular/core";
+import { AsyncPipe } from "@angular/common";
+import { AfterViewInit, Component, ViewChild, inject, output } from "@angular/core";
+import { Hunt } from "@model";
+import { NgIcon, NgIconComponent } from "@ng-icons/core";
+import { Store } from "@ngrx/store";
+import { AppStateInterface } from "@store-model";
 import { ModalComponent } from "_shared/components/modal.component";
 import { HuntsComponent } from "components/hunts/hunts.component";
+import { combineLatest, map } from "rxjs";
+import * as filterActions from "store/filters/filters.actions";
+import * as filterSelectors from "store/filters/filters.selectors";
+import * as successMapSelectors from 'store/successMap/successMap.selectors';
 
 @Component({
   selector: 'gawmas-success-map-hunt-results',
   standalone: true,
-  imports: [ModalComponent, HuntsComponent],
+  imports: [
+    ModalComponent, HuntsComponent, AsyncPipe, NgIconComponent
+  ],
   template: `
     <gawmas-modal #huntResultsModal [targetElement]="huntResultsTarget">
       <div class="flex items-start justify-between md:rounded-t-2xl my-2 pl-4 pt-4 mb-0 bg-gray-800">
-        <div class="flex items-center pt-2">
-          <h3 class="text-xs md:text-lg font-semibold text-white uppercase border-r border-gray-500 pr-2 mb-0">
-            Hunt Results
+        <div class="pt-2 w-full">
+          <h3 class="text-xs md:text-lg font-semibold text-white uppercase border-b border-gray-500 mb-0 pl-2">
+            Season Hunt Results
           </h3>
-          <div class="text-xs md:text-base ml-2">
-            {{ wmaId() }} {{ seasonId() }} {{ weaponId() }}
+          <div class="flex items-center text-sm uppercase ml-2 pt-2">
+            @if (headerData$ | async; as data) {
+              <span class="font-bold">
+                @if (data.wmaCoords) {
+                  <a href="https://www.google.com/maps/search/?api=1&query={{ data.wmaCoords }}" target="_blank">
+                    <ng-icon name="heroMapPin" class="mr-1"></ng-icon>
+                  </a>
+                }
+                {{ data.wma }}
+              </span>
+              <span class="text-sm font-medium ml-2 me-2 px-2.5 py-0.5 rounded-full bg-blue-900 text-blue-300">
+                {{ data.season }}
+              </span>
+              <span class="italic">{{ data.weapon }}</span>
+            }
           </div>
         </div>
         <button (click)="close()" type="button"
@@ -36,26 +60,41 @@ import { HuntsComponent } from "components/hunts/hunts.component";
     </gawmas-modal>
   `
 })
-// type WeaponType = keyof typeof weaponMap;
-export class SuccessMapHuntResultsComponent {
+export class SuccessMapHuntResultsComponent implements AfterViewInit {
 
   @ViewChild('huntResultsModal') huntResultsModal: ModalComponent | undefined;
+
+  private _store = inject(Store<AppStateInterface>)
+
   closeEvent = output();
 
   huntResultsTarget = 'huntResultsModal';
 
-  wmaId = signal(0);
-  seasonId = signal(0);
-  weaponId = signal('');
+  headerData$ = combineLatest([
+    this._store.select(filterSelectors.selectFiltersAuxData),
+    this._store.select(successMapSelectors.selectMapWmaHuntFilter),
+    this._store.select(successMapSelectors.selectMapWmaResults)])
+    .pipe(
+      map(([filterAuxData, filter, results]) => {
+        return {
+          season: filterAuxData.seasons.find(s => s.id === filter?.seasons![0]!)?.season || '',
+          weapon: filterAuxData.weapons.find(w => w.id === filter?.weapons![0]!)?.name || 'All Weapons',
+          wma: filterAuxData.wmas.find(w => w.id === filter?.wmas![0]!)?.name || '',
+          wmaCoords: results && results[0] ? `${results[0].physLat}, ${results[0].physLong}` : ''
+        };
+      }
+    ));
+
+  ngAfterViewInit(): void {
+    this._store.dispatch(filterActions.getFilterAuxData());
+  }
 
   open() {
-    // this.wmaId.set(wmaId);
-    // this.seasonId.set(seasonId);
     this.huntResultsModal?.open();
   }
 
   close() {
     this.closeEvent.emit();
     this.huntResultsModal?.close();
-  }
+  };
 }

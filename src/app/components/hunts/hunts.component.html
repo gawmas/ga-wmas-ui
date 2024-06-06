@@ -12,7 +12,7 @@
   @if (screenWidth() > 1000) {
     <thead class="text-xs text-gray-400 uppercase bg-gray-800 border-gray-400 border-b-2 border-t-1">
       <tr>
-        <th scope="col" class="px-6 py-3">WMA &amp; Season</th>
+        <th scope="col" class="px-6 py-3">{{ isModal() ? 'Season' : 'WMA &amp; Season' }}</th>
         <th scope="col" class="px-6 py-3 w-[200px]">Dates</th>
         <th scope="col" class="px-6 py-3 w-[150px] text-center">Results</th>
         <th scope="col" class="px-6 py-3 w-[300px] text-center">Weather</th>
@@ -29,14 +29,17 @@
                     <ng-icon name="heroPencilSquare" class="mr-1"></ng-icon>
                   </a>
                 }
-                @if (hunt.physLat && hunt.physLong) {
-                  <a href="https://www.google.com/maps/search/?api=1&query={{ hunt.physLat }},{{ hunt.physLong }}" target="_blank">
-                    <ng-icon name="heroMapPin" class="mr-1"></ng-icon>
-                  </a>
+                @if (!isModal()) {
+                  @if (hunt.physLat && hunt.physLong) {
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ hunt.physLat }},{{ hunt.physLong }}" target="_blank">
+                      <ng-icon name="heroMapPin" class="mr-1"></ng-icon>
+                    </a>
+                  }
+                  <div class="text-white font-bold uppercase mr-1">
+                    {{ hunt.wmaName }}
+                  </div>
                 }
-                <div class="text-white font-bold uppercase mr-1">
-                  {{ hunt.wmaName }}
-                </div>
+
                 @switch (hunt.weapon) {
                   @case ('Firearms') {
                     <span class="uppercase text-xs font-medium me-2 px-2.5 py-0.5 rounded-full bg-gray-700 text-gray-300">
@@ -72,6 +75,8 @@
                 <div class="mx-1 uppercase">
                   {{ date.start | date: 'MMM d' }} &ndash; {{ date.end | date: 'MMM d' }}
                 </div>
+              }
+              @if (!isModal()) {
                 <span class="text-sm font-medium me-2 px-2.5 py-0.5 rounded-full bg-blue-900 text-blue-300">
                   {{ hunt.season }}
                 </span>
@@ -434,7 +439,7 @@
   }
 </table>
 
-@if ((isEndOfResults$ | async) && (hunts$ | async)!.length > 0) {
+@if ((isEndOfResults$ | async) && (hunts$ | async)!.length > 0 && !isModal()) {
   <div class="w-[95%] flex justify-center mt-1 mb-12 bg-gray-900 py-1">
     <div class="flex items-center text-gray-300 text-sm">
       <ng-icon name="heroCheckCircle" class="mr-1"></ng-icon>
