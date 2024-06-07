@@ -89,7 +89,7 @@ export const mapReducers = createReducer(
 );
 
 function titleDescr(type: string) {
-  return type === 'success' ? 'Success Rate' : type === 'harvestrate' ? 'Harvest per 100 Acres' : 'Total Harvest';
+  return type === 'success' ? 'Average Success Rate' : type === 'harvestrate' ? 'Harvest per 100 Acres' : 'Total Harvest';
 }
 
 function weaponText(weaponId: number) {

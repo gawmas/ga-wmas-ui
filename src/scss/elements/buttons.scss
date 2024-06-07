@@ -1,0 +1,67 @@
+button.btn {
+  @apply
+    mr-1.5
+    relative
+    inline-flex
+    items-center
+    px-5 py-2.5
+    text-sm
+    font-medium
+    text-center
+    rounded-full
+    focus:ring-1
+    focus:outline-none;
+
+  &-primary {
+    @apply
+      text-white
+      bg-blue-600
+      hover:bg-blue-500
+      focus:ring-white;
+  }
+
+  &-default {
+    @apply
+      bg-gray-300
+      hover:bg-gray-200
+      text-gray-700;
+  }
+
+  &-danger {
+    @apply
+      bg-red-600
+      hover:bg-red-500
+      disabled:bg-red-300
+      disabled:text-gray-400
+      text-gray-100;
+  }
+
+  &-loading {
+    @apply
+      bg-gray-700
+      text-gray-400
+      cursor-not-allowed;
+  }
+
+  &-dark {
+    @apply
+      bg-gray-800
+      hover:bg-gray-700
+      text-gray-200
+      border border-gray-600;
+  }
+
+  &.btn-map-ctrl {
+    @apply
+      rounded-md
+      border
+      border-gray-500
+      p-3;
+
+    &.primary {
+      @apply
+        bg-blue-600
+        text-white
+    }
+  }
+}

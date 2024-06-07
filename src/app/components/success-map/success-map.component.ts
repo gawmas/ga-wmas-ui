@@ -26,7 +26,7 @@ import { SuccessMapHuntResultsComponent } from "./success-map-hunt-results.compo
     <!-- Results modal -->
     <gawmas-success-map-hunt-results #resultsModal (closeEvent)="huntResultsModalClosed()" />
 
-    <div class="mt-2 md:ml-1 w-full flex items-center justify-center mb-0 bg-gray-900 text-gray-200 md:rounded-tl-xl">
+    <div class="mt-2 md:ml-1 w-full mb-0 bg-gray-900 text-gray-200 md:rounded-tl-xl">
       <!-- Title -->
       <gawmas-success-map-title />
     </div>
@@ -39,7 +39,7 @@ import { SuccessMapHuntResultsComponent } from "./success-map-hunt-results.compo
         </div>
       </div>
 
-      <div id="map" class="md:flex-1 ml-0 flex-1 mt-0 border border-gray-500 md:rounded-br-xl md:rounded-tr-xl h-[75vh] w-full {{ mapVisible() ? 'visible' : 'hidden' }}">
+      <div id="map" class="md:flex-1 ml-0 flex-1 mt-0 border border-gray-500 md:rounded-br-xl md:rounded-tr-xl h-[60vh] md:h-[75vh] w-full {{ mapVisible() ? 'visible' : 'hidden' }}">
         <!-- Map -->
       </div>
     </div>

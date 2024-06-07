@@ -12,7 +12,7 @@ import { Subject } from "rxjs";
     <div [id]="targetElement"
       class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center inset-2 h-modal md:h-full"
       tabindex="-1">
-      <div class="relative max-h-full w-[90%]">
+      <div class="relative max-h-full lg:max-w-[1024px] w-[90%]">
         <div class="relative rounded-2xl shadow bg-gray-700 text-gray-200">
           <ng-content></ng-content>
         </div>
@@ -30,6 +30,7 @@ export class ModalComponent {
   modalOptions: ModalOptions = {
     placement: 'bottom-right',
     backdrop: 'dynamic',
+    closable: false,
     backdropClasses:
       'bg-gray-900/90 backdrop-blur-sm fixed inset-0 z-30',
   };

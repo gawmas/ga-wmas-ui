@@ -38,10 +38,10 @@
     <!-- <span class="text-white">{{ filters | json }}</span> -->
 
     @if (filters.successRate! > 0) {
-      <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-green-500 text-gray-200 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-200">
+      <span class="chip chip-selected-filter chip-success hidden md:inline-flex">
         Success Rate &gt; {{ filters.successRate }}&percnt;
         <div (mouseover)="showRemoveFilterTooltip('successRate', 'hover', $event)" class="pt-1 inline-flex items-center">
-          <a class="cursor-pointer hover:text-white" (click)="removeNonCheckboxFilter('successRate')">
+          <a class="cursor-pointer" (click)="removeNonCheckboxFilter('successRate')">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
           <div id="successRate" role="tooltip" class="gawmas-tooltip tooltip">
@@ -53,10 +53,10 @@
     }
 
     @if (filters.isBonusQuota) {
-      <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-red-900 text-red-300 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500">
+      <span class="chip chip-selected-filter chip-quota hidden md:inline-flex">
         Quota/Bonus
         <div (mouseover)="showRemoveFilterTooltip('quotaBonus', 'hover', $event)" class="pt-1 inline-flex items-center">
-          <a class="cursor-pointer hover:text-white" (click)="removeNonCheckboxFilter('isBonusQuota')">
+          <a class="cursor-pointer" (click)="removeNonCheckboxFilter('isBonusQuota')">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
           <div id="quotaBonus" role="tooltip" class="gawmas-tooltip tooltip">
@@ -68,10 +68,10 @@
     }
 
     @if (filters.isStatePark) {
-      <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500">
+      <span class="chip chip-selected-filter hidden md:inline-flex">
         State Park
         <div (mouseover)="showRemoveFilterTooltip('statePark', 'hover', $event)" class="pt-1 inline-flex items-center">
-          <a class="cursor-pointer hover:text-white" (click)="removeNonCheckboxFilter('isStatePark')">
+          <a class="cursor-pointer" (click)="removeNonCheckboxFilter('isStatePark')">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
           <div id="statePark" role="tooltip" class="gawmas-tooltip tooltip">
@@ -83,10 +83,10 @@
     }
 
     @if (filters.isVpa) {
-      <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500">
+      <span class="chip chip-selected-filter hidden md:inline-flex">
         VPA
         <div (mouseover)="showRemoveFilterTooltip('vpa', 'hover', $event)" class="pt-1 inline-flex items-center">
-          <a class="cursor-pointer hover:text-white" (click)="removeNonCheckboxFilter('isVpa')">
+          <a class="cursor-pointer" (click)="removeNonCheckboxFilter('isVpa')">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
           <div id="vpa" role="tooltip" class="gawmas-tooltip tooltip">
@@ -98,10 +98,10 @@
     }
 
     @if (filters.avgTemp !== '0') {
-      <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500">
+      <span class="chip chip-selected-filter hidden md:inline-flex">
         {{ +filters.avgTemp! | tempDepartLabel }}
         <div (mouseover)="showRemoveFilterTooltip('avgTemp', 'hover', $event)" class="pt-1 inline-flex items-center">
-          <a class="cursor-pointer hover:text-white" (click)="removeNonCheckboxFilter('avgTemp')">
+          <a class="cursor-pointer" (click)="removeNonCheckboxFilter('avgTemp')">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
           <div id="avgTemp" role="tooltip" class="gawmas-tooltip tooltip">
@@ -113,7 +113,7 @@
     }
 
     @if (filters.phase !== '') {
-      <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-800 text-gray-200 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500">
+      <span class="chip chip-selected-filter chip-phase hidden md:inline-flex">
         @switch (filters.phase) {
           @case ('new') {
             <object data="/assets/lunar-svg/new.svg" type="image/svg+xml" class="w-[28px] h-[28px]"></object> New Moon
@@ -128,7 +128,7 @@
           }
         }
         <div (mouseover)="showRemoveFilterTooltip('moonPhase', 'hover', $event)" class="pt-1 inline-flex items-center">
-          <a class="cursor-pointer hover:text-white" (click)="removeNonCheckboxFilter('phase')">
+          <a class="cursor-pointer" (click)="removeNonCheckboxFilter('phase')">
             <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
           </a>
           <div id="moonPhase" role="tooltip" class="gawmas-tooltip tooltip">
@@ -142,7 +142,7 @@
     @if (auxData$ | async; as auxData) {
 
       @for (wmaId of filters.wmas; track wmaId) {
-        <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500 ">
+        <span class="chip chip-selected-filter hidden md:inline-flex">
           {{ wmaId | filterObjName: auxData.wmas }}
           <div (mouseover)="showRemoveFilterTooltip(wmaId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
             <a class="cursor-pointer hover:text-cyan-800" (click)="removeCheckboxFilter(wmaId, 'wmas')">
@@ -157,7 +157,7 @@
       }
 
       @for (seasonId of filters.seasons; track seasonId) {
-        <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500 ">
+        <span class="chip chip-selected-filter hidden md:inline-flex">
           {{ seasonId | filterObjName: auxData.seasons }}
           <div (mouseover)="showRemoveFilterTooltip(seasonId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
             <a class="cursor-pointer hover:text-cyan-800" (click)="removeCheckboxFilter(seasonId, 'seasons')">
@@ -172,7 +172,7 @@
       }
 
       @for (weaponId of filters.weapons; track weaponId) {
-        <span class="hidden md:inline-flex mr-1.5 whitespace-nowrap bg-gray-300 text-gray-800 text-xs font-medium items-center px-2.5 py-0.5 rounded-full border border-gray-500 ">
+        <span class="chip chip-selected-filter hidden md:inline-flex">
           {{ weaponId | filterObjName: auxData.weapons }}
           <div (mouseover)="showRemoveFilterTooltip(weaponId.toString(), 'hover', $event)" class="pt-1 inline-flex items-center">
             <a class="cursor-pointer hover:text-cyan-800" (click)="removeCheckboxFilter(weaponId, 'weapons')">
@@ -193,7 +193,7 @@
 
 <gawmas-drawer #filterDrawer [targetElement]="filterDrawerTarget">
 
-  <form [formGroup]="filterForm">
+  <form class="form" [formGroup]="filterForm">
     <div class="flex items-center ml-3 lg:border-b lg:border-gray-500 pb-2">
       <h3 class="hidden lg:flex-1 md:block lg:block text-xl font-semibold text-gray-200 align-baseline pl-3">
         Filter Hunt Results {{ selectedWmaIds() }}

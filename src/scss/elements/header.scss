@@ -1,0 +1,35 @@
+nav.header {
+  background-image: url(./../../assets/images/header-bg-image.png);
+  width: 100%;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 1rem;
+
+  a.brand object {
+    height: 65px;
+    max-height: 3.5rem
+  }
+
+  a.nav-current {
+    @apply block
+      md:p-0
+      text-white
+      md:bg-transparent
+      border-b-2
+      border-gawmas-yeller
+      md:font-bold;
+  }
+
+  a.nav-link {
+    @apply block
+      md:p-0
+      text-gray-200
+      hover:text-white
+      md:bg-transparent
+      md:font-semibold
+      hover:underline;
+  }
+
+}

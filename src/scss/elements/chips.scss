@@ -1,0 +1,76 @@
+.chip {
+  border-radius: 9999px;
+  border-width: 1px;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  padding-left: 0.625rem;
+  padding-right: 0.625rem;
+  align-items: center;
+  font-weight: 500;
+
+  &.chip-selected-filter {
+    margin-right: 0.375rem;
+
+    @apply
+      border-gray-500
+      bg-gray-300;
+
+    &.chip-success {
+      @apply
+        bg-green-500
+        text-gray-200;
+    }
+
+    &.chip-quota {
+      @apply
+        bg-red-900
+        text-red-300;
+    }
+
+    &.chip-phase {
+      @apply
+        bg-gray-800
+        border-gray-500
+        text-gray-200;
+    }
+  }
+
+  &.result-chip {
+    @apply
+      py-0.5
+      uppercase
+      border-none;
+
+    &.chip-firearm {
+      @apply
+        bg-gray-700
+        text-gray-300;
+    }
+
+    &.chip-archery {
+      @apply
+        bg-green-900
+        text-green-300;
+    }
+
+    &.chip-primitive {
+      @apply
+        bg-yellow-900
+        text-yellow-300;
+    }
+
+    &.chip-quota {
+      @apply
+        bg-red-900
+        text-red-300;
+    }
+
+    &.chip-season {
+      @apply
+        bg-blue-900
+        text-blue-300
+        text-sm;
+    }
+  }
+}
