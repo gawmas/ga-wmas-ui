@@ -20,40 +20,37 @@ import * as successMapSelectors from 'store/successMap/successMap.selectors';
   template: `
     <gawmas-modal #huntResultsModal [targetElement]="huntResultsTarget">
       <div class="flex items-start justify-between rounded-t-2xl my-2 pl-4 pt-2 mb-0 bg-gray-800">
-        <!-- <div class="pt-2 w-full"> -->
-          <div class="-ml-4 -mt-3 pt-2 pl-3 pb-1.5 border rounded-2xl border-gray-600 bg-gray-900">
-            <h3 class="text-sm md:text-lg font-semibold text-white uppercase mb-1 pr-2.5 pt-1">
-              @if (headerData$ | async; as data) {
-                <span class="font-bold">
-                  @if (data.wmaCoords) {
-                    <a href="https://www.google.com/maps/search/?api=1&query={{ data.wmaCoords }}" target="_blank">
-                      <ng-icon name="heroMapPin"/>
-                    </a>
-                  }
-                  {{ data.wma }}
-                </span>
-                <span class="chip result-chip chip-season">
-                  {{ data.season }}
-                </span>
-                <span class="chip result-chip text-xs md:text-sm ml-1"
-                  [class.chip-firearm]="data.weapon === 'All Weapons' || data.weapon === 'Firearms'"
-                  [class.chip-archery]="data.weapon === 'Archery'"
-                  [class.chip-primitive]="data.weapon === 'Primitive'">
-                  {{ data.weapon }}</span>
-              }
-            </h3>
-          </div>
-          <div class="flex items-center text-sm uppercase ml-2">
-            <button (click)="close()" type="button"
-              class="ms-auto inline-flex h-8 w-8 mr-2 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-600 hover:text-white">
-                <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                </svg>
-                <span class="sr-only">Close modal</span>
-            </button>
-          </div>
-        <!-- </div> -->
-
+        <div class="-ml-6 -mt-4 pt-2 pl-3 pb-1.5 border-b rounded-tl-2xl border-gray-600 bg-gradient-to-r from-gawmas-green to-transparent from-20% to-80%">
+          <h3 class="text-sm md:text-lg font-semibold text-white uppercase mb-1 pr-2.5 pt-1">
+            @if (headerData$ | async; as data) {
+              <span class="font-bold">
+                @if (data.wmaCoords) {
+                  <a href="https://www.google.com/maps/search/?api=1&query={{ data.wmaCoords }}" target="_blank">
+                    <ng-icon name="heroMapPin"/>
+                  </a>
+                }
+                {{ data.wma }}
+              </span>
+              <span class="chip result-chip chip-season">
+                {{ data.season }}
+              </span>
+              <span class="chip result-chip text-xs md:text-sm ml-1"
+                [class.chip-firearm]="data.weapon === 'All Weapons' || data.weapon === 'Firearms'"
+                [class.chip-archery]="data.weapon === 'Archery'"
+                [class.chip-primitive]="data.weapon === 'Primitive'">
+                {{ data.weapon }}</span>
+            }
+          </h3>
+        </div>
+        <div class="flex items-center text-sm uppercase ml-2">
+          <button (click)="close()" type="button"
+            class="ms-auto inline-flex h-8 w-8 mr-2 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-600 hover:text-white">
+              <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+              </svg>
+              <span class="sr-only">Close modal</span>
+          </button>
+        </div>
       </div>
 
       <gawmas-browse-hunts [isModal]="true" />

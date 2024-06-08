@@ -72,6 +72,13 @@ export const mapReducers = createReducer(
     }
   }),
 
+  on(mapActions.showLegend, (state, { value }) => {
+    return {
+      ...state,
+      showLegend: value
+    }
+  }),
+
   on(mapActions.getWmaResults, (state, { filter }) => {
     return {
       ...state,

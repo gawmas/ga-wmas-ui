@@ -76,13 +76,6 @@ import * as mapActions from 'store/successMap/successMap.actions';
 
       </form>
 
-      <div class="w-full p-2 text-center">
-        <button (click)="zoomFull()" class="btn btn-dark mt-2 flex items-center">
-          <ng-icon name="heroGlobeAlt" class="text-lg text-gray-200 ml-2 mr-1"></ng-icon>
-          Full Extent
-        </button>
-      </div>
-
     </div>
   `,
 })
@@ -143,10 +136,6 @@ export class SuccessMapFiltersComponent implements AfterViewInit, OnDestroy {
         }
       });
 
-  }
-
-  zoomFull(): void {
-    this._store.dispatch(mapActions.setZoomFull({ value: true }));
   }
 
 }

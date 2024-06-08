@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy, ViewChild, inject, signal } from "@angular/core";
-import { Filter, LegendCategory, MapData, MapDataResult, Season, WeaponResult, WmaCoord } from "@model";
+import { LegendCategory, MapData, MapDataResult, Season, WeaponResult, WmaCoord } from "@model";
 import { SuccessMapFiltersComponent } from "./success-map-filters.component";
 import { SHARED_MODULES } from "@shared-imports";
 import { Store } from "@ngrx/store";
@@ -7,29 +7,23 @@ import { AppStateInterface } from "@store-model";
 import { LoadingComponent } from "_shared/components/loading.component";
 import { Subject, distinctUntilChanged, takeUntil } from 'rxjs';
 import { NgIconComponent } from '@ng-icons/core';
-import { SuccessMapTitleComponent } from "./success-map-title.component";
+import { SuccessMapHuntResultsComponent } from "./success-map-hunt-results.component";
 import * as L from 'leaflet';
 import * as successMapActions from 'store/successMap/successMap.actions';
 import * as successMapSelectors from 'store/successMap/successMap.selectors';
-import { SuccessMapHuntResultsComponent } from "./success-map-hunt-results.component";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     SHARED_MODULES, SuccessMapFiltersComponent, SuccessMapHuntResultsComponent,
-    SuccessMapTitleComponent, LoadingComponent, NgIconComponent],
+    LoadingComponent, NgIconComponent],
   template: `
     @if (loading$ | async) {
       <gawmas-loading />
     }
     <!-- Results modal -->
     <gawmas-success-map-hunt-results #resultsModal (closeEvent)="huntResultsModalClosed()" />
-
-    <div class="mt-2 md:ml-1 w-full mb-0 bg-gray-900 text-gray-200 md:rounded-tl-xl">
-      <!-- Title -->
-      <gawmas-success-map-title />
-    </div>
 
     <div class="block md:flex md:pl-1 md:pb-1">
       <div class="hidden md:visible md:inline-block w-56 transition-transform -translate-x-full sm:translate-x-0 rounded-bl-xl">
@@ -39,7 +33,7 @@ import { SuccessMapHuntResultsComponent } from "./success-map-hunt-results.compo
         </div>
       </div>
 
-      <div id="map" class="md:flex-1 ml-0 flex-1 mt-0 border border-gray-500 md:rounded-br-xl md:rounded-tr-xl h-[60vh] md:h-[75vh] w-full {{ mapVisible() ? 'visible' : 'hidden' }}">
+      <div id="map" class="md:flex-1 ml-0 flex-1 mt-1 border border-gray-500 md:rounded-br-xl md:rounded-tr-xl h-[60vh] md:h-[75vh] w-full {{ mapVisible() ? 'visible' : 'hidden' }}">
         <!-- Map -->
       </div>
     </div>
@@ -62,7 +56,11 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
   private _map!: L.Map;
   private _markers: L.CircleMarker[] = [];
   private _legend = (L as any).control({ position: 'topright' });
+  private _title = (L as any).control({ position: 'topright' });
+  private _mapCtrls = (L as any).control({ positision: 'topright' });
+
   mapVisible = signal(true);
+  legendVisible = signal(true);
 
   private _circleColors = [
     '#e2e8f0',
@@ -93,11 +91,17 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
     this.mapChanges$.pipe(
       takeUntil(this._destroyed$),
       distinctUntilChanged()
-    ).subscribe(({ wmaCoords, seasons, selectedSeason, mapData, weapon, zoomFull }) => {
+    ).subscribe(({ wmaCoords, seasons, selectedSeason, mapData, weapon, zoomFull, showLegend, mapTitle }) => {
 
-      // console.log({ wmaCoords, seasons, selectedSeason, mapData, weapon, zoomFull });
+      // console.log({ wmaCoords, seasons, selectedSeason, mapData, weapon, zoomFull, showLegend, mapTitle });
 
-      if (mapData?.weapons.length && weapon! > -1 && wmaCoords?.length > 0 && selectedSeason! > -1 && seasons && zoomFull !== undefined) {
+      if (mapData?.weapons.length &&
+          weapon! > -1 &&
+          wmaCoords?.length > 0 &&
+          selectedSeason! > -1 &&
+          seasons &&
+          zoomFull !== undefined &&
+          showLegend !== undefined) {
 
         this.wmaCoords = wmaCoords;
         this.mapDataResult = mapData;
@@ -117,10 +121,16 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
           weaponName,
           weapon);
 
-        this._buildLegend(categories, this.mapDataResult.type);
+        this._addTitle(mapTitle, selectedSeason, seasons);
+
+        this._addMapCtrls();
 
         if (zoomFull) {
           this._centerMap();
+        }
+
+        if (showLegend !== undefined) {
+          this._buildLegend(showLegend, categories, this.mapDataResult.type);
         }
 
         this._cdr.detectChanges();
@@ -128,6 +138,33 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
       }
     });
 
+  }
+
+  private _addTitle(title: string, selectedSeason: number, seasons: Season[]) {
+    // console.log(title, selectedSeason, seasons.length);
+    this._title.remove();
+    this._title.onAdd = () => {
+      let titleElement = L.DomUtil.create('div', 'bg-gradient-to-l from-gawmas-green to-transparent from-20% to-80% text-gray-200 p-2 rounded-tr-xl text-xs md:text-sm md:min-w-[650px] border-b border-gray-600');
+      let seasonChip = `<span class="chip result-chip chip-season mr-1">${seasons.find(s => s.id === selectedSeason)?.season}</span>`
+      let titleText = `<h3 class="italic underline font-bold inline-block text-sm md:text-lg">${title}</h3>`;
+      titleElement.innerHTML += `<span class="flex items-center justify-end">${seasonChip} ${titleText}</span>`;
+      return titleElement;
+    };
+    this._title.addTo(this._map);
+  }
+
+  private _addMapCtrls() {
+    this._mapCtrls.remove();
+    this._mapCtrls.onAdd = () => {
+      let mapCtrlsElement = L.DomUtil.create('div', 'map-ctrls');
+      const fullExtentButton = `<button class="zoomFull"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="zoomFull size-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" /></svg><span class="zoomFull">Full Extent</span></button>`;
+      const legendButton = `<button class="legendToggle"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="legendToggle size-6"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg><span class="legendToggle">Toggle Legend</span></button>`
+      const zoomInButton = `<button class="zoomIn"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="zoomIn size-6"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM10.5 7.5v6m3-3h-6" /></svg><span class="zoomIn">Zoom In</span></button>`
+      const zoomOutButton = `<button class="zoomOut"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="zoomOut size-6"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM13.5 10.5h-6" /></svg><span class="zoomOut">Zoom Out</span></button>`;
+      mapCtrlsElement.innerHTML += `${zoomInButton}${zoomOutButton}${fullExtentButton}${legendButton}`;
+      return mapCtrlsElement;
+    }
+    this._mapCtrls.addTo(this._map);
   }
 
   private _addGeorgiaBoundary() {
@@ -160,7 +197,6 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
         zoomControl: false
       }).setView([32.6782, -83.2220], 7);
       L.tileLayer(baseMapURL).addTo(this._map);
-      L.control.zoom({ position: 'topleft' }).addTo(this._map);
 
       this._map.on('zoomend', () => {
         this._store.dispatch(successMapActions.userZoomed());
@@ -217,7 +253,7 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  private _buildLegend(categories: LegendCategory[], type: string) {
+  private _buildLegend(show: boolean, categories: LegendCategory[], type: string) {
 
     this._legend.remove();
 
@@ -271,7 +307,12 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
       return lgd;
     };
 
-    this._legend.addTo(this._map);
+    if (show) {
+      this._legend.addTo(this._map);
+    }
+
+    this.legendVisible.set(show);
+
   }
 
   private _categorizeResults(data: MapData[], type: string): LegendCategory[] {
@@ -307,7 +348,8 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
 
   @HostListener('document:click', ['$event'])
   bindResultsEvent(event: any) {
-    if (event.target.classList.contains("resultsButton")) {
+    // console.log(event.target.classList);
+    if (event.target.classList.contains("resultsButton")) { // Hunt Results button ...
       const data = (event.target as HTMLElement).getAttribute("data")?.split(',');
       this._store.dispatch(
         successMapActions.getWmaResults({
@@ -320,6 +362,14 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
           }
         }));
       this.openResults();
+    } else if (event.target.classList.contains("zoomFull")) { // Full Extent button ...
+      this._store.dispatch(successMapActions.setZoomFull({ value: true }));
+    } else if (event.target.classList.contains("legendToggle")) { // Legend button ...
+      this._store.dispatch(successMapActions.showLegend({ value: !this.legendVisible() }));
+    } else if (event.target.classList.contains("zoomIn")) { // Zoom In button ...
+      this._map.setZoom(this._map.getZoom() + 1);
+    } else if (event.target.classList.contains("zoomOut")) { // Zoom Out button ...
+      this._map.setZoom(this._map.getZoom() - 1);
     }
   }
 

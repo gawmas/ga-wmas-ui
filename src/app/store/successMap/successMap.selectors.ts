@@ -44,6 +44,11 @@ export const selectSetZoomFull = createSelector(
   (state: MapState) => state.setZoomFull
 );
 
+export const selectShowLegend = createSelector(
+  selectSuccessMapState,
+  (state: MapState) => state.showLegend
+);
+
 export const selectChanges = createSelector(
   selectSuccessMapWmaCoords,
   selectSeasons,
@@ -51,8 +56,10 @@ export const selectChanges = createSelector(
   selectMapData,
   selectWeapon,
   selectSetZoomFull,
-  (wmaCoords, seasons, selectedSeason, mapData, weapon, zoomFull) => {
-    return { wmaCoords, seasons, selectedSeason, mapData, weapon, zoomFull };
+  selectShowLegend,
+  selectMapTitle,
+  (wmaCoords, seasons, selectedSeason, mapData, weapon, zoomFull, showLegend, mapTitle) => {
+    return { wmaCoords, seasons, selectedSeason, mapData, weapon, zoomFull, showLegend, mapTitle };
 });
 
 export const selectMapWmaResults = createSelector(

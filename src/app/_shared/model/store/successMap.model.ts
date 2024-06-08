@@ -11,6 +11,7 @@ export interface MapState {
   mapTitle: string;
   setZoomFull: boolean;
   loading: boolean;
+  showLegend: boolean;
 }
 
 export const initialMapState: MapState = {
@@ -21,5 +22,6 @@ export const initialMapState: MapState = {
   selectedWeapon: 0,
   selectedSeason: 0,
   mapTitle: '',
-  setZoomFull: false
+  setZoomFull: false,
+  showLegend: true
 };

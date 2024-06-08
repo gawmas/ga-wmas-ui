@@ -68,6 +68,11 @@ export const userZoomed = createAction(
   `${prefix} User Zoomed`
 );
 
+export const showLegend = createAction(
+  `${prefix} Show Legend`,
+  props<{ value: boolean }>()
+);
+
 export const getWmaResults = createAction(
   `${prefix} Get Wma Results`,
   props<{ filter: Filter }>()
