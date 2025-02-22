@@ -1,3 +1,7 @@
+div.leaflet-left {
+  margin-bottom: 15px;
+  margin-left: 15px;
+}
 .legend {
   line-height: 18px;
   color: #FFFFFF;
@@ -40,11 +44,21 @@
     inline-flex items-center justify-center
     bg-gray-700
     cursor-pointer
-    peer-checked:bg-blue-600
-    peer-checked:underline
-    peer-checked:font-bold
     hover:bg-gray-800 hover:underline
-    text-nowrap;
+    text-nowrap
+    peer-checked:bg-blue-600 peer-checked:underline peer-checked:font-bold;
+}
+
+.map-filter-radio {
+  @apply
+    w-4 h-4
+    cursor-pointer
+    text-blue-600
+    focus:ring-blue-600
+    ring-offset-gray-800
+    focus:ring-2
+    bg-gray-700
+    border-gray-600;
 }
 
 .map-ctrls {

@@ -11,29 +11,34 @@ import { SuccessMapHuntResultsComponent } from "./success-map-hunt-results.compo
 import * as L from 'leaflet';
 import * as successMapActions from 'store/successMap/successMap.actions';
 import * as successMapSelectors from 'store/successMap/successMap.selectors';
+import { SuccessMapFiltersModalComponent } from "./success-map-filters-modal.component";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     SHARED_MODULES, SuccessMapFiltersComponent, SuccessMapHuntResultsComponent,
-    LoadingComponent, NgIconComponent],
+    LoadingComponent, SuccessMapFiltersModalComponent],
   template: `
     @if (loading$ | async) {
       <gawmas-loading />
     }
+
+    <!-- Filter modal (mobile) -->
+    <gawmas-success-map-filters-modal #filtersModal (closeEvent)="modalClosed()" />
+
     <!-- Results modal -->
-    <gawmas-success-map-hunt-results #resultsModal (closeEvent)="huntResultsModalClosed()" />
+    <gawmas-success-map-hunt-results #resultsModal (closeEvent)="modalClosed()" />
 
     <div class="block md:flex md:pl-1 md:pb-1">
-      <div class="hidden md:visible md:inline-block w-56 transition-transform -translate-x-full sm:translate-x-0 rounded-bl-xl">
-        <div class="h-[75vh] bg-gray-900 text-gray-200 px-2 rounded-bl-xl">
+      <div class="hidden md:visible md:inline-block w-56 transition-transform -translate-x-full sm:translate-x-0">
+        <div class="h-[75vh] bg-gray-900 text-gray-200 px-2 rounded-bl-xl rounded-tl-xl mt-1 md:border-t md:border-l md:border-b border-gray-500">
           <!-- Filters -->
           <gawmas-success-map-filters />
         </div>
       </div>
 
-      <div id="map" class="md:flex-1 ml-0 flex-1 mt-1 border border-gray-500 md:rounded-br-xl md:rounded-tr-xl h-[60vh] md:h-[75vh] w-full {{ mapVisible() ? 'visible' : 'hidden' }}">
+      <div id="map" class="md:flex-1 ml-0 flex-1 md:mt-1 md:border-t md:border-r md:border-b border-gray-500 md:rounded-br-xl md:rounded-tr-xl h-[75vh] w-full {{ mapVisible() ? 'visible' : 'hidden' }}">
         <!-- Map -->
       </div>
     </div>
@@ -42,6 +47,7 @@ import * as successMapSelectors from 'store/successMap/successMap.selectors';
 export class SuccessMapComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('resultsModal') resultsModal: SuccessMapHuntResultsComponent | undefined;
+  @ViewChild('filtersModal') filtersModal: SuccessMapFiltersModalComponent | undefined;
 
   private _store = inject(Store<AppStateInterface>);
   private _cdr = inject(ChangeDetectorRef);
@@ -58,6 +64,7 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
   private _legend = (L as any).control({ position: 'topright' });
   private _title = (L as any).control({ position: 'topright' });
   private _mapCtrls = (L as any).control({ positision: 'topright' });
+  private _openFilters = (L as any).control({ position: 'bottomleft' });
 
   mapVisible = signal(true);
   legendVisible = signal(true);
@@ -195,7 +202,7 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
       const baseMapURL = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png';
       this._map = L.map('map', {
         zoomControl: false
-      }).setView([32.6782, -83.2220], 7);
+      }).setView([32.84043455143557, -81.38420102863284], 7); //32.6782, -83.2220
       L.tileLayer(baseMapURL).addTo(this._map);
 
       this._map.on('zoomend', () => {
@@ -203,6 +210,13 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
       });
 
       this._addGeorgiaBoundary();
+
+      this._openFilters.onAdd = () => {
+        let openFiltersElement = L.DomUtil.create('button', 'btn btn-primary btn-mini animate-jump-in animate-delay-100 animate-once md:invisible visible openFilters');
+        openFiltersElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" /></svg>&nbsp;Map Type<div class="count-badge">1</div>`;
+        return openFiltersElement;
+      };
+      this._openFilters.addTo(this._map);
 
     }
   }
@@ -339,6 +353,7 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
     this._markers.forEach(marker => marker.addTo(this._map));
     const bounds = L.latLngBounds(this._markers.map(marker => marker.getLatLng()));
     this._map.fitBounds(bounds);
+    this._map.setView([32.84043455143557, -81.38420102863284], 7);
   }
 
   openResults() {
@@ -370,6 +385,9 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
       this._map.setZoom(this._map.getZoom() + 1);
     } else if (event.target.classList.contains("zoomOut")) { // Zoom Out button ...
       this._map.setZoom(this._map.getZoom() - 1);
+    } else if (event.target.classList.contains("openFilters")) { // Open Filters button ...
+      this.toggleMapViz();
+      this.filtersModal?.open();
     }
   }
 
@@ -377,7 +395,7 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
     this.mapVisible.set(!this.mapVisible());
   }
 
-  huntResultsModalClosed() {
+  modalClosed() {
     this.toggleMapViz();
   }
 

@@ -17,6 +17,7 @@ export const mapReducers = createReducer(
     }),
 
   on(mapActions.enterSuccessMapComplete, (state, { wmaCoords, seasons, mapData }) => {
+    // console.log('enterSuccessMapComplete', wmaCoords, seasons, mapData);
     return {
       ...state,
       wmaCoords: wmaCoords,
@@ -26,7 +27,7 @@ export const mapReducers = createReducer(
       selectedSeason: seasons[0].id,
       loading: false,
       setZoomFull: true,
-      mapTitle: `WMA Success Rate - All Weapons`
+      mapTitle: `WMA Average Success Rate - All Weapons`
     };
   }),
 

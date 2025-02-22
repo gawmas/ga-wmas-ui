@@ -1,18 +1,18 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from "@angular/core";
+import { WeaponService } from '@services';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
-import { NgIcon } from "@ng-icons/core";
 import { Store } from "@ngrx/store";
 import { SHARED_MODULES } from "@shared-imports";
 import { AppStateInterface } from "@store-model";
 import { Subject, takeUntil } from "rxjs";
-import { SeasonTextPipe } from "@pipes";
 import * as successMapSelectors from 'store/successMap/successMap.selectors';
 import * as mapActions from 'store/successMap/successMap.actions';
 
 @Component({
   selector: "gawmas-success-map-filters",
   standalone: true,
-  imports: [SHARED_MODULES, ReactiveFormsModule, NgIcon, SeasonTextPipe],
+  imports: [SHARED_MODULES, ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     .filter-box {
       position: absolute;
@@ -21,9 +21,9 @@ import * as mapActions from 'store/successMap/successMap.actions';
     }
   `],
   template: `
-    <div class="h-[70vh] bg-gray-900 text-gray-200 text-xs md:text-sm md:p-2 animate-jump-in animate-delay-100 animate-once">
+    <div class="bg-gray-800 md:bg-gray-900 md:rounded-tl-2xl text-gray-200 text-xs md:text-sm md:p-2 md:animate-jump-in md:animate-delay-100 md:animate-once">
 
-      <form [formGroup]="mapFilterForm">
+      <form [formGroup]="mapFilterForm" class="form">
 
         <div class="w-full p-2">
           <div class="font-semibold text-left mb-1 pl-1">Season</div>
@@ -36,53 +36,65 @@ import * as mapActions from 'store/successMap/successMap.actions';
 
         <div class="w-full p-2">
           <div class="font-semibold text-left mb-1 pl-1">Map Type</div>
-          <ul class="invisible md:visible">
+          <ul>
             <li>
-              <input type="radio" id="successRadio" formControlName="statType" value="hosting-small" class="hidden peer" value="success">
-              <label for="successRadio" class="map-filter-opt rounded-t-xl">Success Rate</label>
+              <input type="radio" id="success" formControlName="mapType" class="hidden peer"
+                value="success" />
+              <label for="success" class="map-filter-opt rounded-t-xl" (click)="updateMapType('success')">
+                Success Rate
+              </label>
             </li>
             <li>
-              <input type="radio" id="rateRadio" formControlName="statType" value="hosting-small" class="hidden peer" value="harvestrate">
-              <label for="rateRadio" class="map-filter-opt">Harvest/Acre</label>
+              <input type="radio" id="harvestrate" formControlName="mapType" class="hidden peer"
+                value="harvestrate" />
+              <label for="harvestrate" class="map-filter-opt" (click)="updateMapType('harvestrate')">
+                Harvest/Acre
+              </label>
             </li>
             <li>
-              <input type="radio" id="harvestRadio" formControlName="statType" value="hosting-small" class="hidden peer" value="harvest">
-              <label for="harvestRadio" class="map-filter-opt rounded-b-xl">Total Harvest</label>
+              <input type="radio" id="harvest" formControlName="mapType" class="hidden peer"
+                value="harvest" />
+              <label for="harvest" class="map-filter-opt rounded-b-xl" (click)="updateMapType('harvest')">
+                Total Harvest
+              </label>
             </li>
           </ul>
         </div>
 
         <div class="w-full p-2">
           <div class="font-semibold text-left mb-1 pl-1">Weapon</div>
-          <ul class="invisible md:visible">
+          <ul>
             <li>
-              <input type="radio" id="archery" formControlName="weapon" value="hosting-small" class="hidden peer" value="2">
-              <label for="archery" class="map-filter-opt rounded-t-xl">Archery</label>
+              <input type="radio" id="archery" formControlName="weapon" value="2" class="hidden peer">
+              <label for="archery" class="map-filter-opt rounded-t-xl" (click)="updateWeapon('2')">Archery</label>
             </li>
             <li>
-              <input type="radio" id="firearms" formControlName="weapon" value="hosting-small" class="hidden peer" value="1">
-              <label for="firearms" class="map-filter-opt">Firearms</label>
+              <input type="radio" id="firearms" formControlName="weapon" value="1" class="hidden peer">
+              <label for="firearms" class="map-filter-opt" (click)="updateWeapon('1')">Firearms</label>
             </li>
             <li>
-              <input type="radio" id="primitive" formControlName="weapon" value="hosting-small" class="hidden peer" value="3">
-              <label for="primitive" class="map-filter-opt">Primitive</label>
+              <input type="radio" id="primitive" formControlName="weapon" value="3" class="hidden peer">
+              <label for="primitive" class="map-filter-opt" (click)="updateWeapon('3')">Primitive</label>
             </li>
             <li>
-              <input type="radio" id="all" formControlName="weapon" value="hosting-small" class="hidden peer" value="0">
-              <label for="all" class="map-filter-opt rounded-b-xl">All Weapons</label>
+              <input type="radio" id="all" formControlName="weapon" value="0" class="hidden peer">
+              <label for="all" class="map-filter-opt rounded-b-xl" (click)="updateWeapon('0')">All Weapons</label>
             </li>
           </ul>
         </div>
+
+        <!-- <pre>{{ mapFilterForm.value | json }}</pre> -->
 
       </form>
 
     </div>
   `,
 })
-export class SuccessMapFiltersComponent implements AfterViewInit, OnDestroy {
+export class SuccessMapFiltersComponent implements OnInit, OnDestroy {
 
   private _store = inject(Store<AppStateInterface>);
   private _formBuilder = inject(FormBuilder);
+  private _cdr = inject(ChangeDetectorRef);
 
   seasons$ = this._store.select(successMapSelectors.selectSeasons);
   mapTitle$ = this._store.select(successMapSelectors.selectMapTitle);
@@ -90,7 +102,7 @@ export class SuccessMapFiltersComponent implements AfterViewInit, OnDestroy {
   mapFilterForm = this._formBuilder.group({
     season: [''],
     weapon: [''],
-    statType: ['']
+    mapType: ['']
   });
 
   private _destroyed$ = new Subject<void>();
@@ -100,19 +112,19 @@ export class SuccessMapFiltersComponent implements AfterViewInit, OnDestroy {
     this._destroyed$.complete();
   }
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
 
     this.mapFilterForm.patchValue({
+      season: '14',
       weapon: '0',
-      statType: 'success',
-      season: '13'
+      mapType: 'success'
     });
 
     this.mapFilterForm.controls.weapon.valueChanges
       .pipe(takeUntil(this._destroyed$))
       .subscribe((weapon) => {
         if (weapon) {
-          this._store.dispatch(mapActions.weaponChange({ weaponId: +weapon }))
+          this._store.dispatch(mapActions.weaponChange({ weaponId: +weapon }));
         }
       });
 
@@ -121,21 +133,29 @@ export class SuccessMapFiltersComponent implements AfterViewInit, OnDestroy {
       .subscribe((season) => {
         if (season) {
           this._store.dispatch(mapActions.getSeasonMapData({
-            seasonId: +season, dataType: this.mapFilterForm.controls.statType.value!
+            seasonId: +season, dataType: this.mapFilterForm.controls.mapType.value!
           }));
         }
       });
 
-    this.mapFilterForm.controls.statType.valueChanges
+    this.mapFilterForm.controls.mapType.valueChanges
       .pipe(takeUntil(this._destroyed$))
-      .subscribe((statType) => {
-        if (statType) {
+      .subscribe((mapType) => {
+        if (mapType) {
           this._store.dispatch(mapActions.getSeasonMapData({
-            seasonId: +this.mapFilterForm.controls.season.value!, dataType: statType
+            seasonId: +this.mapFilterForm.controls.season.value!, dataType: mapType
           }));
         }
       });
 
+  }
+
+  updateMapType(mapType: string) {
+    this.mapFilterForm.controls.mapType.setValue(mapType, { emitEvent: false });
+  }
+
+  updateWeapon(weaponId: string) {
+    this.mapFilterForm.controls.weapon.setValue(weaponId, { emitEvent: false });
   }
 
 }
