@@ -20,7 +20,7 @@
     </thead>
     <tbody>
       @if ((hunts$ | async); as hunts) {
-        @for (hunt of hunts; track hunt.id) {
+        @for (hunt of hunts; track $index) {
           <tr class="border-b bg-gray-800 border-gray-500">
             <td class="px-6 py-4 align-top bg-gray-800">
               <div class="flex flex-wrap items-center mb-1">
@@ -37,6 +37,7 @@
                   }
                   <div class="text-white font-bold uppercase mr-1">
                     {{ hunt.wmaName }}
+                    <!-- ({{ hunt.id }}) -->
                   </div>
                 }
 
@@ -193,7 +194,7 @@
                     <div class="text-xs text-gray-500 pl-2 flow-root">
                       <div class="float-left pt-1 italic">&#64; {{ $any(hunt.wxDetails[0]).location }}, GA</div>
                       <div class="float-right">
-                        <button type="button" (click)="openWxDetails(hunt.id, hunt.huntDates, $any(hunt.wxDetails[0]).location, hunt.hunterCount, hunt.bucks, hunt.does)"
+                        <button type="button" (click)="openWxDetails(hunt.id, hunt.huntDates, $any(hunt.wxDetails[0]).location, hunt.hunterCount, hunt.bucks, hunt.does, hunt.weapon)"
                           class="px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white">
                             <ng-icon name="heroArrowTopRightOnSquare" class="w-4 h-4 mr-1"></ng-icon>
                               More Details
@@ -395,7 +396,7 @@
                     <div class="text-xs text-gray-500 pl-2 flow-root">
                       <div class="float-left pt-1 italic">&#64; {{ $any(hunt.wxDetails[0]).location }}, GA</div>
                       <div class="float-right">
-                        <button type="button" (click)="openWxDetails(hunt.id, hunt.huntDates, $any(hunt.wxDetails[0]).location, hunt.hunterCount, hunt.bucks, hunt.does)"
+                        <button type="button" (click)="openWxDetails(hunt.id, hunt.huntDates, $any(hunt.wxDetails[0]).location, hunt.hunterCount, hunt.bucks, hunt.does, hunt.weapon)"
                           class="px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white">
                             <ng-icon name="heroArrowTopRightOnSquare" class="w-4 h-4 mr-1"></ng-icon>
                               More Details

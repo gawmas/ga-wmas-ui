@@ -40,7 +40,7 @@ export class WxDetailsComponent {
     return Object.keys(data);
   }
 
-  open(huntDates: HuntDate[], location: string, hunters: number, does: number, bucks: number) {
+  open(huntDates: HuntDate[], location: string, hunters: number, does: number, bucks: number, weapon: string) {
 
     this.huntDates = huntDates;
     this.location = location;
@@ -53,7 +53,7 @@ export class WxDetailsComponent {
       return totalDays + (differenceInDays + 1);
     }, 0);
 
-    this.hunt = { hunterCount: hunters, does, bucks };
+    this.hunt = { hunterCount: hunters, does, bucks, weapon };
 
     this.wxDetailsModal?.open();
   }

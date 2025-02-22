@@ -143,9 +143,9 @@ export class HuntsComponent implements OnInit, OnDestroy {
     tooltip.show();
   }
 
-  openWxDetails(huntId: number, huntDates: HuntDate[], location: string, hunters: number, does: number, bucks: number) {
+  openWxDetails(huntId: number, huntDates: HuntDate[], location: string, hunters: number, does: number, bucks: number, weapon: string) {
     this._store.dispatch(wxDetailsActions.clearWxDetails());
-    this.wxDetailsModal?.open(huntDates, location, hunters, bucks, does);
+    this.wxDetailsModal?.open(huntDates, location, hunters, bucks, does, weapon);
     this._store.dispatch(wxDetailsActions.getWxDetails({ id: String(huntId) }));
   }
 

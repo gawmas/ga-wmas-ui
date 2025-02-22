@@ -24,6 +24,11 @@
           &#64; {{ location }}, Georgia
         </div>
         <div class="float-right flex items-center text-xs p-2 bg-gray-900 md:rounded-tl-lg border-t border-l border-gray-500">
+          <span class="chip result-chip text-xs mx-1"
+                [class.chip-firearm]="hunt?.weapon === 'Buckshot Only' || hunt?.weapon === 'Firearms'"
+                [class.chip-archery]="hunt?.weapon === 'Archery'"
+                [class.chip-primitive]="hunt?.weapon === 'Primitive'">
+                {{ hunt?.weapon }}</span>
           <span class="text-gray-400 font-semibold uppercase">Hunters:</span>
           <span class="px-1 border-r border-gray-500">{{ hunt?.hunterCount }}</span>
           <span class="mx-1 text-gray-400 font-semibold uppercase">Bucks:</span>

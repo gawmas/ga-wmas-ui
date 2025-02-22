@@ -10,7 +10,8 @@ button.btn {
     text-center
     rounded-full
     focus:ring-1
-    focus:outline-none;
+    focus:outline-none
+    cursor-pointer;
 
   &-primary {
     @apply
@@ -49,6 +50,13 @@ button.btn {
       hover:bg-gray-700
       text-gray-200
       border border-gray-600;
+  }
+
+  &-mini {
+    @apply
+      px-2.5
+      py-1.5
+      text-xs;
   }
 
   &.btn-map-ctrl {
