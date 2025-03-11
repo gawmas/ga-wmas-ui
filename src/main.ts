@@ -10,14 +10,16 @@ import { routes } from 'app.routes';
 import { HuntEffects } from 'store/hunts/hunts.effects';
 import { SHARED_MODULES } from '@shared-imports';
 import { NgIconsModule } from '@ng-icons/core';
-import { heroTableCells, heroBarsArrowUp,
+import {
+  heroTableCells, heroBarsArrowUp,
   heroArrowTrendingUp, heroAdjustmentsHorizontal,
   heroXMark, heroBolt, heroMapPin, heroCalendar, heroWrenchScrewdriver,
   heroChartPie, heroSun, heroMoon, heroChevronDoubleDown, heroChevronDoubleUp,
   heroInformationCircle, heroNoSymbol, heroFaceFrown,
   heroChatBubbleBottomCenterText, heroDocumentText, heroCheckCircle,
   heroPencilSquare, heroClock, heroExclamationTriangle, heroArrowTopRightOnSquare,
-  heroHandThumbUp, heroMap, heroGlobeAlt, heroCheck, heroListBullet } from '@ng-icons/heroicons/outline';
+  heroHandThumbUp, heroMap, heroGlobeAlt, heroCheck, heroListBullet
+} from '@ng-icons/heroicons/outline';
 import { heroCheckCircleSolid, heroXCircleSolid, heroExclamationTriangleSolid } from '@ng-icons/heroicons/solid';
 import { AppStateInterface } from '_shared/model/store';
 import { huntsReducers } from './app/store/hunts/hunts.reducers';
@@ -70,7 +72,7 @@ const appReducers: ActionReducerMap<AppStateInterface> = {
   filterAuxDataState: filterAuxDataReducers,
   adminState: adminReducers,
   wxDetailsState: wxDetailsReducers,
-  mapState: mapReducers
+  mapState: mapReducers,
 };
 
 export const appConfig: ApplicationConfig = {
@@ -85,7 +87,8 @@ export const appConfig: ApplicationConfig = {
         FiltersEffects,
         AdminEffects,
         WxDetailsEffects,
-        MapEffects]),
+        MapEffects
+      ]),
       StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: false }),
       NgIconsModule.withIcons(heroIcons),
     )

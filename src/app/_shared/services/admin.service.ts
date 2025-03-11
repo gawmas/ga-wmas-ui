@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { Hunt, Wma } from "@model";
-import { env } from "environment";
+import { env } from "@environment";
 import { Observable } from "rxjs";
 
 @Injectable({ providedIn: 'root' })

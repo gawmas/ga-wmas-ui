@@ -13,8 +13,18 @@ import { selectLoadingMoreHunts } from 'store/hunts/hunts.selectors';
   standalone: true,
   imports: [SHARED_MODULES, NgIconComponent, IsActiveRoutePipe],
   template: `
-    <footer class="fixed left-0 px-2 flex items-center bottom-0 w-[100%] mx-auto h-12 bg-gray-950 border-t border-gray-700">
-      <div class="p-4 w-1/2">
+    <footer class="fixed left-0 px-2 flex items-center bottom-0 w-[100%] h-12 bg-gray-950 border-t border-gray-700">
+      <div class="w-1/2 flex items-center ml-5 text-xs md:text-sm text-gray-200">
+        <div class="flex items-center mr-3">
+          <ng-icon name="heroChatBubbleBottomCenterText" class="mr-1"></ng-icon>
+          <a href="#" class="hover:underline">Feedback?</a>
+        </div>
+        <div class="flex items-center">
+          <ng-icon name="heroDocumentText" class="mr-1"></ng-icon>
+          <a href="#" class="hover:underline">Disclaimer</a>
+        </div>
+      </div>
+      <div class="p-4 w-1/2 text-right">
         @if (!topInView()) {
           @if (isLoading$ | async) {
             <button disabled type="button" class="py-1 px-2 text-sm font-medium rounded-full border focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 bg-gray-800 text-gray-400 border-gray-600 hover:text-white hover:bg-gray-700 inline-flex items-center">
@@ -34,16 +44,7 @@ import { selectLoadingMoreHunts } from 'store/hunts/hunts.selectors';
           }
         }
       </div>
-      <div class="w-1/2 flex items-center justify-end text-r mr-5 text-xs md:text-sm text-gray-200">
-        <div class="flex items-center mr-3">
-          <ng-icon name="heroChatBubbleBottomCenterText" class="mr-1"></ng-icon>
-          <a href="#" class="hover:underline">Feedback?</a>
-        </div>
-        <div class="flex items-center">
-          <ng-icon name="heroDocumentText" class="mr-1"></ng-icon>
-          <a href="#" class="hover:underline">Disclaimer</a>
-        </div>
-      </div>
+
     </footer>
   `
 })

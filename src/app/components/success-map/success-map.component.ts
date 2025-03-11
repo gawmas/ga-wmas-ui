@@ -354,6 +354,8 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
     const bounds = L.latLngBounds(this._markers.map(marker => marker.getLatLng()));
     this._map.fitBounds(bounds);
     this._map.setView([32.84043455143557, -81.38420102863284], 7);
+    // this._map.setMaxBounds(this._map.getBounds());
+    // this._map.setMinZoom(7);
   }
 
   openResults() {

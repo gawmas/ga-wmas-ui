@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { HistClimateLocation } from "@model";
-import { env } from "environment";
+import { env } from "@environment";
 
 @Injectable({ providedIn: 'root' })
 export class HistClimateLocationService {
