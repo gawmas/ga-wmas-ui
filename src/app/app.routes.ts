@@ -1,5 +1,13 @@
-import { Routes } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot, Routes } from '@angular/router';
 import { HuntsComponent } from '@components';
+import { env } from '@environment';
+
+export const adminGuard: CanActivateFn = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+): boolean => {
+  return !env.production;
+}
 
 export const routes: Routes = [
   {
@@ -13,15 +21,22 @@ export const routes: Routes = [
   },
   {
     path: 'successmap',
-    loadComponent: () => import('./components/success-map/success-map.component').then(c => c.SuccessMapComponent)
+    loadComponent: () =>
+      import('./components/success-map/success-map.component')
+        .then(c => c.SuccessMapComponent)
   },
   {
     path: 'about',
-    loadComponent: () => import('./components/about.component').then(c => c.AboutComponent)
+    loadComponent: () =>
+      import('./components/about.component')
+        .then(c => c.AboutComponent)
   },
   {
     path: 'admin',
-    loadComponent: () => import('./components/admin/adminHome.component').then(c => c.AdminHomeComponent),
+    loadComponent: () =>
+      import('./components/admin/adminHome.component')
+        .then(c => c.AdminHomeComponent),
+    canActivate: [adminGuard],
     children: [
       {
         path: '',
@@ -30,12 +45,20 @@ export const routes: Routes = [
       },
       {
         path: 'browse',
-        loadComponent: () => import('./components/admin/adminBrowse.component').then(c => c.AdminBrowseComponent)
+        loadComponent: () =>
+          import('./components/admin/adminBrowse.component')
+            .then(c => c.AdminBrowseComponent)
       },
       {
         path: 'wmas',
-        loadComponent: () => import('./components/admin/adminWmas.component').then(c => c.AdminWmasComponent)
+        loadComponent: () =>
+          import('./components/admin/adminWmas.component')
+            .then(c => c.AdminWmasComponent)
       }
     ]
+  },
+  {
+    path: '**',
+    redirectTo: 'browse'
   },
 ];
