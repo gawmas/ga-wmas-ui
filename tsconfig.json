@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./src/app/",
     "paths": {
+      "@environment": ["environments/environment"],
       "@shared-imports": ["_shared/index"],
       "@components": ["components"],
       "@model": ["_shared/model"],
