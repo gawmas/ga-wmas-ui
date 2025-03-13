@@ -42,7 +42,7 @@ export class AdminEffects {
 
   fetchAdminWmas$ = createEffect(() =>
     this._actions$.pipe(
-      ofType(adminActions.enterWmasPage, adminActions.updateWmaComplete),
+      ofType(adminActions.enterWmasPage, adminActions.updateWmaComplete, adminActions.enterAddHuntsPage),
       switchMap(() =>
         combineLatest([
           this._adminService.getAdminWmas(),

@@ -57,3 +57,6 @@ export const updateWmaComplete = createAction(
 export const updateWmaError = createAction(
   `${prefix} Update Wma Error`,
   props<{ error: string }>());
+
+export const enterAddHuntsPage = createAction(
+  `${prefix} Enter Add Hunts Page`);

@@ -54,7 +54,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./components/admin/adminWmas.component')
             .then(c => c.AdminWmasComponent)
-      }
+      },
+      {
+        path: 'add',
+        loadComponent: () =>
+          import('./components/admin/add-hunts.component')
+            .then(c => c.AddHuntsComponent)
+      },
     ]
   },
   {
