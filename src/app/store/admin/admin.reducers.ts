@@ -35,6 +35,13 @@ export const adminReducers = createReducer(
       histClimateLocations: histClimateLocations,
       histClimateCoords: histClimateCoords,
     };
-  }
+  }),
 
-));
+  on(adminActions.loadScrapedHuntsComplete, (state, { scrapedHunts }) => {
+    return {
+      ...state,
+      scrapedHunts: scrapedHunts
+    };
+  }),
+
+);

@@ -1,8 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
-import { Hunt, Wma } from "@model";
+import { Hunt, ScrapedHunt, Wma } from "@model";
 import { env } from "@environment";
-import { Observable } from "rxjs";
+import { map, Observable } from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
@@ -25,6 +25,13 @@ export class AdminService {
 
   updateWma(wma: Wma): Observable<Wma> {
     return this.http.put<Wma>(`${this.adminEndpoint}/wma/${wma.id}`, wma);
+  }
+
+  getScrapedHunts(): Observable<ScrapedHunt[]> {
+    return this.http.get<any>(`${this.adminEndpoint}/scraped`)
+      .pipe(
+        map((resp) => resp.data as ScrapedHunt[])
+      );
   }
 
 }

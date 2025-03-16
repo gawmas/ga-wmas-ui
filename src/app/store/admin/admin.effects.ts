@@ -69,6 +69,18 @@ export class AdminEffects {
     )
   );
 
+  fetchScrapedHunts$ = createEffect(() =>
+    this._actions$.pipe(
+      ofType(adminActions.loadScrapedHunts),
+      switchMap(() =>
+        this._adminService.getScrapedHunts().pipe(
+          map((scrapedHunts) => adminActions.loadScrapedHuntsComplete({ scrapedHunts })),
+          catchError((error) => of(adminActions.loadScrapedHuntsError({ error })))
+        )
+      )
+    )
+  );
+
   error$ = createEffect(
     () =>
       this._actions$.pipe(

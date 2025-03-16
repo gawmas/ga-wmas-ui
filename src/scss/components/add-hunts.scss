@@ -1,0 +1,20 @@
+div.add-hunts {
+  @apply w-[100%]
+    h-screen
+    bg-gray-800
+    text-white
+    p-[10px];
+
+  th {
+    @apply text-left
+    font-bold;
+  }
+
+  td {
+    input,
+    select {
+      font-size: 13px;
+      @apply bg-gray-900
+    }
+  }
+}

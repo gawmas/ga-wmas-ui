@@ -29,4 +29,9 @@ export const selectHistClimateCoords = createSelector(
   (state: AdminState) => state.histClimateCoords
 );
 
+export const selectScrapedHunts = createSelector(
+  selectAdminState,
+  (state: AdminState) => state.scrapedHunts
+);
+
 

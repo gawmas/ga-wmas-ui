@@ -1,10 +1,11 @@
-import { HistClimateLocation, Hunt, MapCoords, Wma } from "@model";
+import { HistClimateLocation, Hunt, MapCoords, ScrapedHunt, Wma } from "@model";
 
 export interface AdminState {
   hunt: Hunt | null;
   wmas?: Wma[] | null;
   histClimateLocations?: HistClimateLocation[] | null;
   histClimateCoords?: MapCoords[] | null;
+  scrapedHunts?: ScrapedHunt[] | null;
   loading: boolean;
 }
 

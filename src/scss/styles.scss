@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-@tailwind base;
-@tailwind components;
+@import "tailwindcss";
+@config "./../../tailwind.config.js";
 
 @import "./elements/header.scss";
 @import "./elements/buttons.scss";
@@ -9,6 +9,7 @@
 @import "./components/hunts.scss";
 @import "./components/filters.scss";
 @import "./components/map.scss";
+@import "./components/add-hunts.scss";
 
 body {
   overflow-x: hidden;
@@ -70,4 +71,4 @@ body {
   overflow-x: auto; /* Enable horizontal scrolling */
 }
 
-@tailwind utilities;
+// @tailwind utilities;

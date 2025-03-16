@@ -1,4 +1,4 @@
-import { HistClimateLocation, Hunt, HuntPayload, MapCoords, Wma } from "@model";
+import { HistClimateLocation, Hunt, HuntPayload, MapCoords, ScrapedHunt, Wma } from "@model";
 import { createAction, props } from "@ngrx/store";
 
 const prefix = '[Admin]';
@@ -60,3 +60,14 @@ export const updateWmaError = createAction(
 
 export const enterAddHuntsPage = createAction(
   `${prefix} Enter Add Hunts Page`);
+
+export const loadScrapedHunts = createAction(
+  `${prefix} Load Scraped Hunts`);
+
+export const loadScrapedHuntsError = createAction(
+  `${prefix} Load Scrapped Hunts Error`,
+  props<{ error: string }>());
+
+export const loadScrapedHuntsComplete = createAction(
+  `${prefix} Load Scraped Hunts Complete`,
+  props<{ scrapedHunts: ScrapedHunt[] }>());
