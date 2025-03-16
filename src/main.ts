@@ -20,7 +20,8 @@ import {
   heroPencilSquare, heroClock, heroExclamationTriangle, heroArrowTopRightOnSquare,
   heroHandThumbUp, heroMap, heroGlobeAlt, heroCheck, heroListBullet,
   heroPlusCircle,
-  heroTrash
+  heroTrash,
+  heroArrowUturnDown
 } from '@ng-icons/heroicons/outline';
 import { heroCheckCircleSolid, heroXCircleSolid, heroExclamationTriangleSolid } from '@ng-icons/heroicons/solid';
 import { AppStateInterface } from '_shared/model/store';
@@ -68,7 +69,8 @@ const heroIcons = {
   heroCheck,
   heroListBullet,
   heroPlusCircle,
-  heroTrash
+  heroTrash,
+  heroArrowUturnDown
 };
 
 const appReducers: ActionReducerMap<AppStateInterface> = {

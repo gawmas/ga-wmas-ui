@@ -1,4 +1,4 @@
-import { HistClimateLocation, Hunt, MapCoords, ScrapedHunt, Wma } from "@model";
+import { HistClimateLocation, Hunt, MapCoords, ScrapedHunt, Season, Weapon, Wma } from "@model";
 
 export interface AdminState {
   hunt: Hunt | null;

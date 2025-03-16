@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, switchMap, catchError, of, tap, combineLatest } from 'rxjs';
-import { AdminService, HistClimateLocationService, MapService, WmaService } from '@services';
+import { map, switchMap, catchError, of, tap, combineLatest, exhaustMap } from 'rxjs';
+import { AdminService, HistClimateLocationService, MapService, SeasonService, WeaponService, WmaService } from '@services';
 import * as adminActions from './admin.actions';
 
 @Injectable()
@@ -11,6 +11,8 @@ export class AdminEffects {
     private readonly _actions$: Actions,
     private readonly _adminService: AdminService,
     private readonly _wmaService: WmaService,
+    private readonly _weaponService: WeaponService,
+    private readonly _seasonService: SeasonService,
     private readonly _histClimateLocationService: HistClimateLocationService,
     private readonly _mapCoordsService: MapService) { }
 

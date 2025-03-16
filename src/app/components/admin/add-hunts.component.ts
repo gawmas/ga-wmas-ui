@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, signal } from "@angular/core";
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
-import { ScrapedHunt, Wma } from "@model";
+import { ScrapedHunt, Season, Weapon, Wma } from "@model";
 import { NgIcon } from "@ng-icons/core";
 import { Store } from "@ngrx/store";
 import { SHARED_MODULES } from "@shared-imports";
@@ -8,6 +8,7 @@ import { AppStateInterface } from "@store-model";
 import { map, take, tap } from "rxjs";
 import * as adminActions from "store/admin/admin.actions";
 import * as adminSelectors from "store/admin/admin.selectors";
+import * as filterSelectors from "store/filters/filters.selectors";
 
 @Component({
     selector: "add-hunts",
@@ -19,7 +20,7 @@ import * as adminSelectors from "store/admin/admin.selectors";
       <button class="btn btn-default m-2"
         (click)="loadScrapedHunts()">Load Scraped Hunts</button>
 
-      @if (wmas$ | async; as wmas) {
+      @if (auxData$ | async; as data) {
         <div class="p-4 rounded-lg bg-gray-800 text-sm text-gray-200 pb-48">
           <form [formGroup]="huntsForm">
             <table class="w-full" formArrayName="hunts">
@@ -35,7 +36,8 @@ import * as adminSelectors from "store/admin/admin.selectors";
                 @for (ctrl of huntsForm.controls.hunts.controls; track $index) {
                   @if (scrapedHunts()) {
                     <tr>
-                      <td colspan="3" class="bg-gray-300 text-gray-800 border-b border-gray-400 p-2 mb-0">
+                      <td colspan="3" class="bg-gray-300 text-gray-800 border-b border-gray-400 p-2 mb-0"
+                          [ngClass]="{ 'line-through bg-red-500': ctrl.get('disabled')?.value }">
                         <span class="font-bold">{{ scrapedHunts()[$index].wmaName }}</span> | {{ scrapedHunts()[$index].details }} |
                         <span class="font-bold">{{ scrapedHunts()[$index].weapon | titlecase }}</span> |
                         {{ scrapedHunts()[$index].startdate | date: 'MM/dd/yyyy' }} - {{ scrapedHunts()[$index].enddate | date: 'MM/dd/yyyy' }} |
@@ -46,24 +48,24 @@ import * as adminSelectors from "store/admin/admin.selectors";
                     </tr>
                   }
                   <tr [formGroupName]="$index">
-                    <td class="py-2 border-l border-gray-400" [ngStyle]="{ 'background-color': ctrl.get('disabled')?.value ? '#f8f8f8' : '' }">
+                    <td class="py-2 border-l border-gray-400" [ngClass]="{ 'disabled': ctrl.get('disabled')?.value }">
                       <div class="block">
                         <select formControlName="wma" class="bg-gray-900 rounded-md w-[100%]">
                           <option value="">Select WMA</option>
-                          @for (wma of wmas; track wma.id) {
+                          @for (wma of data.wmas; track wma.id) {
                             <option [value]="wma.id">{{ wma.name }}</option>
                           }
                         </select>
                         <input formControlName="details" type="text" class="w-[100%]">
                       </div>
                     </td>
-                    <td class="py-2" [ngStyle]="{ 'background-color': ctrl.get('disabled')?.value ? '#f8f8f8' : '' }">
+                    <td class="py-2" [ngClass]="{ 'disabled': ctrl.get('disabled')?.value }">
                       <div class="block">
                         <input formControlName="start" type="date" class="w-[145px]">
                         <input formControlName="end" type="date" class="w-[145px]">
                       </div>
                     </td>
-                    <td class="py-2" [ngStyle]="{ 'background-color': ctrl.get('disabled')?.value ? '#f8f8f8' : '' }">
+                    <td class="py-2" [ngClass]="{ 'disabled': ctrl.get('disabled')?.value }">
                       <div class="block">
                         <div class="flex">
                           <input formControlName="hunters" type="number" class="">
@@ -92,11 +94,15 @@ import * as adminSelectors from "store/admin/admin.selectors";
                       </div>
                     </td>
                     <td class="align-text-bottom">
-                      <!-- @if (!$last) { -->
+                      @if (!ctrl.get('disabled')?.value) {
                         <a class="ml-1 text-2xl" type="button" (click)="remove($index)" href="javascript:;">
                           <ng-icon name="heroTrash" class="me-2"></ng-icon>
                         </a>
-                      <!-- } -->
+                      } @else {
+                        <a class="ml-1 text-2xl" type="button" href="javascript:;">
+                          <ng-icon name="heroArrowUturnDown" (click)="remove($index, true)" class="me-2"></ng-icon>
+                        </a>
+                      }
                       @if ($last) {
                         <a class="ml-1 text-2xl" type="button" (click)="add()" href="javascript:;">
                           <ng-icon name="heroPlusCircle" class="me-2"></ng-icon>
@@ -128,11 +134,16 @@ export class AddHuntsComponent implements OnInit {
 
   scrapedHunts = signal<ScrapedHunt[]>([]);
   wmas = signal<Wma[]>([]);
+  seasons = signal<Season[]>([]);
+  weapons = signal<Weapon[]>([]);
 
-  wmas$ = this._store.select(adminSelectors.selectWmas)
+  auxData$ = this._store.select(filterSelectors.selectFiltersAuxData)
     .pipe(
-      map((wmas) => wmas as Wma[]),
-      tap((wmas) => this.wmas.set(wmas))
+      tap((aux) => {
+        this.wmas.set(aux?.wmas!);
+        this.seasons.set(aux?.seasons!);
+        this.weapons.set(aux?.weapons!);
+      })
     );
 
   scrapedHunts$ = this._store.select(adminSelectors.selectScrapedHunts);
@@ -205,10 +216,15 @@ export class AddHuntsComponent implements OnInit {
     }
   }
 
-  remove(index: number) {
+  remove(index: number, undo?: boolean) {
     const huntsFormArray = this.huntsForm.get("hunts") as FormArray;
-    // huntsFormArray.removeAt(index);
-    huntsFormArray.controls[index].get("disabled")?.setValue(true);
+    huntsFormArray.controls[index].get("disabled")?.setValue(undo ? false : true);
+    const group = huntsFormArray.controls[index] as FormGroup;
+    if (undo) {
+      group.enable();
+    } else {
+      group.disable();
+    }
     this._cdr.detectChanges();
   }
 

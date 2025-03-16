@@ -6,6 +6,7 @@ import { selectFiltersAuxData } from './filters.selectors';
 import { AppStateInterface } from '@store-model';
 import { Store } from '@ngrx/store';
 import * as filterActions from '../filters/filters.actions';
+import * as adminActions from '../admin/admin.actions';
 
 @Injectable()
 export class FiltersEffects {
@@ -20,7 +21,7 @@ export class FiltersEffects {
 
   getFilterAuxData$ = createEffect(() =>
     this._actions$.pipe(
-      ofType(filterActions.getFilterAuxData),
+      ofType(filterActions.getFilterAuxData, adminActions.enterAddHuntsPage),
       withLatestFrom(this._store.select(selectFiltersAuxData)),
       filter(([action, filterAuxData]) => !filterAuxData.wmas.length), // Check if data doesn't exist
       exhaustMap(() =>
