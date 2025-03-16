@@ -48,9 +48,9 @@ import * as filterSelectors from "store/filters/filters.selectors";
                     </tr>
                   }
                   <tr [formGroupName]="$index">
-                    <td class="py-2 border-l border-gray-400" [ngClass]="{ 'disabled': ctrl.get('disabled')?.value }">
+                    <td class="pb-4" [ngClass]="{ 'disabled': ctrl.get('disabled')?.value }">
                       <div class="block">
-                        <select formControlName="wma" class="bg-gray-900 rounded-md w-[100%]">
+                        <select formControlName="wma" class="bg-gray-900 w-[100%]">
                           <option value="">Select WMA</option>
                           @for (wma of data.wmas; track wma.id) {
                             <option [value]="wma.id">{{ wma.name }}</option>
@@ -59,13 +59,13 @@ import * as filterSelectors from "store/filters/filters.selectors";
                         <input formControlName="details" type="text" class="w-[100%]">
                       </div>
                     </td>
-                    <td class="py-2" [ngClass]="{ 'disabled': ctrl.get('disabled')?.value }">
+                    <td class="pb-4" [ngClass]="{ 'disabled': ctrl.get('disabled')?.value }">
                       <div class="block">
                         <input formControlName="start" type="date" class="w-[145px]">
                         <input formControlName="end" type="date" class="w-[145px]">
                       </div>
                     </td>
-                    <td class="py-2" [ngClass]="{ 'disabled': ctrl.get('disabled')?.value }">
+                    <td class="pb-4" [ngClass]="{ 'disabled': ctrl.get('disabled')?.value }">
                       <div class="block">
                         <div class="flex">
                           <input formControlName="hunters" type="number" class="">
@@ -74,6 +74,11 @@ import * as filterSelectors from "store/filters/filters.selectors";
                           <input formControlName="quota" type="number" class="">
                         </div>
                         <div class="flex">
+                          <select formControlName="weapon" class="bg-gray-900">
+                            @for (w of data.weapons; track w.id) {
+                              <option [value]="w.id">{{ w.name }}</option>
+                            }
+                          </select>
                           <div class="flex items-center ps-3">
                             <input formControlName="bonus" id="bonus{{ $index }}" type="checkbox" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500">
                             <label for="bonus{{ $index }}" class="w-full py-3 ms-2 text-sm font-medium text-gray-300">Bonus/Quota</label>
@@ -205,6 +210,7 @@ export class AddHuntsComponent implements OnInit {
             bucks: [scrapedHunt.bucks],
             does: [scrapedHunt.does],
             quota: [''],
+            weapon: [this._findWeapon(scrapedHunt.weapon)],
             bonus: [scrapedHunt.isBonus],
             buckonly: [scrapedHunt.isBuckOnly],
             qualitybuck: [scrapedHunt.isQualityBuck],
@@ -228,12 +234,6 @@ export class AddHuntsComponent implements OnInit {
     this._cdr.detectChanges();
   }
 
-  trackByFn(item: AbstractControl): number {
-    const control = item as FormGroup;
-    console.log(control.get("_uniq")?.value);
-    return control.get("_uniq")?.value;
-  }
-
   private _findWma(wmaName: string): number | undefined {
     const flattenWmaName = (name: string) => {
       const flattedName = name.toLowerCase()
@@ -247,6 +247,14 @@ export class AddHuntsComponent implements OnInit {
       return flattedName;
     };
     const found = this.wmas().find((wma) => flattenWmaName(wma.name) === flattenWmaName(wmaName));
+    if (found) {
+      return found.id;
+    }
+    return undefined;
+  }
+
+  private _findWeapon(weaponName: string): number | undefined {
+    const found = this.weapons().find((weapon) => weapon.name.toLowerCase() === weaponName.toLowerCase());
     if (found) {
       return found.id;
     }
