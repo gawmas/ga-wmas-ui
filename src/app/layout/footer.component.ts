@@ -9,10 +9,9 @@ import { Subject, takeUntil } from 'rxjs';
 import { selectLoadingMoreHunts } from 'store/hunts/hunts.selectors';
 
 @Component({
-  selector: 'gawmas-footer',
-  standalone: true,
-  imports: [SHARED_MODULES, NgIconComponent, IsActiveRoutePipe],
-  template: `
+    selector: 'gawmas-footer',
+    imports: [SHARED_MODULES, NgIconComponent, IsActiveRoutePipe],
+    template: `
     <footer class="fixed left-0 px-2 flex items-center bottom-0 w-[100%] h-12 bg-gray-950 border-t border-gray-700">
       <div class="w-1/2 flex items-center ml-5 text-xs md:text-sm text-gray-200">
         <div class="flex items-center mr-3">

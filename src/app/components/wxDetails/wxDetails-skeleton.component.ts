@@ -2,10 +2,9 @@ import { NgFor } from "@angular/common";
 import { Component, Input } from "@angular/core";
 
 @Component({
-  selector: 'gawmas-wx-details-skeleton',
-  standalone: true,
-  imports: [NgFor],
-  template: `
+    selector: 'gawmas-wx-details-skeleton',
+    imports: [NgFor],
+    template: `
     <div role="status" class="w-full animate-pulse">
       <span class="sr-only">Loading...</span>
 

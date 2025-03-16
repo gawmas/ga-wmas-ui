@@ -11,16 +11,13 @@ import { Subject, takeUntil, tap, distinctUntilChanged } from "rxjs";
 import * as adminActions from "store/admin/admin.actions";
 
 @Component({
-  standalone: true,
-  imports: [SHARED_MODULES, HuntsComponent, HuntFormComponent,
-    SuccessRateColorPipe, SuccessRatePipe,
-    NgIconComponent, DetailsHighlightPipe],
+  imports: [SHARED_MODULES, HuntsComponent, HuntFormComponent],
   template: `
     <gawmas-browse-hunts [isAdmin]="true" />
     <gawmas-hunt-form #huntFormModal />
   `
 })
-export  class AdminBrowseComponent implements AfterViewInit, OnDestroy {
+export class AdminBrowseComponent implements AfterViewInit, OnDestroy {
   @ViewChild('huntFormModal') huntForm: HuntFormComponent | undefined;
 
   private _activatedRoute = inject(ActivatedRoute);

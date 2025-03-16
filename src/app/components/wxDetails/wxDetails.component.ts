@@ -12,13 +12,13 @@ import { selectWxDetails, selectWxDetailsLoading } from "store/wxDetails/wxDetai
 import { WxDetailsSkeletonComponent } from "./wxDetails-skeleton.component";
 
 @Component({
-  selector: 'gawmas-wx-details',
-  standalone: true,
-  templateUrl: './wxDetails.component.html',
-  imports: [
-    SHARED_MODULES, ModalComponent, LoadingComponent,
-    OrdinalPipe, WxConditionIconPipe, SafePipe, TrimTimePipe, NgIcon,
-    SuccessRateColorPipe, SuccessRatePipe, WxDetailsSkeletonComponent, MonthPipe]
+    selector: 'gawmas-wx-details',
+    templateUrl: './wxDetails.component.html',
+    imports: [
+        SHARED_MODULES, ModalComponent,
+        OrdinalPipe, WxConditionIconPipe, SafePipe, TrimTimePipe, NgIcon,
+        SuccessRateColorPipe, SuccessRatePipe, WxDetailsSkeletonComponent, MonthPipe
+    ]
 })
 export class WxDetailsComponent {
 

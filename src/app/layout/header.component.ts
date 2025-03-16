@@ -9,9 +9,7 @@ import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'gawmas-header',
-  standalone: true,
-  imports: [SHARED_MODULES, NgIconComponent, ModalComponent,
-    AboutComponent, IsActiveRoutePipe],
+  imports: [SHARED_MODULES, NgIconComponent, IsActiveRoutePipe],
   template: `
     <nav class="header">
       <a routerLink="/browse" class="brand space-x-3 rtl:space-x-reverse">

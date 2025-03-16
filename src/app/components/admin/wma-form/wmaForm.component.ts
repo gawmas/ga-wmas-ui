@@ -12,10 +12,9 @@ import { selectHistClimateLocations, selectHistClimateCoords } from "store/admin
 import * as adminActions from "store/admin/admin.actions";
 
 @Component({
-  selector: 'gawmas-wma-form',
-  standalone: true,
-  templateUrl: 'wmaForm.component.html',
-  imports: [SHARED_MODULES, ModalComponent, ReactiveFormsModule, ClimateLocationsMapComponent]
+    selector: 'gawmas-wma-form',
+    templateUrl: 'wmaForm.component.html',
+    imports: [SHARED_MODULES, ModalComponent, ReactiveFormsModule, ClimateLocationsMapComponent]
 })
 export class WmaFormComponent {
 

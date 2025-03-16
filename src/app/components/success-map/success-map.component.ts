@@ -14,12 +14,12 @@ import * as successMapSelectors from 'store/successMap/successMap.selectors';
 import { SuccessMapFiltersModalComponent } from "./success-map-filters-modal.component";
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    SHARED_MODULES, SuccessMapFiltersComponent, SuccessMapHuntResultsComponent,
-    LoadingComponent, SuccessMapFiltersModalComponent],
-  template: `
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        SHARED_MODULES, SuccessMapFiltersComponent, SuccessMapHuntResultsComponent,
+        LoadingComponent, SuccessMapFiltersModalComponent
+    ],
+    template: `
     @if (loading$ | async) {
       <gawmas-loading />
     }

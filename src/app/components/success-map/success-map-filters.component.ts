@@ -9,18 +9,17 @@ import * as successMapSelectors from 'store/successMap/successMap.selectors';
 import * as mapActions from 'store/successMap/successMap.actions';
 
 @Component({
-  selector: "gawmas-success-map-filters",
-  standalone: true,
-  imports: [SHARED_MODULES, ReactiveFormsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  styles: [`
+    selector: "gawmas-success-map-filters",
+    imports: [SHARED_MODULES, ReactiveFormsModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    styles: [`
     .filter-box {
       position: absolute;
       z-index: 9999;
       left: 25;
     }
   `],
-  template: `
+    template: `
     <div class="bg-gray-800 md:bg-gray-900 md:rounded-tl-2xl text-gray-200 text-xs md:text-sm md:p-2 md:animate-jump-in md:animate-delay-100 md:animate-once">
 
       <form [formGroup]="mapFilterForm" class="form">
@@ -88,7 +87,7 @@ import * as mapActions from 'store/successMap/successMap.actions';
       </form>
 
     </div>
-  `,
+  `
 })
 export class SuccessMapFiltersComponent implements OnInit, OnDestroy {
 

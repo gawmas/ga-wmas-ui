@@ -3,10 +3,9 @@ import { ModalComponent } from "_shared/components/modal.component";
 import { SuccessMapFiltersComponent } from "./success-map-filters.component";
 
 @Component({
-  selector: "gawmas-success-map-filters-modal",
-  standalone: true,
-  imports: [ModalComponent, SuccessMapFiltersComponent],
-  template: `
+    selector: "gawmas-success-map-filters-modal",
+    imports: [ModalComponent, SuccessMapFiltersComponent],
+    template: `
     <gawmas-modal #mapFiltersModal [targetElement]="mapFiltersTarget">
       <div class="flex items-start justify-between rounded-t-2xl my-2 pl-4 pt-2 mb-0 bg-gray-800">
         <h3 class="font-bold">Change Map Type</h3>

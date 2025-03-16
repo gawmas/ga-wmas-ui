@@ -5,9 +5,8 @@ import { SHARED_MODULES } from "@shared-imports";
 import { Subject, takeUntil } from "rxjs";
 
 @Component({
-  standalone: true,
-  imports: [SHARED_MODULES, IsActiveRoutePipe],
-  template: `
+    imports: [SHARED_MODULES, IsActiveRoutePipe],
+    template: `
   <div class="text-sm font-medium text-center border-b text-gray-400 border-gray-700">
     <ul class="flex flex-wrap -mb-px">
       <li class="me-2">

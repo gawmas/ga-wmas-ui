@@ -19,14 +19,13 @@ import * as wxDetailsActions from 'store/wxDetails/wxDetails.actions';
 import { initialHuntState } from './../../_shared/model/store/hunts.model';
 
 @Component({
-  selector: 'gawmas-browse-hunts',
-  standalone: true,
-  templateUrl: './hunts.component.html',
-  imports: [SHARED_MODULES, FiltersComponent,
-    SuccessRateColorPipe, SuccessRatePipe, SeasonTextPipe,
-    NgIconComponent, DetailsHighlightPipe, WxDetailsComponent,
-    HuntFormComponent, LoadingComponent, SafePipe,
-    WxDetailTypePipe, WxAvgTempDeparturePipe, WxConditionIconPipe]
+    selector: 'gawmas-browse-hunts',
+    templateUrl: './hunts.component.html',
+    imports: [SHARED_MODULES, FiltersComponent,
+        SuccessRateColorPipe, SuccessRatePipe,
+        NgIconComponent, DetailsHighlightPipe, WxDetailsComponent,
+        LoadingComponent, SafePipe,
+        WxDetailTypePipe, WxAvgTempDeparturePipe, WxConditionIconPipe]
 })
 export class HuntsComponent implements OnInit, OnDestroy {
 

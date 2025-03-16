@@ -7,11 +7,9 @@ import { FooterComponent } from 'layout/footer.component';
 import { SplashComponent } from 'components/splash.component';
 
 @Component({
-  selector: 'gawmas-root',
-  standalone: true,
-  imports: [HeaderComponent, RouterOutlet, NgIconComponent,
-    FooterComponent, SplashComponent],
-  template: `
+    selector: 'gawmas-root',
+    imports: [HeaderComponent, RouterOutlet, FooterComponent, SplashComponent],
+    template: `
     <div class="max-w-[1400px] mx-auto bg-gradient-to-r from-gawmas-green to-transparent from-20% to-80%">
       <gawmas-header></gawmas-header>
       <gawmas-splash #splashModal></gawmas-splash>

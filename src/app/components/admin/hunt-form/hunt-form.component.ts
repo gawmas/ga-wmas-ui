@@ -15,11 +15,10 @@ import { DatePipe } from '@angular/common';
 import { HuntPayload } from '@model';
 
 @Component({
-  selector: 'gawmas-hunt-form',
-  standalone: true,
-  imports: [SHARED_MODULES, ModalComponent, ReactiveFormsModule, FormArrayPipe],
-  providers: [provideNgxMask(), DatePipe],
-  templateUrl: './hunt-form.component.html',
+    selector: 'gawmas-hunt-form',
+    imports: [SHARED_MODULES, ModalComponent, ReactiveFormsModule, FormArrayPipe],
+    providers: [provideNgxMask(), DatePipe],
+    templateUrl: './hunt-form.component.html'
 })
 export class HuntFormComponent {
 

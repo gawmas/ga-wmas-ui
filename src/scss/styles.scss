@@ -1,15 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
-@import "tailwindcss";
-@config "./../../tailwind.config.js";
+@use "./elements/header.scss";
+@use "./elements/buttons.scss";
+@use "./elements/chips.scss";
+@use "./components/loader.scss";
+@use "./components/hunts.scss";
+@use "./components/filters.scss";
+@use "./components/map.scss";
+@use "./components/add-hunts.scss";
 
-@import "./elements/header.scss";
-@import "./elements/buttons.scss";
-@import "./elements/chips.scss";
-@import "./components/loader.scss";
-@import "./components/hunts.scss";
-@import "./components/filters.scss";
-@import "./components/map.scss";
-@import "./components/add-hunts.scss";
+@use "tailwindcss";
+@config "./../../tailwind.config.js";
 
 body {
   overflow-x: hidden;

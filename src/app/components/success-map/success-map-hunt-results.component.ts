@@ -12,12 +12,11 @@ import * as filterSelectors from "store/filters/filters.selectors";
 import * as successMapSelectors from 'store/successMap/successMap.selectors';
 
 @Component({
-  selector: 'gawmas-success-map-hunt-results',
-  standalone: true,
-  imports: [
-    ModalComponent, HuntsComponent, AsyncPipe, NgIconComponent
-  ],
-  template: `
+    selector: 'gawmas-success-map-hunt-results',
+    imports: [
+        ModalComponent, HuntsComponent, AsyncPipe, NgIconComponent
+    ],
+    template: `
     <gawmas-modal #huntResultsModal [targetElement]="huntResultsTarget">
       <div class="flex items-start justify-between rounded-t-2xl my-2 pl-4 pt-2 mb-0 bg-gray-800">
         <div class="-ml-6 -mt-4 pt-2 pl-3 pb-1.5 border-b rounded-tl-2xl border-gray-600 bg-gradient-to-r from-gawmas-green to-transparent from-20% to-80%">

@@ -3,10 +3,9 @@ import { SHARED_MODULES } from "@shared-imports";
 import { ModalComponent } from "_shared/components/modal.component";
 
 @Component({
-  selector: 'gawmas-splash',
-  standalone: true,
-  imports: [SHARED_MODULES, ModalComponent],
-  template: `
+    selector: 'gawmas-splash',
+    imports: [SHARED_MODULES, ModalComponent],
+    template: `
     <gawmas-modal #splash [targetElement]="splashTarget">
       <div class="p-6">
         <div class="w-full flex justify-center">
@@ -28,7 +27,7 @@ import { ModalComponent } from "_shared/components/modal.component";
         </button>
       </div>
     </gawmas-modal>
-  `,
+  `
 })
 export class SplashComponent {
 

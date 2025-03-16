@@ -16,13 +16,12 @@ import { TempDepartLabelPipe } from "_shared/pipes/temp-depart-label.pipe";
 import * as huntsActions from 'store/hunts/hunts.actions';
 
 @Component({
-  selector: 'gawmas-hunt-filters',
-  standalone: true,
-  imports: [SHARED_MODULES, ReactiveFormsModule,
-    NgIconComponent, FormArrayPipe, DrawerComponent,
-    FilterObjNamePipe, TempDepartLabelPipe],
-  templateUrl: './filters.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'gawmas-hunt-filters',
+    imports: [SHARED_MODULES, ReactiveFormsModule,
+        NgIconComponent, FormArrayPipe, DrawerComponent,
+        FilterObjNamePipe, TempDepartLabelPipe],
+    templateUrl: './filters.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FiltersComponent implements AfterViewInit, OnDestroy {
 

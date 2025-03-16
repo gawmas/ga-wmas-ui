@@ -10,11 +10,10 @@ import * as adminActions from "store/admin/admin.actions";
 import * as adminSelectors from "store/admin/admin.selectors";
 
 @Component({
-  selector: "add-hunts",
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SHARED_MODULES, ReactiveFormsModule, NgIcon],
-  template: `
+    selector: "add-hunts",
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [SHARED_MODULES, ReactiveFormsModule, NgIcon],
+    template: `
     <div class="add-hunts ">
 
       <button class="btn btn-default m-2"
@@ -119,7 +118,7 @@ import * as adminSelectors from "store/admin/admin.selectors";
         </div>
       }
     </div>
-  `,
+  `
 })
 export class AddHuntsComponent implements OnInit {
 

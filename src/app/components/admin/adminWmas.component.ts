@@ -13,11 +13,9 @@ import { BehaviorSubject, Subscription, combineLatest, filter, map, startWith } 
 import * as adminActions from "store/admin/admin.actions";
 
 @Component({
-  selector: 'gawmas-admin-wmas',
-  standalone: true,
-  imports: [SHARED_MODULES, NgIconComponent, FormsModule,
-    ModalComponent, WmaFormComponent, ClimateLocationsMapComponent],
-  template: `
+    selector: 'gawmas-admin-wmas',
+    imports: [SHARED_MODULES, NgIconComponent, FormsModule, WmaFormComponent],
+    template: `
     <gawmas-wma-form #wmaFormModal />
     <div class="m-3 bg-gray-800">
       <div class="border rounded-lg bg-gray-900 border-gray-500 mb-2">
