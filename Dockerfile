@@ -16,4 +16,4 @@ RUN npm install --save --legacy-peer-deps
 
 # Set entrypoint to script, but keep CMD as the final command
 ENTRYPOINT ["/usr/local/bin/ui_entrypoint.sh"]
-CMD ["npm", "run", "network"]
+CMD ["npm", "run", "docker"]
