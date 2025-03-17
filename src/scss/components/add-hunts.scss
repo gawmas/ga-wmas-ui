@@ -13,14 +13,20 @@ div.add-hunts {
   td {
     input,
     select {
+      @apply
+        bg-gray-900
+        text-white
+        p-2;
       font-size: 13px;
     }
   }
 
   td.disabled {
-    input, select, label {
-      text-decoration: line-through;
-      background-color: red;
+    input, select, label, span {
+      @apply bg-gray-500
+        text-gray-400
+        line-through
+        cursor-not-allowed;
     }
   }
 

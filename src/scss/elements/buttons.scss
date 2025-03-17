@@ -19,6 +19,12 @@ button.btn {
       bg-blue-600
       hover:bg-blue-500
       focus:ring-white;
+    &[disabled] {
+      @apply
+        bg-blue-300
+        text-gray-400
+        cursor-not-allowed;
+    }
   }
 
   &-default {
