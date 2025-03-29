@@ -8,7 +8,7 @@
   <gawmas-loading />
 }
 
-<table class="w-[100%] text-sm text-left text-gray-300 -pt-2">
+<table class="w-[100%] text-sm text-left text-gray-300">
   @if (screenWidth() > 1000) {
     <thead class="text-xs text-gray-400 uppercase bg-gray-800 border-gray-400 border-b-2 border-t-1">
       <tr>
@@ -239,7 +239,7 @@
       }
     </tbody>
 
-} @else {
+} @else { <!-- MOBILE ... -->
 
     <thead class="sr-only">
       <tr>
@@ -252,7 +252,7 @@
       @if ((hunts$ | async); as hunts) {
         @for (hunt of hunts; track hunt.id) {
           <tr class="bg-gray-800">
-            <td colspan="2" class="px-2 pt-2 align-top">
+            <td colspan="2" class="px-2 py-2 align-top bg-gray-900">
               <div class="flex flex-wrap items-center">
                 <div class="text-white font-bold uppercase mr-1">
                   {{ hunt.wmaName }}
@@ -283,7 +283,7 @@
                   {{ hunt.season }}
                 </span>
                 @for (date of hunt.huntDates; track date.start) {
-                  <span class="text-xs font-medium me-2 my-1 px-2.5 py-0.5 rounded-full bg-gray-400 text-gray-700">
+                  <span class="text-xs font-bold me-2 my-1 px-2.5 py-0.5 rounded-full bg-gray-400 text-gray-900">
                     {{ date.start | date: 'MM/dd' }} &ndash; {{ date.end | date: 'MM/dd' }}
                   </span>
                 }
@@ -296,9 +296,9 @@
               <div class="mt-1 text-xs" [innerHTML]="hunt.details | detailsHighlight"></div>
             </td>
           </tr>
-          <tr class="bg-gray-800 border-b border-gray-600">
-            <td class="max-w-[135px] text-xs px-2 pb-2 align-top bg-gray-900">
-              <table class="mt-1 mb-1">
+          <tr class="bg-gray-800 border-b-3 border-gray-400">
+            <td class="max-w-[135px] text-xs px-2 py-2 bg-gray-900">
+              <table class="m-auto w-[60%]">
                 <tr>
                   <td class="px-2 w-1/2 uppercase text-xs font-semibold text-right text-gray-400 border-r border-gray-600">Hunters</td>
                   <td class="px-2 w-1/2">{{ hunt.hunterCount }}</td>
@@ -321,7 +321,7 @@
                 </tr>
               </table>
             </td>
-            <td class="max-w-[215px] p-1 border-t border-l border-gray-600 align-top">
+            <td class="max-w-[215px] p-1 align-top">
 
               @if (hunt.wxDetails) {
                 @switch (hunt.wxDetails[0] | wxDetailType) {

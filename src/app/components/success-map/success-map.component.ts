@@ -38,7 +38,7 @@ import { SuccessMapFiltersModalComponent } from "./success-map-filters-modal.com
         </div>
       </div>
 
-      <div id="map" class="md:flex-1 ml-0 flex-1 md:mt-1 md:border-t md:border-r md:border-b border-gray-500 md:rounded-br-xl md:rounded-tr-xl h-[75vh] w-full {{ mapVisible() ? 'visible' : 'hidden' }}">
+      <div id="map" class="md:flex-1 ml-0 flex-1 md:mt-1 md:border-t md:border-r md:border-b border-gray-500 md:rounded-br-xl md:rounded-tr-xl h-screen md:h-[75vh] w-full {{ mapVisible() ? 'visible' : 'hidden' }}">
         <!-- Map -->
       </div>
     </div>

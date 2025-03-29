@@ -1,4 +1,4 @@
-<div class="flex px-2 py-2 mb-0 scroll-container z-10">
+<div class="flex px-2 py-2 mb-0 scroll-container z-100">
 
   @if (isLoading$ | async) {
     <button disabled type="button" class="btn btn-loading">
@@ -11,7 +11,7 @@
   } @else {
     <button (click)="openFiltersDrawer()" type="button"
       class="btn btn-primary animate-jump-in animate-delay-100 animate-once">
-      <ng-icon name="heroAdjustmentsHorizontal" class="mr-1 text-lg"></ng-icon>
+      <ng-icon name="heroMagnifyingGlass" class="mr-1 text-lg"></ng-icon>
       <span class="sr-only">Applied Filter Count</span>
       Search
       @if (filterCount() > 0) {

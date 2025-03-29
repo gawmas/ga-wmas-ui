@@ -10,13 +10,17 @@ import { SplashComponent } from 'components/splash.component';
     selector: 'gawmas-root',
     imports: [HeaderComponent, RouterOutlet, FooterComponent, SplashComponent],
     template: `
-    <div class="max-w-[1400px] mx-auto bg-gradient-to-r from-gawmas-green to-transparent from-20% to-80%">
-      <gawmas-header></gawmas-header>
-      <gawmas-splash #splashModal></gawmas-splash>
+    <div class="flex flex-col min-h-screen max-w-[1400px] bg-gradient-to-r from-gawmas-green to-gray-900 from-20% to-80%">
+      <header class="sticky fixed z-50 top-0 left-0 w-[100%] bg-gray-900 p-0">
+        <gawmas-header></gawmas-header>
+      </header>
+      <!-- <gawmas-splash #splashModal></gawmas-splash> -->
+      <div class="flex-grow top-60 left-0">
         <main>
           <router-outlet></router-outlet>
         </main>
-        <gawmas-footer></gawmas-footer>
+      </div>
+      <gawmas-footer></gawmas-footer>
     </div>
   `
 })

@@ -1,15 +1,10 @@
 nav.header {
   background-image: url(./../../assets/images/header-bg-image.png);
-  width: 100%;
   background-repeat: no-repeat;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  padding: 1rem;
 
   a.brand object {
-    height: 65px;
-    max-height: 3.5rem
+    height: 55px;
+    max-height: 3rem
   }
 
   a.nav-current {
