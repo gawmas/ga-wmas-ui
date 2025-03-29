@@ -23,8 +23,6 @@ body {
     bg-gray-300
     after:content-['']
     after:absolute
-    after:top-[2px]
-    after:start-[2px]
     after:bg-white
     after:border-gray-300
     after:border
@@ -37,7 +35,7 @@ body {
 
 .select {
   @apply block
-    py-3 px-5
+    py-3
     text-xs
     border
     rounded-full
@@ -48,21 +46,24 @@ body {
 }
 
 .gawmas-tooltip {
-  @apply absolute
-    z-10
-    invisible
-    inline-block
-    px-3 py-2
-    text-xs
-    font-medium
-    text-gray-800
-    normal-case
-    transition-opacity
-    duration-300
-    bg-gray-300
-    rounded-full
-    shadow-sm
-    opacity-0;
+  text-transform: none; /* normal-case */
+  visibility: hidden; /* invisible */
+  position: absolute; /* absolute */
+  z-index: 10; /* z-10 */
+  display: inline-block; /* inline-block */
+  border-radius: 0.5rem; /* rounded-lg (8px) */
+  padding-left: 0.75rem; /* px-3 (12px) */
+  padding-right: 0.75rem; /* px-3 (12px) */
+  padding-top: 0.5rem; /* py-2 (8px) */
+  padding-bottom: 0.5rem; /* py-2 (8px) */
+  font-size: 0.875rem; /* text-sm (14px) */
+  font-weight: 500; /* font-medium */
+  color: #374151; /* text-gray-700 */
+  opacity: 0; /* opacity-0 */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-xs */
+  transition-property: opacity; /* transition-opacity */
+  transition-duration: 300ms; /* duration-300 */
+  background-color: #d1d5db; /* bg-gray-300 */
 }
 
 .scroll-container {

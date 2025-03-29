@@ -136,7 +136,7 @@ export class HuntsComponent implements OnInit, OnDestroy {
   }
 
   showTooltip(targetElId: string, triggerType: TooltipTriggerType, event: any) {
-    // console.log('targetElId', targetElId, 'event', event);
+    // console.log('targetElId', targetElId, 'target', event.target as HTMLElement);
     const targetEl = document.getElementById(targetElId)
     const tooltip = new Tooltip(targetEl, event.target as HTMLElement, { triggerType });
     tooltip.show();

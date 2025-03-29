@@ -117,6 +117,7 @@
                       <span class="font-semibold ml-2">Observed Average Temperatures</span>
                     </div>
                     @for (wx of $any(hunt.wxDetails); track wx.ident; let i = $index) {
+                      <!-- <pre>{{ wx | json }}</pre> -->
                       <div class="w-full uppercase text-xs">
                         <div class="flex items-center uppercase font-bold text-xs border-b border-gray-700">
                           <span class="italic ml-2 text-gray-400 pb-1">
@@ -125,13 +126,16 @@
                         </div>
                         <div class="flex items-center m-auto py-1 mb-3">
                           @if ((wx.avgMaxTemp | wxAvgTempDeparture:true:wx.start:hunt.wxHistAvgs!); as maxDepart) {
+                            <!-- {{ maxDepart | json }} -->
                             <span class="font-semibold px-2 text-gray-400">High:</span>
                             @if (maxDepart.msg?.length) {
                               <span [class]="maxDepart.class"
                                 (mouseover)="showTooltip(i + '' + wx.ident + 'high', 'hover', $event)">
                                   {{ wx.avgMaxTemp }}&deg;
                               </span>
-                              <div id="{{ i }}{{ wx.ident }}high" role="tooltip" class="gawmas-tooltip tooltip" [innerHTML]="maxDepart.msg">
+                              <div id="{{ i }}{{ wx.ident }}high" role="tooltip"
+                                class="tooltip normal-case invisible absolute z-10 inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-700 opacity-0 shadow-xs transition-opacity duration-300 bg-gray-300"
+                                [innerHTML]="maxDepart.msg">
                               </div>
                             } @else {
                               <span [class]="maxDepart.class">
@@ -140,13 +144,16 @@
                             }
                           }
                           @if ((wx.avgMinTemp | wxAvgTempDeparture:false:wx.start:hunt.wxHistAvgs!); as minDepart) {
+                            <!-- {{ minDepart | json }} -->
                             <span class="font-semibold px-2 text-gray-400">Low:</span>
                             @if (minDepart.msg?.length) {
                               <span [class]="minDepart.class"
                                 (mouseover)="showTooltip(i + '' + wx.ident + 'low', 'hover', $event)">
                                   {{ wx.avgMinTemp }}&deg;
                               </span>
-                              <div id="{{ i }}{{ wx.ident }}low" role="tooltip" class="gawmas-tooltip tooltip" [innerHTML]="minDepart.msg">
+                              <div id="{{ i }}{{ wx.ident }}low" role="tooltip"
+                              class="tooltip normal-case invisible absolute z-10 inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-700 opacity-0 shadow-xs transition-opacity duration-300 bg-gray-300"
+                                [innerHTML]="minDepart.msg">
                               </div>
                             } @else {
                               <span [class]="minDepart.class">
@@ -173,7 +180,7 @@
                             {{ wx.date | date: 'EEE' }}, {{ wx.date | date: 'MM/dd' }}
                           </div>
                           <div class="flex justify-center items-center">
-                            <object [data]="wx.middayIcon | wxCondIcon | safe"
+                            <object [data]="wx.midday_icon | wxCondIcon | safe"
                               type="image/svg+xml" class="w-[50px] h-[50px]"
                               (mouseover)="showTooltip(i + '' + wx.ident + 'cond', 'hover', $event)"></object>
                             <div id="{{ i }}{{ wx.ident }}cond" role="tooltip" class="gawmas-tooltip tooltip" [innerHTML]="wx.middayDescr"></div>
@@ -327,14 +334,15 @@
                           </span>
                         </div>
                         <div class="flex items-center m-auto py-1 mb-3">
-                          @if ((wx.avgMaxTemp | wxAvgTempDeparture:true:wx.start:hunt.wxHistAvgs!); as maxDepart) {
+                          @if ((wx.avgMaxTemp | wxAvgTempDeparture:true:wx.startDate:hunt.wxHistAvgs!); as maxDepart) {
                             <span class="font-semibold px-2 text-gray-400">High:</span>
                             @if (maxDepart.msg?.length) {
                               <span [class]="maxDepart.class"
                                 (mouseover)="showTooltip(i + '' + wx.ident + 'high', 'hover', $event)">
                                   {{ wx.avgMaxTemp }}&deg;
                               </span>
-                              <div id="{{ i }}{{ wx.ident }}high" role="tooltip" class="gawmas-tooltip tooltip" [innerHTML]="maxDepart.msg">
+                              <div id="{{ i }}{{ wx.ident }}high" role="tooltip" class="gawmas-tooltip tooltip"
+                                [innerHTML]="maxDepart.msg">
                               </div>
                             } @else {
                               <span [class]="maxDepart.class">
@@ -342,14 +350,15 @@
                               </span>
                             }
                           }
-                          @if ((wx.avgMinTemp | wxAvgTempDeparture:false:wx.start:hunt.wxHistAvgs!); as minDepart) {
+                          @if ((wx.avgMinTemp | wxAvgTempDeparture:false:wx.startDate:hunt.wxHistAvgs!); as minDepart) {
                             <span class="font-semibold px-2 text-gray-400">Low:</span>
                             @if (minDepart.msg?.length) {
                               <span [class]="minDepart.class"
                                 (mouseover)="showTooltip(i + '' + wx.ident + 'low', 'hover', $event)">
                                   {{ wx.avgMinTemp }}&deg;
                               </span>
-                              <div id="{{ i }}{{ wx.ident }}low" role="tooltip" class="gawmas-tooltip tooltip" [innerHTML]="minDepart.msg">
+                              <div id="{{ i }}{{ wx.ident }}low" role="tooltip" class="gawmas-tooltip tooltip"
+                                [innerHTML]="minDepart.msg">
                               </div>
                             } @else {
                               <span [class]="minDepart.class">
@@ -375,7 +384,7 @@
                             {{ wx.date | date: 'MM/dd' }}
                           </div>
                           <div class="flex justify-center items-center">
-                            <object [data]="wx.middayIcon | wxCondIcon | safe"
+                            <object [data]="wx.midday_icon | wxCondIcon | safe"
                               type="image/svg+xml" class="w-[35px] h-[35px]"
                               (mouseover)="showTooltip(i + '' + wx.ident + 'cond', 'hover', $event)"></object>
                             <div id="{{ i }}{{ wx.ident }}cond" role="tooltip" class="gawmas-tooltip tooltip" [innerHTML]="wx.middayDescr"></div>
@@ -411,6 +420,7 @@
                   }
                 }
               }
+
             </td>
           </tr>
         } @empty {

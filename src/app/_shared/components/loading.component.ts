@@ -4,7 +4,7 @@ import { Component, OnInit } from "@angular/core";
   selector: 'gawmas-loading',
   standalone: true,
   template: `
-    <div class="fixed inset-0 z-40 bg-gray-800 bg-opacity-25 backdrop-blur-sm"></div>
+    <div class="fixed inset-0 z-40 bg-opacity-50 backdrop-blur-[3px]"></div>
     <div [class.opacity-0]="fadeOut" class="fixed top-1/4 inset-x-0 flex items-center justify-center z-50 opacity-100 transition-opacity duration-2000">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="125" height="125">
         <circle fill="#F9BF4B" stroke="#F9BF4B" stroke-width="15" r="15" cx="35" cy="100">
@@ -37,7 +37,7 @@ export class LoadingComponent implements OnInit {
   ngOnInit(): void {
     setTimeout(() => {
       this.fadeOut = true;
-    }, 2000);
+    }, 2_000);
   }
 }
 

@@ -259,9 +259,9 @@
               placeholder="Search WMAs by name...">
             <div class="text-gray-300 h-2 absolute end-2 bottom-5 text-xs">
               @if (filterForm.controls['wmaFilter'].value.length > 0) {
-              <a class="cursor-pointer hover:text-white" (click)="clearSearch()">
-                <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
-              </a>
+                <a class="cursor-pointer hover:text-white" (click)="clearSearch()">
+                  <ng-icon name="heroXMark" class="text-xl font-extrabold"></ng-icon>
+                </a>
               }
             </div>
           </div>
@@ -274,18 +274,20 @@
           }
           <div formArrayName="wmas" *ngFor="let wma of (filterForm | formArray: 'wmas')?.controls; let i = index"
             class="flex items-center">
-            <label for="wma{{ i }}" class="ml-2 inline-block text-sm whitespace-nowrap align-baseline" [ngClass]="{
+            <label for="wma{{ i }}" class="ml-2  text-sm whitespace-nowrap align-baseline"
+            [ngClass]="{
               'text-gray-300': (filterForm | formArray: 'wmas')?.at(i)?.value === false,
               'text-gawmas-yeller': (filterForm | formArray: 'wmas')?.at(i)?.value === true,
-              'hidden': auxData.filteredWmas[i].visible === false
+              'hidden': !auxData.filteredWmas[i].visible
             }">
               <input [formControlName]="i" id="wma{{ i }}" type="checkbox"
-                [ngClass]="{ 'hidden': auxData.filteredWmas[i].visible === false }"
-                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded inline-block mb-1">
+                [ngClass]="{ 'hidden': !auxData.filteredWmas[i].visible }"
+                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mb-1">
               {{ auxData.filteredWmas[i].name }}
             </label>
           </div>
         </div>
+        <!-- {{ auxData.filteredWmas | json }} -->
         @if (selectedWmasCount() > 0) {
           <div class="text-sm text-gawmas-yeller font-bold italic text-right">
             {{ selectedWmasCount() }} selected</div>
