@@ -18,7 +18,7 @@ export class WxDetailTypePipe implements PipeTransform {
   }
 
   private isWxHistDetailedHunt(obj: any): obj is WxHistDetailedHunt {
-    return 'date' in obj && 'high' in obj && 'low' in obj && 'middayDescr' in obj && 'middayIcon' in obj && 'moonIllum' in obj && 'moonPhase' in obj;
+    return 'date' in obj && 'high' in obj && 'low' in obj && 'midday_descr' in obj && 'midday_icon' in obj && 'moon_illum' in obj && 'moon_phase' in obj;
   }
 
   private isWxHistSummaryHunt(obj: any): obj is WxHistSummaryHunt {
