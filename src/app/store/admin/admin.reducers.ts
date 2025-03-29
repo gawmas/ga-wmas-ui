@@ -44,4 +44,18 @@ export const adminReducers = createReducer(
     };
   }),
 
+  on(adminActions.addHunts, (state) => {
+    return {
+      ...state,
+      loading: true
+    }
+  }),
+
+  on(adminActions.addHuntsComplete, (state) => {
+    return {
+      ...state,
+      loading: false
+    }
+  }),
+
 );

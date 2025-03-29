@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, signal } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, signal, ViewEncapsulation } from "@angular/core";
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ScrapedHunt, Season, Weapon, Wma } from "@model";
 import { NgIcon } from "@ng-icons/core";
 import { Store } from "@ngrx/store";
 import { SHARED_MODULES } from "@shared-imports";
 import { AppStateInterface } from "@store-model";
+import { LoadingComponent } from "_shared/components/loading.component";
 import { map, take, tap } from "rxjs";
 import * as adminActions from "store/admin/admin.actions";
 import * as adminSelectors from "store/admin/admin.selectors";
@@ -13,8 +14,12 @@ import * as filterSelectors from "store/filters/filters.selectors";
 @Component({
   selector: "add-hunts",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SHARED_MODULES, ReactiveFormsModule, NgIcon],
+  imports: [SHARED_MODULES, ReactiveFormsModule, NgIcon, LoadingComponent],
   template: `
+
+    @if (isLoading$ | async) {
+      <gawmas-loading />
+    }
 
     <ul class="flex flex-wrap mx-2 mt-2 text-sm font-medium text-center border-b border-gray-700 text-gray-400">
       <li class="me-2">
@@ -295,6 +300,8 @@ export class AddHuntsComponent implements OnInit {
   seasons = signal<Season[]>([]);
   weapons = signal<Weapon[]>([]);
 
+  isLoading$ = this._store.select(adminSelectors.selectAdminStateLoading);
+
   auxData$ = this._store.select(filterSelectors.selectFiltersAuxData)
     .pipe(
       tap((aux) => {
@@ -405,11 +412,9 @@ export class AddHuntsComponent implements OnInit {
   }
 
   save(isBulk: boolean) {
-    if (isBulk) {
-      console.log(this.bulkHuntsForm.value)
-    } else {
-      console.log(this.singleHuntsForm.value)
-    }
+    const payload = isBulk ? this.bulkHuntsForm.value : this.singleHuntsForm.value;
+    console.log(payload);
+    this._store.dispatch(adminActions.addHunts({ seasonId: payload.season!, newHunts: payload.hunts! }));
   }
 
   private _findWma(wmaName: string): number | undefined {

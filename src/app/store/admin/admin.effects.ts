@@ -83,6 +83,19 @@ export class AdminEffects {
     )
   );
 
+  addHunts$ = createEffect(() =>
+    this._actions$.pipe(
+      ofType(adminActions.addHunts),
+      map((action) => ({ seasonId: action.seasonId, newHunts: action.newHunts })),
+      switchMap(({ seasonId, newHunts }) =>
+        this._adminService.addHunts(seasonId, newHunts).pipe(
+          map(() => adminActions.addHuntsComplete()),
+          catchError((error) => of(adminActions.addHuntsError({ error })))
+        )
+      )
+    )
+  );
+
   error$ = createEffect(
     () =>
       this._actions$.pipe(

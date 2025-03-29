@@ -9,7 +9,7 @@ export const selectHunt = createSelector(
   (state: AdminState) => state.hunt
 );
 
-export const selectHuntLoading = createSelector(
+export const selectAdminStateLoading = createSelector(
   selectAdminState,
   (state: AdminState) => state.loading
 );

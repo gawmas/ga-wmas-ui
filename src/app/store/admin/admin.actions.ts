@@ -58,6 +58,7 @@ export const updateWmaError = createAction(
   `${prefix} Update Wma Error`,
   props<{ error: string }>());
 
+// Add Hunts page ...
 export const enterAddHuntsPage = createAction(
   `${prefix} Enter Add Hunts Page`);
 
@@ -75,3 +76,15 @@ export const loadScrapedHuntsError = createAction(
 export const loadScrapedHuntsComplete = createAction(
   `${prefix} Load Scraped Hunts Complete`,
   props<{ scrapedHunts: ScrapedHunt[] }>());
+
+export const addHunts = createAction(
+  `${prefix} Add Hunts`,
+  props<{ seasonId: string, newHunts: any[] }>());
+
+export const addHuntsComplete = createAction(
+  `${prefix} Add Hunts Complete`);
+
+export const addHuntsError = createAction(
+  `${prefix} Add Hunts Error`,
+  props<{ error: string }>());
+
