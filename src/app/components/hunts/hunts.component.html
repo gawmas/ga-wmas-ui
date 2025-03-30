@@ -2,7 +2,7 @@
   <gawmas-hunt-filters />
 }
 
-<gawmas-wx-details #wxDetailsModal />
+<gawmas-wx-details #wxDetailsDrawer />
 
 @if (isLoading$ | async) {
   <gawmas-loading />
@@ -10,9 +10,14 @@
 
 <table class="w-[100%] text-sm text-left text-gray-300">
   @if (screenWidth() > 1000) {
+
+    <!-- ********************************************************************************* -->
+    <!-- .................................... DESKTOP .................................... -->
+    <!-- ********************************************************************************* -->
+
     <thead class="text-xs text-gray-400 uppercase bg-gray-800 border-gray-400 border-b-2 border-t-1">
       <tr>
-        <th scope="col" class="px-6 py-3">{{ isModal() ? 'Weapon, &amp; Details' : 'Property, Season, Weapon, &amp; Details' }}</th>
+        <th scope="col" class="px-6 py-3">{{ isModal() ? 'Weapon | Details' : 'Property | Season | Weapon | Details' }}</th>
         <th scope="col" class="px-6 py-3 w-[200px]">Dates</th>
         <th scope="col" class="px-6 py-3 w-[150px] text-center">Results</th>
         <th scope="col" class="px-6 py-3 w-[300px] text-center">Weather</th>
@@ -151,9 +156,10 @@
                                 (mouseover)="showTooltip(i + '' + wx.ident + 'low', 'hover', $event)">
                                   {{ wx.avgMinTemp }}&deg;
                               </span>
-                              <div id="{{ i }}{{ wx.ident }}low" role="tooltip"
-                              class="tooltip normal-case invisible absolute z-10 inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-700 opacity-0 shadow-xs transition-opacity duration-300 bg-gray-300"
-                                [innerHTML]="minDepart.msg">
+                              <div
+                                id="{{ i }}{{ wx.ident }}low" role="tooltip"
+                                class="tooltip normal-case invisible absolute z-10 inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-700 opacity-0 shadow-xs transition-opacity duration-300 bg-gray-300">
+                                {{ minDepart.msg }}
                               </div>
                             } @else {
                               <span [class]="minDepart.class">
@@ -180,10 +186,12 @@
                             {{ wx.date | date: 'EEE' }}, {{ wx.date | date: 'MM/dd' }}
                           </div>
                           <div class="flex justify-center items-center">
-                            <object [data]="wx.midday_icon | wxCondIcon | safe"
-                              type="image/svg+xml" class="w-[50px] h-[50px]"
-                              (mouseover)="showTooltip(i + '' + wx.ident + 'cond', 'hover', $event)"></object>
-                            <div id="{{ i }}{{ wx.ident }}cond" role="tooltip" class="gawmas-tooltip tooltip" [innerHTML]="wx.middayDescr"></div>
+                            <img [src]="wx.midday_icon | wxCondIcon | safe"
+                              class="w-[50px] h-[50px]"
+                              (mouseover)="showTooltip(i + '' + wx.ident + 'midday', 'hover', $event)" />
+                            <div id="{{ i }}{{ wx.ident }}midday" role="tooltip"
+                              class="tooltip normal-case invisible absolute z-10 inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-700 opacity-0 shadow-xs transition-opacity duration-300 bg-gray-300"
+                              [innerHTML]="wx.midday_descr"></div>
                           </div>
                           <div class="flex-none text-center">
                             <div>
@@ -202,7 +210,7 @@
                       <div class="float-left pt-1 italic">&#64; {{ $any(hunt.wxDetails[0]).location }}, GA</div>
                       <div class="float-right">
                         <button type="button" (click)="openWxDetails(hunt.id, hunt.huntDates, $any(hunt.wxDetails[0]).location, hunt.hunterCount, hunt.bucks, hunt.does, hunt.weapon)"
-                          class="px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white">
+                          class="px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white cursor-pointer">
                             <ng-icon name="heroArrowTopRightOnSquare" class="w-4 h-4 mr-1"></ng-icon>
                               More Details
                         </button>
@@ -239,7 +247,11 @@
       }
     </tbody>
 
-} @else { <!-- MOBILE ... -->
+} @else {
+
+  <!-- ********************************************************************************* -->
+  <!-- ..................................... MOBILE .................................... -->
+  <!-- ********************************************************************************* -->
 
     <thead class="sr-only">
       <tr>
@@ -326,7 +338,11 @@
               @if (hunt.wxDetails) {
                 @switch (hunt.wxDetails[0] | wxDetailType) {
                   @case ('summary') {
+                    <div class="text-xs font-bold uppercase mx-1 mb-2 border-b border-gray-600 text-center">
+                      Observed Avg Temps
+                    </div>
                     @for (wx of $any(hunt.wxDetails); track wx.ident; let i = $index) {
+                      <!-- <pre>{{ wx | json }}</pre> -->
                       <div class="w-full uppercase text-xs">
                         <div class="flex items-center uppercase font-bold text-xs border-b border-gray-700">
                           <span class="italic ml-2 text-gray-400 pb-1">
@@ -334,14 +350,16 @@
                           </span>
                         </div>
                         <div class="flex items-center m-auto py-1 mb-3">
-                          @if ((wx.avgMaxTemp | wxAvgTempDeparture:true:wx.startDate:hunt.wxHistAvgs!); as maxDepart) {
+                          @if ((wx.avgMaxTemp | wxAvgTempDeparture:true:wx.start:hunt.wxHistAvgs!); as maxDepart) {
+                            <!-- {{ maxDepart | json }} -->
                             <span class="font-semibold px-2 text-gray-400">High:</span>
                             @if (maxDepart.msg?.length) {
                               <span [class]="maxDepart.class"
                                 (mouseover)="showTooltip(i + '' + wx.ident + 'high', 'hover', $event)">
                                   {{ wx.avgMaxTemp }}&deg;
                               </span>
-                              <div id="{{ i }}{{ wx.ident }}high" role="tooltip" class="gawmas-tooltip tooltip"
+                              <div id="{{ i }}{{ wx.ident }}high" role="tooltip"
+                                class="tooltip normal-case invisible absolute z-10 inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-700 opacity-0 shadow-xs transition-opacity duration-300 bg-gray-300"
                                 [innerHTML]="maxDepart.msg">
                               </div>
                             } @else {
@@ -350,14 +368,16 @@
                               </span>
                             }
                           }
-                          @if ((wx.avgMinTemp | wxAvgTempDeparture:false:wx.startDate:hunt.wxHistAvgs!); as minDepart) {
+                          @if ((wx.avgMinTemp | wxAvgTempDeparture:false:wx.start:hunt.wxHistAvgs!); as minDepart) {
+                            <!-- {{ minDepart | json }} -->
                             <span class="font-semibold px-2 text-gray-400">Low:</span>
                             @if (minDepart.msg?.length) {
                               <span [class]="minDepart.class"
                                 (mouseover)="showTooltip(i + '' + wx.ident + 'low', 'hover', $event)">
                                   {{ wx.avgMinTemp }}&deg;
                               </span>
-                              <div id="{{ i }}{{ wx.ident }}low" role="tooltip" class="gawmas-tooltip tooltip"
+                              <div id="{{ i }}{{ wx.ident }}low" role="tooltip"
+                              class="tooltip normal-case invisible absolute z-10 inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-700 opacity-0 shadow-xs transition-opacity duration-300 bg-gray-300"
                                 [innerHTML]="minDepart.msg">
                               </div>
                             } @else {
@@ -374,6 +394,9 @@
                     </div>
                   }
                   @case ('detailed') {
+                    <div class="text-xs font-bold uppercase mx-1 mb-2 border-b border-gray-600 text-center">
+                      Observed Conditions
+                    </div>
                     <div class="w-full flex items-center font-bold uppercase mb-3">
                       @for (wx of $any(hunt.wxDetails); track wx.ident; let i = $index, last = $last) {
                         <div class="p-1 text-xs text-gray-400 {{ hunt.wxDetails.length < 3 ? 'w-1/2' : 'w-1/3' }} {{ !last ? 'border-r border-gray-400' : 'border-none' }}">
@@ -384,10 +407,14 @@
                             {{ wx.date | date: 'MM/dd' }}
                           </div>
                           <div class="flex justify-center items-center">
-                            <object [data]="wx.midday_icon | wxCondIcon | safe"
+                            <img [src]="wx.midday_icon | wxCondIcon | safe"
+                              class="w-[35px] h-[35px]"
+                              (mouseover)="showTooltip(i + '' + wx.ident + 'cond', 'hover', $event)"/>
+                            <!-- <object [data]="wx.midday_icon | wxCondIcon | safe"
                               type="image/svg+xml" class="w-[35px] h-[35px]"
-                              (mouseover)="showTooltip(i + '' + wx.ident + 'cond', 'hover', $event)"></object>
-                            <div id="{{ i }}{{ wx.ident }}cond" role="tooltip" class="gawmas-tooltip tooltip" [innerHTML]="wx.middayDescr"></div>
+                              (mouseover)="showTooltip(i + '' + wx.ident + 'cond', 'hover', $event)"></object> -->
+                            <div id="{{ i }}{{ wx.ident }}cond" role="tooltip" class="gawmas-tooltip tooltip"
+                              [innerHTML]="wx.middayDescr"></div>
                           </div>
                           <div class="flex-none text-center">
                             <div>

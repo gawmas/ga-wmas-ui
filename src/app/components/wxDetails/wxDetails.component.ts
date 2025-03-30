@@ -5,17 +5,17 @@ import { Store } from "@ngrx/store";
 import { MonthPipe, OrdinalPipe, SafePipe, SuccessRateColorPipe, SuccessRatePipe, TrimTimePipe, WxConditionIconPipe } from "@pipes";
 import { SHARED_MODULES } from "@shared-imports";
 import { AppStateInterface } from "@store-model";
-import { LoadingComponent } from "_shared/components/loading.component";
-import { ModalComponent } from "_shared/components/modal.component";
 import { Tooltip, TooltipTriggerType } from "flowbite";
 import { selectWxDetails, selectWxDetailsLoading } from "store/wxDetails/wxDetails.selectors";
 import { WxDetailsSkeletonComponent } from "./wxDetails-skeleton.component";
+import { DrawerComponent } from "_shared/components/drawer.component";
+import { Location } from "@angular/common";
 
 @Component({
     selector: 'gawmas-wx-details',
     templateUrl: './wxDetails.component.html',
     imports: [
-        SHARED_MODULES, ModalComponent,
+        SHARED_MODULES, DrawerComponent,
         OrdinalPipe, WxConditionIconPipe, SafePipe, TrimTimePipe, NgIcon,
         SuccessRateColorPipe, SuccessRatePipe, WxDetailsSkeletonComponent, MonthPipe
     ]
@@ -23,11 +23,12 @@ import { WxDetailsSkeletonComponent } from "./wxDetails-skeleton.component";
 export class WxDetailsComponent {
 
   @Input() huntId: string | undefined;
-  @ViewChild('wxDetailsModal') wxDetailsModal: ModalComponent | undefined;
+  @ViewChild('wxDetailsDrawer') wxDetailsDrawer: DrawerComponent | undefined;
 
   private _store = inject(Store<AppStateInterface>);
+  private _location = inject(Location);
 
-  wxDetailsTarget = 'wxDetailsModal';
+  wxDetailsTarget = 'wxDetailsDrawer';
   huntDates: HuntDate[] | undefined;
   location: string | undefined;
   hunt: Partial<Hunt> | undefined;
@@ -55,16 +56,18 @@ export class WxDetailsComponent {
 
     this.hunt = { hunterCount: hunters, does, bucks, weapon };
 
-    this.wxDetailsModal?.open();
+    this.wxDetailsDrawer?.open();
   }
 
   close(): void {
-    this.wxDetailsModal?.close();
+    this.wxDetailsDrawer?.close();
   }
 
   showTooltip(targetElId: string, triggerType: TooltipTriggerType, event: any) {
+    console.log('targetElId', targetElId, 'target', event.target as HTMLElement);
     const targetEl = document.getElementById(targetElId)
     const tooltip = new Tooltip(targetEl, event.target as HTMLElement, { triggerType });
+    console.log(tooltip);
     tooltip.show();
   }
 

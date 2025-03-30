@@ -1,43 +1,45 @@
 
   @if (wxDetails$ | async; as wx) {
 
-    <gawmas-modal #wxDetailsModal [targetElement]="wxDetailsTarget">
-      <div class="flex items-start justify-between md:rounded-t-2xl my-2 pl-4 pt-4 mb-0 bg-gray-800">
-        <div class="flex items-center -ml-6 -mt-4 pt-2 pl-3 pr-4 pb-1.5 border-b rounded-tl-2xl border-gray-600 bg-gradient-to-r from-gawmas-green to-transparent from-20% to-80%">
-          <h3 class="text-sm md:text-lg font-semibold text-white uppercase mb-1 pr-2.5 pt-1">
+    <gawmas-drawer #wxDetailsDrawer [targetElement]="wxDetailsTarget">
+      <div class="flex items-start justify-between pl-4 pt-4 mb-0 bg-gray-800">
+        <div class="md:flex md:items-center -ml-6 -mt-4 pt-2 pl-3 pr-4 pb-1.5 border-b border-gray-600 bg-gradient-to-r from-gawmas-green to-transparent from-20% to-80%">
+          <h3 class="text-lg font-semibold text-white uppercase mb-1 px-2 pt-1 md:border-r border-gray-600">
             Observed Conditions
           </h3>
-          <div class="text-xs md:text-base ml-2">
+          <div class="text-xs text-gray-300 md:text-base ml-2">
             {{ huntDates && huntDates[0].start | date: 'MM/dd/yyyy' }} &ndash; {{ huntDates && huntDates[0].end | date: 'MM/dd/yyyy' }}
           </div>
         </div>
         <button (click)="close()" type="button"
-          class="ms-auto inline-flex h-8 w-8 mr-2 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-600 hover:text-white">
-            <svg class="h-3 w-3"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+          class="border inline-flex h-8 w-8 mr-2 md:mt-[-10px] mr-4 items-center justify-center rounded-full bg-transparent text-gray-400 hover:bg-gray-600 hover:text-white cursor-pointer">
+            <svg class="h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
             </svg>
             <span class="sr-only">Close modal</span>
         </button>
       </div>
       <div class="pt-1 flow-root border-b border-gray-300 bg-gray-800">
-        <div class="text-xs md:text-sm float-left text-gray-400 pl-5 pb-4 mt-1 italic">
+        <div class="text-xs md:text-sm md:float-left text-gray-400 pl-4 md:pb-4 mt-1 italic">
           &#64; {{ location }}, Georgia
         </div>
-        <div class="float-right flex items-center text-xs p-2 bg-gray-900 md:rounded-tl-lg border-t border-l border-gray-500">
+        <div class="flex items-center text-xs py-1 md:float-right md:p-2 bg-gray-900 md:rounded-tl-lg md:border-t md:border-l md:border-gray-500">
           <span class="chip result-chip text-xs mx-1"
                 [class.chip-firearm]="hunt?.weapon === 'Buckshot Only' || hunt?.weapon === 'Firearms'"
                 [class.chip-archery]="hunt?.weapon === 'Archery'"
                 [class.chip-primitive]="hunt?.weapon === 'Primitive'">
                 {{ hunt?.weapon }}</span>
           <span class="text-gray-400 font-semibold uppercase">Hunters:</span>
-          <span class="px-1 border-r border-gray-500">{{ hunt?.hunterCount }}</span>
+          <span class="px-1 border-r border-gray-500 text-gray-200">{{ hunt?.hunterCount }}</span>
           <span class="mx-1 text-gray-400 font-semibold uppercase">Bucks:</span>
-          <span class="px-1 border-r border-gray-500">{{ hunt?.bucks }}</span>
+          <span class="px-1 border-r border-gray-500 text-gray-200">{{ hunt?.bucks }}</span>
           <span class="mx-1 text-gray-400 font-semibold uppercase">Does:</span>
-          <span class="px-1 border-r border-gray-500">{{ hunt?.does }}</span>
+          <span class="px-1 md:border-r border-gray-500 text-gray-200">{{ hunt?.does }}</span>
           @if (hunt) {
-            <span class="ml-1 text-gray-400 font-semibold uppercase">Success <span class="hidden md:inline-block">Rate</span>:</span>
-            <span class="ml-1 font-bold {{ hunt | successRateColor }}">{{ hunt | successRate }}&percnt;</span>
+            <span class="hidden md:block ml-1 text-gray-400 font-semibold uppercase">Success <span class="hidden md:inline-block">Rate</span>:</span>
+            <span class="md:block ml-1 font-bold {{ hunt | successRateColor }}">
+              <span class="md:hidden">(</span>{{ hunt | successRate }}&percnt;<span class="md:hidden">)</span>
+            </span>
           }
         </div>
       </div>
@@ -49,15 +51,17 @@
         <div class="p-2">
 
           <!-- Historical Avgs ... -->
-          <div class="font-bold text-white ml-2 pl-2 mb-2 border-b border-gray-400 flex items-center">
-            <ng-icon name="heroClock" class="mr-1 text-lg"></ng-icon>Historical Averages</div>
-          <div class="w-full flex items-center font-bold uppercase mb-3">
+          <div class="font-bold text-white mx-2 pl-2 mb-2 border-b border-gray-400 flex items-center">
+            <ng-icon name="heroClock" class="mr-1 text-lg"></ng-icon>Historical Averages
+          </div>
+          <div class="w-full md:flex items-center font-bold uppercase mb-3">
             @for (hist of $any(wx.histAvgs[0]); track hist.day; let last = $last) {
-              <div class="p-1 text-sm {{ $any(wx.histAvgs[0]).length < 3 ? 'w-1/2' : 'w-1/3' }} {{ !last ? 'border-r border-gray-400' : 'border-none' }}">
-                <div class="flex-none italic text-center">
+              <div class="mx-4 flex items-center md:mx-0 md:block text-sm {{ $any(wx.histAvgs[0]).length < 3 ? 'md:w-1/2' : 'md:w-1/3' }} {{ !last ? 'md:border-r border-gray-400' : 'md:border-none' }}">
+                <div class="text-gray-200 italic md:text-center">
                   {{ hist.month | month | date: 'MMMM' }} {{ hist.day | ordinal }}
+                  <span class="md:hidden not-italic">:</span>
                 </div>
-                <div class="flex-none text-center">
+                <div class="flex items-center md:block md:text-center">
                   <div class="">
                     <span class="px-2 text-xs text-gray-400 w-1/2 text-right">High:</span>
                     <span class="font-normal text-gray-200 w-1/2 text-left">{{ hist.high | number: '1.0-0' }}&deg;</span>
@@ -72,28 +76,29 @@
           </div>
 
           <!-- Primetimes ... -->
-          <div class="font-bold text-white ml-2 pl-2 border-b border-gray-400 flex items-center">
+          <div class="font-bold text-white mx-2 pl-2 mb-2 border-b border-gray-400 flex items-center">
             <ng-icon name="heroHandThumbUp" class="mr-1 text-lg"></ng-icon> Conditions at <span class="italic ml-1">"Primetime"</span><sup>&ast;</sup>
           </div>
           <div class="italic text-xs ml-2 pl-2 mb-2 text-gray-300">
             &ast;Roughly 30 minutes to 1.5 hours after sunrise or before sunset.
           </div>
-          <div class="w-full flex items-center mb-3">
+          <div class="w-full md:flex items-center mb-3">
             @for (d of $any(dateKeys(wx.primetimes)); track d; let last = $last) {
-              <div class="p-1 text-sm {{ dateKeys(wx.primetimes).length < 3 ? 'w-1/2' : 'w-1/3' }} {{ !last ? 'border-r border-gray-400' : 'border-none' }}">
-                <div class="flex-none italic text-center uppercase font-bold">
+              <div class="p-1 {{ dateKeys(wx.primetimes).length < 3 ? 'md:w-1/2' : 'md:w-1/3' }} {{ !last ? 'md:border-r border-gray-400' : 'md:border-none' }}">
+                <div class="text-sm text-gray-200 italic text-center uppercase font-bold">
                   {{ d | date: 'EEEE' }}
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                   @for (p of $any(wx.primetimes[d]); track p.id; let i = $index) {
                     <div>
-                      <div class="text-center text-xs underline">{{ i === 0 ? 'Morning' : 'Evening' }}</div>
+                      <div class="text-white text-center text-xs underline">{{ i === 0 ? 'Morning' : 'Evening' }}</div>
                       <div class="flex justify-center items-center">
-                        <object [data]="p.icon | wxCondIcon | safe"
-                          type="image/svg+xml"
-                          class="max-w-[75px] max-h-[75px] animate-jump-in animate-delay-100 animate-once"
-                          (mouseover)="showTooltip(i + '' + p.id, 'hover', $event)"></object>
-                        <div id="{{ i }}{{ p.id }}" role="tooltip" class="gawmas-tooltip tooltip" [innerHTML]="p.descr"></div>
+                        <img [src]="p.icon | wxCondIcon | safe"
+                          class="max-w-[50px] max-h-[50px] md:max-w-[100px] md:max-h-[100px] animate-jump-in animate-delay-100 animate-once"
+                          (mouseover)="showTooltip(i + '' + p.id + '' + d, 'hover', $event)"/>
+                        <div id="{{ i }}{{ p.id }}{{ d }}" role="tooltip"
+                          class="tooltip normal-case invisible absolute z-10 inline-block rounded-lg px-2 py-1 text-sm font-medium text-gray-700 opacity-0 shadow-xs transition-opacity duration-300 bg-gray-300"
+                          [innerHTML]="p.descr"></div>
                       </div>
                       <div class="flex-none text-center">
                         <div class="pb-0 mb-0">
@@ -112,7 +117,7 @@
                           <span class="font-normal text-gray-200 text-xs">{{ p.windSpeed }} m.p.h.</span>
                         </div>
                         <div class="pb-0 mb-0">
-                          <span class="px-1 text-gray-400 text-xs font-semibold uppercase" title="Visibility">Vis:</span>
+                          <span class="px-1 text-gray-400 text-xs font-semibold uppercase" title="Visibility">Viz:</span>
                           <span class="font-normal text-gray-200">{{ p.viz }} mi.</span>
                         </div>
                       </div>
@@ -124,21 +129,24 @@
           </div>
 
           <!-- Lunar ... -->
-          <div class="font-bold text-white ml-2 flex items-center">
+          <div class="font-bold text-white mx-2 pl-2 mb-2 border-b border-gray-400 flex items-center">
             <ng-icon name="heroMoon" class="mr-1 text-lg"></ng-icon>Lunar
           </div>
-          <div class="w-full flex items-center mb-3 border-t border-gray-400">
-            @for (m of $any(wx.astros); track m.id; let last = $last) {
-              <div class="p-1 mt-2 text-xs {{ wx.astros.length < 3 ? 'w-1/2' : 'w-1/3' }} {{ !last ? 'border-r border-gray-400' : 'border-none' }}">
+          <div class="w-full md:flex items-center mb-3">
+            @for (m of $any(wx.astros); track m.id; let i = $index; let last = $last) {
+              <div class="p-1 mt-2 {{ wx.astros.length < 3 ? 'md:w-1/2' : 'md:w-1/3' }} {{ !last ? 'md:border-r border-gray-400' : 'md:border-none' }}">
+                <div class="text-sm text-gray-200 italic text-center uppercase font-bold md:hidden">
+                  {{ $any(dateKeys(wx.primetimes))[i] | date: 'EEEE' }}
+                </div>
                 <div class="text-gray-200 text-sm text-center">
                   {{ m.moonPhase }}, {{ m.moonIllum }}&percnt;
                 </div>
                 <div class="pb-0 mb-0 flex items-center justify-center">
-                  <span class="px-1 text-gray-400 font-semibold uppercase">Rise:</span>
+                  <span class="px-1 text-xs text-gray-400 font-semibold uppercase">Rise:</span>
                   <span class="font-normal text-gray-200">{{ m.moonRise | trimTime }}</span>
                 </div>
                 <div class="pb-0 mb-0 flex items-center justify-center">
-                  <span class="px-1 text-gray-400 font-semibold uppercase">Set:</span>
+                  <span class="px-1 text-xs text-gray-400 font-semibold uppercase">Set:</span>
                   <span class="font-normal text-gray-200">{{ m.moonSet | trimTime }}</span>
                 </div>
               </div>
@@ -146,18 +154,21 @@
           </div>
 
           <!-- Sun ... -->
-          <div class="font-bold text-white ml-2">
+          <div class="font-bold text-white mx-2 pl-2 mb-2 border-b border-gray-400 flex items-center">
             <ng-icon name="heroSun" class="mr-1 text-lg"></ng-icon>Sun
           </div>
-          <div class="w-full flex items-center mb-3 border-t border-gray-400">
-            @for (s of $any(wx.astros); track s.id; let last = $last) {
-              <div class="p-1 mt-2 text-xs {{ wx.astros.length < 3 ? 'w-1/2' : 'w-1/3' }} {{ !last ? 'border-r border-gray-400' : 'border-none' }}">
+          <div class="w-full md:flex items-center mb-3">
+            @for (s of $any(wx.astros); track s.id; let i = $index; let last = $last) {
+              <div class="p-1 mt-2  {{ wx.astros.length < 3 ? 'md:w-1/2' : 'md:w-1/3' }} {{ !last ? 'md:border-r border-gray-400' : 'md:border-none' }}">
+                <div class="text-sm text-gray-200 italic text-center uppercase font-bold md:hidden">
+                  {{ $any(dateKeys(wx.primetimes))[i] | date: 'EEEE' }}
+                </div>
                 <div class="pb-0 mb-0 flex items-center justify-center">
-                  <span class="px-1 text-gray-400 font-semibold uppercase">Sunrise:</span>
+                  <span class="text-xs px-1 text-gray-400 font-semibold uppercase">Sunrise:</span>
                   <span class="font-normal text-gray-200">{{ s.sunRise | trimTime }}</span>
                 </div>
                 <div class="pb-0 mb-0 flex items-center justify-center">
-                  <span class="px-1 text-gray-400 font-semibold uppercase">Sunset:</span>
+                  <span class="text-xs px-1 text-gray-400 font-semibold uppercase">Sunset:</span>
                   <span class="font-normal text-gray-200">{{ s.sunSet| trimTime }}</span>
                 </div>
               </div>
@@ -169,11 +180,11 @@
       }
 
       <div class="flex justify-center items-center pl-2 py-2 rtl:space-x-reverse rounded-b-2xl border-t border-gray-600">
-        <button (click)="close()" type="button" class="btn btn-default">
+        <button (click)="close()" type="button" class="btn btn-primary">
           Close
         </button>
       </div>
-    </gawmas-modal>
+    </gawmas-drawer>
 
   }
 

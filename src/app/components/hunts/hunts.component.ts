@@ -32,7 +32,7 @@ export class HuntsComponent implements OnInit, OnDestroy {
   isAdmin = input<boolean>();
   isModal = input<boolean>();
 
-  @ViewChild('wxDetailsModal') wxDetailsModal: WxDetailsComponent | undefined;
+  @ViewChild('wxDetailsDrawer') wxDetailsDrawer: WxDetailsComponent | undefined;
 
   private _store = inject(Store<AppStateInterface>);
   private _destroyed$ = new Subject<void>();
@@ -136,7 +136,6 @@ export class HuntsComponent implements OnInit, OnDestroy {
   }
 
   showTooltip(targetElId: string, triggerType: TooltipTriggerType, event: any) {
-    // console.log('targetElId', targetElId, 'target', event.target as HTMLElement);
     const targetEl = document.getElementById(targetElId)
     const tooltip = new Tooltip(targetEl, event.target as HTMLElement, { triggerType });
     tooltip.show();
@@ -144,7 +143,7 @@ export class HuntsComponent implements OnInit, OnDestroy {
 
   openWxDetails(huntId: number, huntDates: HuntDate[], location: string, hunters: number, does: number, bucks: number, weapon: string) {
     this._store.dispatch(wxDetailsActions.clearWxDetails());
-    this.wxDetailsModal?.open(huntDates, location, hunters, bucks, does, weapon);
+    this.wxDetailsDrawer?.open(huntDates, location, hunters, bucks, does, weapon);
     this._store.dispatch(wxDetailsActions.getWxDetails({ id: String(huntId) }));
   }
 

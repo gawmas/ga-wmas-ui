@@ -8,7 +8,7 @@ import { Subject } from "rxjs";
   standalone: true,
   template: `
     <div [id]="targetElement"
-      class="fixed w-[100%] z-100 lg:w-10/12 top-0 left-0 z-40 h-screen p-4 overflow-y-auto transition-transform -translate-x-full bg-gray-800"
+      class="fixed w-[100%] z-100 lg:w-10/12 top-0 left-0 z-40 h-screen overflow-y-auto transition-transform -translate-x-full bg-gray-800"
       tabindex="-1">
       <ng-content></ng-content>
     </div>

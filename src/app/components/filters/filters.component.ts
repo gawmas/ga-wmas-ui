@@ -246,10 +246,12 @@ export class FiltersComponent implements AfterViewInit, OnDestroy {
               this._buildCheckBoxes(auxData[key as keyof Omit<FilterAuxData, 'histClimateLocations'>], passValues);
             }
           }
+
         });
     }
 
     this.filterDrawer.open();
+    // this._location.go('/browse/search');
     this._listenToDrawerEvents();
 
   }
