@@ -54,10 +54,16 @@ export class DrawerComponent {
   }
 
   public close(): void {
-    this.drawer.hide();
+    if (Object.keys(this.drawer).length !== 0) {
+      this.drawer.hide();
+    }
     this.closeAction.closed = true;
     this.closeAction.saved = false;
     this.closeEventSubject?.next(this.closeAction);
+  }
+
+  public isOpen(): boolean {
+    return this.drawer._visible;
   }
 
 }

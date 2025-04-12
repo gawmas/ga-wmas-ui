@@ -6,23 +6,27 @@ import { Store } from "@ngrx/store";
 import { AppStateInterface } from "@store-model";
 import { LoadingComponent } from "_shared/components/loading.component";
 import { Subject, distinctUntilChanged, takeUntil } from 'rxjs';
-import { NgIconComponent } from '@ng-icons/core';
 import { SuccessMapHuntResultsComponent } from "./success-map-hunt-results.component";
+import { SuccessMapFiltersModalComponent } from "./success-map-filters-modal.component";
+import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
+import { WxDetailsComponent } from "components/wxDetails/wxDetails.component";
 import * as L from 'leaflet';
 import * as successMapActions from 'store/successMap/successMap.actions';
 import * as successMapSelectors from 'store/successMap/successMap.selectors';
-import { SuccessMapFiltersModalComponent } from "./success-map-filters-modal.component";
+import * as wxDetailsActions from 'store/wxDetails/wxDetails.actions';
 
 @Component({
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        SHARED_MODULES, SuccessMapFiltersComponent, SuccessMapHuntResultsComponent,
-        LoadingComponent, SuccessMapFiltersModalComponent
-    ],
-    template: `
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    SHARED_MODULES, SuccessMapFiltersComponent, SuccessMapHuntResultsComponent,
+    LoadingComponent, SuccessMapFiltersModalComponent, WxDetailsComponent
+  ],
+  template: `
     @if (loading$ | async) {
       <gawmas-loading />
     }
+
+    <gawmas-wx-details #wxDetailsDrawer [isAdmin]="false" />
 
     <!-- Filter modal (mobile) -->
     <gawmas-success-map-filters-modal #filtersModal (closeEvent)="modalClosed()" />
@@ -48,7 +52,10 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('resultsModal') resultsModal: SuccessMapHuntResultsComponent | undefined;
   @ViewChild('filtersModal') filtersModal: SuccessMapFiltersModalComponent | undefined;
+  @ViewChild('wxDetailsDrawer') wxDetailsDrawer: WxDetailsComponent | undefined;
 
+  private _router = inject(Router);
+  private _activatedRoute = inject(ActivatedRoute);
   private _store = inject(Store<AppStateInterface>);
   private _cdr = inject(ChangeDetectorRef);
 
@@ -91,6 +98,28 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
 
+    this._activatedRoute.queryParamMap.pipe(
+      takeUntil(this._destroyed$),
+    ).subscribe((params: any) => {
+
+      const wmaId = +params.params['wma'];
+      const wx = +params.params['wx'];
+
+      if (!isNaN(wx)) {
+        this.openWxResults(wx);
+      } else if (!isNaN(wmaId)) {
+        this.openResults(wmaId);
+      } else {
+        if (this.resultsModal?.visible()) {
+          this.resultsModal.close();
+        }
+        if (this.wxDetailsDrawer?.visible()) {
+          this.wxDetailsDrawer.close();
+        }
+        this.mapVisible.set(true);
+      }
+    })
+
     this._store.dispatch(successMapActions.enterSuccessMap());
 
     this._setUpMap();
@@ -103,12 +132,12 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
       // console.log({ wmaCoords, seasons, selectedSeason, mapData, weapon, zoomFull, showLegend, mapTitle });
 
       if (mapData?.weapons.length &&
-          weapon! > -1 &&
-          wmaCoords?.length > 0 &&
-          selectedSeason! > -1 &&
-          seasons &&
-          zoomFull !== undefined &&
-          showLegend !== undefined) {
+        weapon! > -1 &&
+        wmaCoords?.length > 0 &&
+        selectedSeason! > -1 &&
+        seasons &&
+        zoomFull !== undefined &&
+        showLegend !== undefined) {
 
         this.wmaCoords = wmaCoords;
         this.mapDataResult = mapData;
@@ -255,7 +284,7 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
           </div>
           <div class="text-center mt-2">
             <button type="button" data="${coord.id}, ${season.id}, ${weaponId !== 0 ? weaponId : ''}"
-              class="resultsButton px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white">
+              class="resultsButton cursor-pointer px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white">
                   View Results
             </button>
           </div>
@@ -358,9 +387,28 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
     // this._map.setMinZoom(7);
   }
 
-  openResults() {
+  openResults(wmaId: number) {
     this.resultsModal?.open();
-    this.toggleMapViz();
+    this.mapVisible.set(false);
+    let extras: NavigationExtras = {
+      queryParams: {
+        wma: wmaId,
+      }
+    }
+    this._router.navigate(['/maps'], extras);
+  }
+
+  openWxResults(huntId: number) {
+    this.resultsModal?.close();
+    this.mapVisible.set(false);
+    this._store.dispatch(wxDetailsActions.clearWxDetails());
+    this._store.dispatch(wxDetailsActions.getWxDetails({ id: String(huntId) }));
+    this.wxDetailsDrawer?.open();
+
+    this._router.navigate(['/maps'], {
+      queryParams: { wx: huntId },
+      relativeTo: this._activatedRoute,
+      replaceUrl: true });
   }
 
   @HostListener('document:click', ['$event'])
@@ -378,7 +426,7 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
             sort: ''
           }
         }));
-      this.openResults();
+      this.openResults(+data![0]);
     } else if (event.target.classList.contains("zoomFull")) { // Full Extent button ...
       this._store.dispatch(successMapActions.setZoomFull({ value: true }));
     } else if (event.target.classList.contains("legendToggle")) { // Legend button ...
@@ -398,7 +446,9 @@ export class SuccessMapComponent implements AfterViewInit, OnDestroy {
   }
 
   modalClosed() {
-    this.toggleMapViz();
+    // this.toggleMapViz();
+    this.mapVisible.set(true);
+    this._router.navigateByUrl('/maps', { replaceUrl: true });
   }
 
 }

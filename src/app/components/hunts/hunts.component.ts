@@ -6,17 +6,17 @@ import { FiltersComponent } from 'components/filters/filters.component';
 import { AppStateInterface } from '@store-model';
 import { DetailsHighlightPipe, SuccessRateColorPipe, SuccessRatePipe, WxAvgTempDeparturePipe, WxDetailTypePipe, SafePipe, WxConditionIconPipe, SeasonTextPipe } from "@pipes";
 import { NgIconComponent } from '@ng-icons/core';
-import { Observable, Subject, combineLatest, distinctUntilChanged, startWith, take } from 'rxjs';
-import { HuntFormComponent } from 'components/admin/hunt-form/hunt-form.component';
+import { Observable, Subject, combineLatest, distinctUntilChanged, map, startWith, take, takeUntil, tap } from 'rxjs';
 import { Tooltip, TooltipTriggerType } from 'flowbite';
 import { LoadingComponent } from '_shared/components/loading.component';
-import { Filter, Hunt, HuntDate } from '@model';
+import { Filter, Hunt } from '@model';
 import { WxDetailsComponent } from 'components/wxDetails/wxDetails.component';
 import { selectMapWmaResults } from 'store/successMap/successMap.selectors';
 import * as huntsActions from 'store/hunts/hunts.actions';
 import * as filterActions from 'store/filters/filters.actions';
 import * as wxDetailsActions from 'store/wxDetails/wxDetails.actions';
 import { initialHuntState } from './../../_shared/model/store/hunts.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'gawmas-browse-hunts',
@@ -37,6 +37,8 @@ export class HuntsComponent implements OnInit, OnDestroy {
   private _store = inject(Store<AppStateInterface>);
   private _destroyed$ = new Subject<void>();
 
+  activatedRoute = inject(ActivatedRoute);
+
   topInView = signal(true);
 
   hunts$!: Observable<Hunt[] | undefined>;
@@ -53,6 +55,21 @@ export class HuntsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     if (!this.isModal()) {
+
+      // Handle changes to `wx` query param ...
+      this.activatedRoute.queryParamMap.pipe(
+        takeUntil(this._destroyed$),
+        // tap(value => console.log('emitting...', value)),
+        map((params: any) => +params.params['wx'])
+      ).subscribe(huntId => {
+        if (!isNaN(huntId)) {
+          this.openWxDetails(huntId);
+        } else {
+          if (this.wxDetailsDrawer) {
+            this.wxDetailsDrawer.close();
+          }
+        }
+      });
 
       this.hunts$ = this._store.select(selectHunts);
 
@@ -141,9 +158,9 @@ export class HuntsComponent implements OnInit, OnDestroy {
     tooltip.show();
   }
 
-  openWxDetails(huntId: number, huntDates: HuntDate[], location: string, hunters: number, does: number, bucks: number, weapon: string) {
+  openWxDetails(huntId: number) {
     this._store.dispatch(wxDetailsActions.clearWxDetails());
-    this.wxDetailsDrawer?.open(huntDates, location, hunters, bucks, does, weapon);
+    this.wxDetailsDrawer?.open();
     this._store.dispatch(wxDetailsActions.getWxDetails({ id: String(huntId) }));
   }
 

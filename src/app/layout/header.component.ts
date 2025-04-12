@@ -19,7 +19,7 @@ import type { InstanceOptions } from 'flowbite';
 
     <div class="flex flex-wrap justify-between w-full p-0">
 
-      <a routerLink="/browse" class="brand space-x-3 rtl:space-x-reverse">
+      <a routerLink="/" class="brand space-x-3 rtl:space-x-reverse">
         <object data="./assets/gawmas-logo.svg" type="image/svg+xml" class="md:h-[85px] md:mt-0"></object>
       </a>
 
@@ -45,18 +45,18 @@ import type { InstanceOptions } from 'flowbite';
         <ul class="border border-gray-600 rounded-lg flex flex-col p-4 z-100 h-screen mt-4 bg-gray-900 font-medium rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-transparent md:h-[30px] md:p-0 md:space-x-8">
           <li class="flex items-center text-xl border-b border-gray-300 py-6 md:text-medium md:py-2 md:text-sm md:border-0">
             <ng-icon name="heroTableCells" class="text-xl md:text-lg text-white mr-1"></ng-icon>
-            <a routerLink="/browse"
-              [ngClass]="{'nav-current': (currentRoute() | isActiveRoute:'/browse'), 'nav-link': !(currentRoute() | isActiveRoute:'/browse')}"
+            <a routerLink="/"
+              [ngClass]="{'nav-current': (currentRoute() | isActiveRoute:'/'), 'nav-link': !(currentRoute() | isActiveRoute:'/')}"
               aria-current="page">
-                Hunt Results
+                <span title="Wildlife Managment Area">WMA</span> Results
             </a>
           </li>
           <li class="flex items-center text-xl border-b border-gray-300 py-6 md:text-medium md:py-2 md:text-sm md:border-0">
             <ng-icon name="heroMap" class="text-xl md:text-lg text-white mr-1"></ng-icon>
-            <a routerLink="/successmap"
-              [ngClass]="{'nav-current': (currentRoute() | isActiveRoute:'/successmap'), 'nav-link': !(currentRoute() | isActiveRoute:'/successmap')}"
+            <a routerLink="/maps"
+              [ngClass]="{'nav-current': (currentRoute() | isActiveRoute:'/maps'), 'nav-link': !(currentRoute() | isActiveRoute:'/maps')}"
               aria-current="page">
-                Success Map
+                Results Map
             </a>
           </li>
           <li class="flex items-center text-xl border-b border-gray-300 py-6 md:text-medium md:py-2 md:text-sm md:border-0">

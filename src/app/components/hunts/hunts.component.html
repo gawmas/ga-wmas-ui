@@ -2,7 +2,7 @@
   <gawmas-hunt-filters />
 }
 
-<gawmas-wx-details #wxDetailsDrawer />
+<gawmas-wx-details #wxDetailsDrawer [isAdmin]="isAdmin()!" />
 
 @if (isLoading$ | async) {
   <gawmas-loading />
@@ -209,8 +209,11 @@
                     <div class="text-xs text-gray-500 pl-2 flow-root">
                       <div class="float-left pt-1 italic">&#64; {{ $any(hunt.wxDetails[0]).location }}, GA</div>
                       <div class="float-right">
-                        <button type="button" (click)="openWxDetails(hunt.id, hunt.huntDates, $any(hunt.wxDetails[0]).location, hunt.hunterCount, hunt.bucks, hunt.does, hunt.weapon)"
-                          class="px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white cursor-pointer">
+                        <button type="button"
+                          [routerLink]="[isAdmin() ? '/admin' : isModal() ? '/maps' : '']"
+                          [queryParams]="{ wx: hunt.id }"
+                          [relativeTo]="activatedRoute"
+                          class="cursor-pointer px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white">
                             <ng-icon name="heroArrowTopRightOnSquare" class="w-4 h-4 mr-1"></ng-icon>
                               More Details
                         </button>
@@ -266,9 +269,11 @@
           <tr class="bg-gray-800">
             <td colspan="2" class="px-2 py-2 align-top bg-gray-900">
               <div class="flex flex-wrap items-center">
-                <div class="text-white font-bold uppercase mr-1">
-                  {{ hunt.wmaName }}
-                </div>
+                @if (!isModal()) {
+                  <div class="text-white font-bold uppercase mr-1">
+                    {{ hunt.wmaName }}
+                  </div>
+                }
                 @switch (hunt.weapon) {
                   @case ('Firearms') {
                     <span class="uppercase text-xs font-medium me-2 px-2.5 py-0.5 rounded-full bg-gray-700 text-gray-300">
@@ -432,8 +437,8 @@
                     <div class="text-xs text-gray-500 pl-2 flow-root">
                       <div class="float-left pt-1 italic">&#64; {{ $any(hunt.wxDetails[0]).location }}, GA</div>
                       <div class="float-right">
-                        <button type="button" (click)="openWxDetails(hunt.id, hunt.huntDates, $any(hunt.wxDetails[0]).location, hunt.hunterCount, hunt.bucks, hunt.does, hunt.weapon)"
-                          class="px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white">
+                        <button type="button" [routerLink]="['']" [queryParams]="{ wx: hunt.id }"
+                          class="cursor-pointer px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white">
                             <ng-icon name="heroArrowTopRightOnSquare" class="w-4 h-4 mr-1"></ng-icon>
                               More Details
                         </button>

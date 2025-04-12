@@ -1,7 +1,10 @@
+import { WxDetailsHuntDetails } from "./store/wxDetails.model";
+
 export interface WxDetails {
   primetimes: WxPrimetime[];
   astros: WxAstro[];
   histAvgs: WxHistAvg[];
+  huntDetails: WxDetailsHuntDetails;
 }
 
 export interface WxPrimetime {

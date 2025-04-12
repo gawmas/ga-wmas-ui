@@ -11,3 +11,5 @@ export * from "./ordinal.pipe";
 export * from "./trim-time.pipe";
 export * from "./season-text.pipe";
 export * from "./month.pipe";
+export * from "./hunt-duration.pipe";
+export * from "./object-keys.pipe";

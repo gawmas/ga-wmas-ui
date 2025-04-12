@@ -10,8 +10,8 @@ import { Subject, takeUntil } from "rxjs";
   <div class="text-sm font-medium text-center border-b text-gray-400 border-gray-700">
     <ul class="flex flex-wrap -mb-px">
       <li class="me-2">
-        <a routerLink="/admin/browse"
-          [ngClass]="{'text-white border-blue-500': (currentRoute() | isActiveRoute:'/admin/browse'), 'border-transparent hover:border-gray-300 hover:text-gray-300': !(currentRoute() | isActiveRoute:'/admin/browse')}"
+        <a routerLink="/admin/"
+          [ngClass]="{'text-white border-blue-500': (currentRoute() | isActiveRoute:'/admin/'), 'border-transparent hover:border-gray-300 hover:text-gray-300': !(currentRoute() | isActiveRoute:'/admin/browse')}"
           class="inline-block p-4 border-b-2 rounded-t-lg">Manage Hunts</a>
       </li>
       <li class="me-2">

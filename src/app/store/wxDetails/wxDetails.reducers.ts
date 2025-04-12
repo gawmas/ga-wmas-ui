@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { initialWxDetailsState } from '_shared/model/store/wxDetails.model';
+import { initialWxDetailsState, WxDetailsHuntDetails } from '_shared/model/store/wxDetails.model';
 import * as wxDetailActions from "./wxDetails.actions";
 import { WxAstro, WxHistAvg, WxPrimetime } from "@model";
 
@@ -18,6 +18,7 @@ export const wxDetailsReducers = createReducer(
     return {
       ...state,
       wxDetails: wxDetails,
+      huntDetails: wxDetails.huntDetails,
       loading: false
     };
   }),
@@ -28,7 +29,8 @@ export const wxDetailsReducers = createReducer(
       wxDetails: {
         primetimes: [] as WxPrimetime[],
         astros: [] as WxAstro[],
-        histAvgs: [] as WxHistAvg[]
+        histAvgs: [] as WxHistAvg[],
+        huntDetails: {} as WxDetailsHuntDetails
       },
     };
   })

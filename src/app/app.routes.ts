@@ -1,5 +1,4 @@
 import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot, Routes } from '@angular/router';
-import { HuntsComponent } from '@components';
 import { env } from '@environment';
 
 export const adminGuard: CanActivateFn = (
@@ -12,15 +11,17 @@ export const adminGuard: CanActivateFn = (
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'browse',
+    redirectTo: '',
     pathMatch: 'full'
   },
   {
-    path: 'browse',
-    component: HuntsComponent
+    path: '',
+    loadComponent: () =>
+      import('./components/hunts/hunts.component')
+        .then(c => c.HuntsComponent)
   },
   {
-    path: 'successmap',
+    path: 'maps',
     loadComponent: () =>
       import('./components/success-map/success-map.component')
         .then(c => c.SuccessMapComponent)
@@ -40,11 +41,11 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'browse',
+        redirectTo: '',
         pathMatch: 'full'
       },
       {
-        path: 'browse',
+        path: '',
         loadComponent: () =>
           import('./components/admin/adminBrowse.component')
             .then(c => c.AdminBrowseComponent)
@@ -65,6 +66,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'browse'
+    redirectTo: ''
   },
 ];
