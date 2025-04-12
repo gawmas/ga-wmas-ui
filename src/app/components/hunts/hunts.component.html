@@ -437,7 +437,10 @@
                     <div class="text-xs text-gray-500 pl-2 flow-root">
                       <div class="float-left pt-1 italic">&#64; {{ $any(hunt.wxDetails[0]).location }}, GA</div>
                       <div class="float-right">
-                        <button type="button" [routerLink]="['']" [queryParams]="{ wx: hunt.id }"
+                        <button type="button"
+                          [routerLink]="[isAdmin() ? '/admin' : isModal() ? '/maps' : '']"
+                          [queryParams]="{ wx: hunt.id }"
+                          [relativeTo]="activatedRoute"
                           class="cursor-pointer px-2 py-1 text-xs uppercase font-medium text-center inline-flex items-center text-white rounded-full focus:ring-1 focus:outline-none bg-gray-600 hover:bg-gray-700 focus:ring-white">
                             <ng-icon name="heroArrowTopRightOnSquare" class="w-4 h-4 mr-1"></ng-icon>
                               More Details
